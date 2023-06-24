@@ -18,5 +18,6 @@ public class ServerProfileController {
         return Arrays.stream(env.getActiveProfiles())
                 .findFirst()
                 .orElse("");
+
     }
 }
