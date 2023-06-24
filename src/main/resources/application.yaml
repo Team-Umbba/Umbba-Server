@@ -1,0 +1,47 @@
+cloud:
+  aws:
+    credentials:
+      accessKey: ${cloud-access}
+      secretKey: ${cloud-secret}
+    region:
+      static: ${cloud-region}
+    s3:
+      bucket: ${bucket-name}
+    stack:
+      auto: false
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${db-url}
+    username: ${db-user}
+    password: ${db-pwd}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql:true
+
+kakao:
+  client-id: ${kakao-id}
+  authorization-grant-type: authorization_code
+  redirect-uri: ${kakao-redirect}
+apple:
+  url: ${apple-url}
+
+jwt:
+  secret: ${jwt-secret}
+
+slack:
+  webhook:
+    url: ${slack-url}
+
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
