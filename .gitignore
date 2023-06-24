@@ -1,4 +1,5 @@
 application.yml
+application.yaml
 
 HELP.md
 .gradle
@@ -37,3 +38,4 @@ out/
 
 ### VS Code ###
 .vscode/
+.DS_Store
