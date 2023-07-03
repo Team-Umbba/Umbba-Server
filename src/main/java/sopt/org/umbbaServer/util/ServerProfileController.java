@@ -1,4 +1,4 @@
-package sopt.org.umbbaServer.controller;
+package sopt.org.umbbaServer.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;

@@ -22,21 +22,28 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	// mysql --version
+	// Health Check
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	// JPA & Database
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'mysql:mysql-connector-java:8.0.32'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	//JSON
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
-	// Health Check
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	// Slack Webhook
+	implementation 'com.slack.api:slack-api-client:1.28.0'
+	implementation 'com.google.code.gson:gson:2.10.1'
+	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+	implementation 'com.slack.api:slack-app-backend:1.28.0'
+	implementation 'com.slack.api:slack-api-model:1.28.0'
 }
 
 tasks.named('test') {
