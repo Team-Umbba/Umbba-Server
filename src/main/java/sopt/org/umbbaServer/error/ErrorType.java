@@ -14,7 +14,7 @@ public enum ErrorType {
      */
     REQUEST_VALIDATION_EXCEPTION(HttpStatus.BAD_REQUEST, "잘못된 요청입니다"),
     VALIDATION_WRONG_TYPE_EXCEPTION(HttpStatus.BAD_REQUEST, "잘못된 타입이 입력되었습니다"),
-    EMPTY_PRINCIPLE(HttpStatus.BAD_REQUEST, "Principle 객체가 없습니다. (null)"),
+    EMPTY_PRINCIPLE_EXCEPTION(HttpStatus.BAD_REQUEST, "Principle 객체가 없습니다. (null)"),
 
     /**
      * 401 UNAUTHORIZED
@@ -27,14 +27,17 @@ public enum ErrorType {
     /**
      * 404 NOT FOUND
      */
-    INVALID_USER(HttpStatus.NOT_FOUND, "유효하지 않은 회원입니다."),
-
+    INVALID_USER(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
 
     /**
-     * 409 CONFLICT
+     * About Apple (HttpStatus 고민)
      */
-    ALREADY_EXIST_USER_EXCEPTION(HttpStatus.CONFLICT, "이미 존재하는 유저입니다"),
-
+    INVALID_APPLE_PUBLIC_KEY(HttpStatus.BAD_REQUEST, "Apple JWT 값의 alg, kid 정보가 올바르지 않습니다."),
+    INVALID_APPLE_IDENTITY_TOKEN(HttpStatus.BAD_REQUEST, "Apple OAuth Identity Token 형식이 올바르지 않습니다."),
+    EXPIRED_APPLE_IDENTITY_TOKEN(HttpStatus.BAD_REQUEST, "Apple OAuth 로그인 중 Identity Token 유효기간이 만료됐습니다."),
+    INVALID_APPLE_CLAIMS(HttpStatus.BAD_REQUEST, "Apple OAuth Claims 값이 올바르지 않습니다."),
+    INVALID_ENCRYPT_COMMUNICATION(HttpStatus.BAD_REQUEST, "Apple OAuth 통신 암호화 과정 중 문제가 발생했습니다."),
+    CREATE_PUBLIC_KEY_EXCEPTION(HttpStatus.BAD_REQUEST, "Apple OAuth 로그인 중 public verify 생성에 문제가 발생했습니다."),
 
     /**
      * 500 INTERNAL SERVER ERROR

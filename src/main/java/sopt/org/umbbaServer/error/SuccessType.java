@@ -20,7 +20,6 @@ public enum SuccessType {
     /**
      * 201 CREATED
      */
-    CREATE_BOARD_SUCCESS(HttpStatus.CREATED, "게시물 생성이 완료됐습니다."),
     ;
 
     private final HttpStatus httpStatus;
