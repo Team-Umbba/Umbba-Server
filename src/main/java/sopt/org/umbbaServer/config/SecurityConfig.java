@@ -22,7 +22,7 @@ public class SecurityConfig {
     private final CustomJwtAuthenticationEntryPoint customJwtAuthenticationEntryPoint;
 
     private static final String[] AUTH_WHITELIST = {
-            "/kakao/**", "/login", "/refresh",
+            "/kakao/**", "/login", "/reissue",
 //          "/log-out",
             "/test"
     };

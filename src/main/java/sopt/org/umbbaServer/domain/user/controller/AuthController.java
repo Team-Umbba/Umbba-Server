@@ -34,13 +34,13 @@ public class AuthController {
         return ApiResponse.success(SuccessType.LOGIN_SUCCESS, response);
     }
 
-    @PostMapping("/refresh")
+    @PostMapping("/reissue")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<TokenDto> refresh(
+    public ApiResponse<TokenDto> reissue(
             @RequestHeader("Authorization") String refreshToken,
             @RequestBody RefreshRequestDto request) throws Exception {
 
-        return ApiResponse.success(SuccessType.REFRESH_SUCCESS, authService.refreshToken(request.getUserId(), refreshToken));
+        return ApiResponse.success(SuccessType.REISSUE_SUCCESS, authService.reissueToken(request.getUserId(), refreshToken));
     }
 
     @PostMapping("/log-out") // Spring Security 자체 로그아웃과 충돌하기 때문에 이렇게 써줌

@@ -26,14 +26,9 @@ import java.security.spec.InvalidKeySpecException;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthService { 
-    
-    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 60 * 1000L;  // 액세스 토큰 만료 시간: 1분으로 지정
-
-    private static final Long REFRESH_TOKEN_EXPIRATION_TIME = 60 * 1000L * 2;  // 리프레시 토큰 만료 시간: 2분으로 지정
 
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
-    private final TokenRepository tokenRepository;
 
     private final AppleLoginService appleLoginService;
     private final KakaoLoginService kakaoLoginService;
@@ -69,7 +64,7 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenDto refreshToken(Long userId, String refreshToken) throws Exception {
+    public TokenDto reissueToken(Long userId, String refreshToken) throws Exception {
 
         User user = getUserById(userId); //userId가 잘못 날라오는 경우에 대비해 남김
 
@@ -85,13 +80,13 @@ public class AuthService {
     public void logout(Long userId) {
         User user = getUserById(userId);
         user.updateRefreshToken(null);
-        tokenRepository.deleteById(userId);
+        jwtProvider.deleteRefreshToken(userId);
     }
 
     private TokenDto generateToken(Authentication authentication) {
         return TokenDto.of(
-                jwtProvider.generateAccessToken(authentication, ACCESS_TOKEN_EXPIRATION_TIME),
-                jwtProvider.generateRefreshToken(authentication, REFRESH_TOKEN_EXPIRATION_TIME));
+                jwtProvider.generateAccessToken(authentication),
+                jwtProvider.generateRefreshToken(authentication));
     }
 
     private User getUserById(Long userId) {

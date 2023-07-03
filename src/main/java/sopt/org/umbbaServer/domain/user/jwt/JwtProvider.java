@@ -28,6 +28,9 @@ import static java.util.Objects.isNull;
 @RequiredArgsConstructor
 public class JwtProvider {
 
+    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 60 * 1000L;  // 액세스 토큰 만료 시간: 1분으로 지정
+    private static final Long REFRESH_TOKEN_EXPIRATION_TIME = 60 * 1000L * 2;  // 리프레시 토큰 만료 시간: 2분으로 지정
+
     @Value("${jwt.secret}")
     private String JWT_SECRET;
     private final TokenRepository tokenRepository;
@@ -37,12 +40,12 @@ public class JwtProvider {
         JWT_SECRET = Base64.getEncoder().encodeToString(JWT_SECRET.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateAccessToken(Authentication authentication, Long tokenExpirationTime) {
+    public String generateAccessToken(Authentication authentication) {
         final Date now = new Date();
 
         final Claims claims = Jwts.claims()
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + tokenExpirationTime));
+                .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRATION_TIME));
 
         claims.put("userId", authentication.getPrincipal());
 
@@ -59,13 +62,13 @@ public class JwtProvider {
      * refreshToken:userId : tokenValue 형태로 저장한다.
      * accessToken과 다르게 UUID로 생성한다.
      */
-    public String generateRefreshToken(Authentication authentication, Long tokenExpirationTime) {
+    public String generateRefreshToken(Authentication authentication) {
 
         RefreshToken refreshToken = tokenRepository.save(
                 RefreshToken.builder()
                         .id(Long.parseLong(authentication.getPrincipal().toString()))
                         .refreshToken(UUID.randomUUID().toString())
-                        .expiration(tokenExpirationTime.intValue() / 1000)
+                        .expiration(REFRESH_TOKEN_EXPIRATION_TIME.intValue() / 1000)
                         .build()
         );
         return refreshToken.getRefreshToken();
@@ -100,6 +103,10 @@ public class JwtProvider {
             return false;
         }
         else return token.getRefreshToken().equals(refreshToken);
+    }
+
+    public void deleteRefreshToken(Long userId) {
+        tokenRepository.deleteById(userId);
     }
 
     // 토큰에 담겨있는 userId 획득
