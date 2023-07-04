@@ -22,14 +22,17 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        format_sql:true
+        format_sql: true
 
 kakao:
   client-id: ${kakao-id}
   authorization-grant-type: authorization_code
   redirect-uri: ${kakao-redirect}
+
 apple:
-  url: ${apple-url}
+  iss: ${apple-iss}
+  client-id: ${apple-id}
+  nonce: ${apple-nonce}
 
 jwt:
   secret: ${jwt-secret}
