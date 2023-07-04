@@ -30,8 +30,7 @@ public class AuthController {
             @RequestHeader("Authorization") String socialAccessToken,
             @RequestBody SocialLoginRequestDto request) throws NoSuchAlgorithmException, InvalidKeySpecException {
 
-        UserLoginResponseDto response = authService.login(socialAccessToken, request);
-        return ApiResponse.success(SuccessType.LOGIN_SUCCESS, response);
+        return ApiResponse.success(SuccessType.LOGIN_SUCCESS, authService.login(socialAccessToken, request));
     }
 
     @PostMapping("/reissue")
@@ -40,7 +39,7 @@ public class AuthController {
             @RequestHeader("Authorization") String refreshToken,
             @RequestBody RefreshRequestDto request) throws Exception {
 
-        return ApiResponse.success(SuccessType.REISSUE_SUCCESS, authService.reissueToken(request.getUserId(), refreshToken));
+        return ApiResponse.success(SuccessType.REISSUE_SUCCESS, authService.reissueToken(request, refreshToken));
     }
 
     @PostMapping("/log-out") // Spring Security 자체 로그아웃과 충돌하기 때문에 이렇게 써줌

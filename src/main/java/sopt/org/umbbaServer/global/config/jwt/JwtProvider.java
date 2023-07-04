@@ -40,7 +40,15 @@ public class JwtProvider {
         JWT_SECRET = Base64.getEncoder().encodeToString(JWT_SECRET.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateAccessToken(Authentication authentication) {
+
+    public TokenDto issueToken(Authentication authentication) {
+        return TokenDto.of(
+                generateAccessToken(authentication),
+                generateRefreshToken(authentication));
+    }
+
+    // Access 토큰 생성
+    private String generateAccessToken(Authentication authentication) {
         final Date now = new Date();
 
         final Claims claims = Jwts.claims()
@@ -62,40 +70,54 @@ public class JwtProvider {
      * refreshToken:userId : tokenValue 형태로 저장한다.
      * accessToken과 다르게 UUID로 생성한다.
      */
-    public String generateRefreshToken(Authentication authentication) {
+    private String generateRefreshToken(Authentication authentication) {
+        final Date now = new Date();
 
-        RefreshToken refreshToken = tokenRepository.save(
+        final Claims claims = Jwts.claims()
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRATION_TIME));
+
+        // TODO UUID or JWT 토큰으로 암호화하여 생성
+        String refreshToken = Jwts.builder()
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+                .setClaims(claims)
+                .signWith(getSigningKey())
+                .compact();
+
+        tokenRepository.save(
                 RefreshToken.builder()
                         .userId(Long.parseLong(authentication.getPrincipal().toString()))
-                        .refreshToken(UUID.randomUUID().toString())
+                        .refreshToken(refreshToken)
                         .expiration(REFRESH_TOKEN_EXPIRATION_TIME.intValue() / 1000)
                         .build()
         );
-        return refreshToken.getRefreshToken();
+
+        return refreshToken;
     }
 
     // Access 토큰 검증
     public JwtValidationType validateAccessToken(String accessToken) {
         try {
             final Claims claims = getBody(accessToken);
+            log.info(JwtValidationType.VALID_JWT.getValue());
             return JwtValidationType.VALID_JWT;
         } catch (MalformedJwtException ex) {
-            log.error(String.valueOf(JwtValidationType.INVALID_JWT_TOKEN));
+            log.error(JwtValidationType.INVALID_JWT_TOKEN.getValue());
             return JwtValidationType.INVALID_JWT_TOKEN;
         } catch (ExpiredJwtException ex) {
-            log.error(String.valueOf(JwtValidationType.EXPIRED_JWT_TOKEN));
+            log.error(JwtValidationType.EXPIRED_JWT_TOKEN.getValue());
             return JwtValidationType.EXPIRED_JWT_TOKEN;
         } catch (UnsupportedJwtException ex) {
-            log.error(String.valueOf(JwtValidationType.UNSUPPORTED_JWT_TOKEN));
+            log.error(JwtValidationType.UNSUPPORTED_JWT_TOKEN.getValue());
             return JwtValidationType.UNSUPPORTED_JWT_TOKEN;
         } catch (IllegalArgumentException ex) {
-            log.error(String.valueOf(JwtValidationType.EMPTY_JWT));
+            log.error(JwtValidationType.EMPTY_JWT.getValue());
             return JwtValidationType.EMPTY_JWT;
         }
     }
 
     // Refresh 토큰 검증
-    public boolean validRefreshToken(Long userId, String refreshToken) throws Exception {
+    public boolean validateRefreshToken(Long userId, String refreshToken) throws Exception {
         // 해당유저의 Refresh 토큰 만료 : Redis에 해당 유저의 토큰이 존재하지 않음
         RefreshToken token = tokenRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorType.INVALID_REFRESH_TOKEN));
 
