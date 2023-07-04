@@ -4,8 +4,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 import sopt.org.umbbaServer.domain.user.social.apple.response.ApplePublicKey;
 import sopt.org.umbbaServer.domain.user.social.apple.response.ApplePublicKeys;
-import sopt.org.umbbaServer.error.CustomException;
-import sopt.org.umbbaServer.error.ErrorType;
+import sopt.org.umbbaServer.global.exception.CustomException;
+import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.math.BigInteger;
 import java.security.KeyFactory;

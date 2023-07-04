@@ -2,7 +2,7 @@ package sopt.org.umbbaServer.domain.user.model;
 
 import lombok.*;
 import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
-import sopt.org.umbbaServer.util.AuditingTimeEntity;
+import sopt.org.umbbaServer.global.util.AuditingTimeEntity;
 
 import javax.persistence.*;
 
