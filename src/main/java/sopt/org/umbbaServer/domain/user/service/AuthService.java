@@ -71,7 +71,7 @@ public class AuthService {
             return generateToken(new UserAuthentication(userId, null, null));
 
         } else {
-            throw new CustomException(ErrorType.NOTMATCH_REFRESH_TOKEN);
+            throw new CustomException(ErrorType.NOT_MATCH_REFRESH_TOKEN);
         }
     }
 
