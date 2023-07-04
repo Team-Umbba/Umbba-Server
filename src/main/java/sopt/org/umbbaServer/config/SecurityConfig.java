@@ -24,7 +24,7 @@ public class SecurityConfig {
     private static final String[] AUTH_WHITELIST = {
             "/kakao/**", "/login", "/reissue",
 //          "/log-out",
-            "/test"
+            "/test", "/profile", "/health", "/actuator/health"
     };
 
     @Bean
