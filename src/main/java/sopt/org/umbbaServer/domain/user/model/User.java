@@ -46,6 +46,7 @@ public class User extends AuditingTimeEntity {
 
     // ** 소셜 로그인 관련 **
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private SocialPlatform socialPlatform;
 
     @Column(nullable = false) // 이걸 PK로 가져갈지 고민
