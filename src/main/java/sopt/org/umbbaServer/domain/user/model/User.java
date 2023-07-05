@@ -2,13 +2,14 @@ package sopt.org.umbbaServer.domain.user.model;
 
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import sopt.org.umbbaServer.domain.parentchild.model.ParentChild;
+import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 import sopt.org.umbbaServer.global.util.AuditingTimeEntity;
 
 import javax.persistence.*;
 
 @Entity
+@Table(name = "`User`")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,7 +36,7 @@ public class User extends AuditingTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "parentchild_id")
-    private ParentChild parentChild;
+    private Parentchild parentChild;
 
     private String refreshToken;
 

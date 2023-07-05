@@ -44,6 +44,7 @@ public class AuthService {
         if (!isRegistered) {
 
             User user = User.builder()
+                    .parentChild(null)
                     .socialPlatform(socialPlatform)
                     .socialId(socialId).build();
 

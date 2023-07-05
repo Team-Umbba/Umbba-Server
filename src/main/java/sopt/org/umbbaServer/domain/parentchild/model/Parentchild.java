@@ -3,8 +3,6 @@ package sopt.org.umbbaServer.domain.parentchild.model;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import sopt.org.umbbaServer.domain.qna.model.QnA;
-import sopt.org.umbbaServer.domain.qna.model.Question;
-import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.global.util.AuditingTimeEntity;
 
 import javax.persistence.*;
@@ -16,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class ParentChild extends AuditingTimeEntity {
+public class Parentchild extends AuditingTimeEntity {
 
     @Id
     @Column(name = "parentchild_id")
@@ -35,9 +33,8 @@ public class ParentChild extends AuditingTimeEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private ParentChildRelation relation;
+    private ParentchildRelation relation;
 
     @Column(nullable = false)
-    @ColumnDefault("23:00:00")
     private LocalTime pushTime;
 }

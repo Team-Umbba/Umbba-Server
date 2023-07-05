@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum ParentChildRelation {
+public enum ParentchildRelation {
 
     DAD_SON("아빠와 아들 관계"),
     DAD_DAU("아빠와 딸 관계"),
