@@ -86,7 +86,7 @@ public class JwtProvider {
 
         tokenRepository.save(
                 RefreshToken.builder()
-                        .userId(Long.parseLong(authentication.getPrincipal().toString()))
+                        .id(Long.parseLong(authentication.getPrincipal().toString()))
                         .refreshToken(refreshToken)
                         .expiration(REFRESH_TOKEN_EXPIRATION_TIME.intValue() / 1000)
                         .build()

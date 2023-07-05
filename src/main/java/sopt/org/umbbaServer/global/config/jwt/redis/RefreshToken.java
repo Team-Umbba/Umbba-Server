@@ -20,7 +20,7 @@ public class RefreshToken {
 
     @Id
     @JsonIgnore
-    private Long userId;
+    private Long id;
 
     private String refreshToken;
 
