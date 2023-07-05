@@ -72,7 +72,7 @@ public class ControllerExceptionAdvice {
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<ApiResponse> handleCustomException(CustomException e) {
 
-        log.debug("CustomException occured: {}", e.getMessage(), e);
+        log.error("CustomException occured: {}", e.getMessage(), e);
 
         return ResponseEntity.status(e.getHttpStatus())
                 .body(ApiResponse.error(e.getErrorType(), e.getMessage()));

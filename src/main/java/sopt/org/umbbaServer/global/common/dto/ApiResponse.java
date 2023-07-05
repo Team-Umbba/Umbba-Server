@@ -10,7 +10,7 @@ import sopt.org.umbbaServer.global.exception.ErrorType;
 import sopt.org.umbbaServer.global.exception.SuccessType;
 
 @Getter
-@JsonPropertyOrder({"code", "message", "message", "data"})
+@JsonPropertyOrder({"code", "message", "data"})
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiResponse<T> {
