@@ -5,19 +5,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sopt.org.umbbaServer.domain.user.dto.SocialLoginRequestDto;
-import sopt.org.umbbaServer.domain.user.dto.UserLoginResponseDto;
-import sopt.org.umbbaServer.domain.user.jwt.JwtProvider;
-import sopt.org.umbbaServer.domain.user.jwt.TokenDto;
-import sopt.org.umbbaServer.domain.user.jwt.redis.TokenRepository;
-import sopt.org.umbbaServer.domain.user.jwt.security.UserAuthentication;
+import sopt.org.umbbaServer.domain.user.controller.dto.request.RefreshRequestDto;
+import sopt.org.umbbaServer.domain.user.controller.dto.request.SocialLoginRequestDto;
+import sopt.org.umbbaServer.domain.user.controller.dto.response.UserLoginResponseDto;
+import sopt.org.umbbaServer.global.config.jwt.JwtProvider;
+import sopt.org.umbbaServer.global.config.jwt.TokenDto;
+import sopt.org.umbbaServer.global.config.auth.UserAuthentication;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
 import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 import sopt.org.umbbaServer.domain.user.social.apple.AppleLoginService;
 import sopt.org.umbbaServer.domain.user.social.kakao.KakaoLoginService;
-import sopt.org.umbbaServer.error.CustomException;
-import sopt.org.umbbaServer.error.ErrorType;
+import sopt.org.umbbaServer.global.exception.CustomException;
+import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -57,23 +57,25 @@ public class AuthService {
             kakaoLoginService.setKakaoInfo(loginUser, socialAccessToken);
         }
 
-        TokenDto tokenDto = generateToken(new UserAuthentication(loginUser.getId(), null, null));
+        TokenDto tokenDto = jwtProvider.issueToken(new UserAuthentication(loginUser.getId(), null, null));
         loginUser.updateRefreshToken(tokenDto.getRefreshToken());
 
         return UserLoginResponseDto.of(loginUser, tokenDto.getAccessToken());
     }
 
     @Transactional
-    public TokenDto reissueToken(Long userId, String refreshToken) throws Exception {
+    public TokenDto reissueToken(RefreshRequestDto request, String refreshToken) throws Exception {
 
-        User user = getUserById(userId); //userId가 잘못 날라오는 경우에 대비해 남김
+        Long userId = request.getUserId();
+        User user = getUserById(userId);  // userId가 DB에 저장된 유효한 값인지 검사
 
-        if (jwtProvider.validRefreshToken(userId, refreshToken)) {
-            return generateToken(new UserAuthentication(userId, null, null));
-
-        } else {
-            throw new CustomException(ErrorType.NOTMATCH_REFRESH_TOKEN);
+        if (!jwtProvider.validateRefreshToken(request.getUserId(), refreshToken)) {
+            throw new CustomException(ErrorType.NOT_MATCH_REFRESH_TOKEN);
         }
+
+        TokenDto reissuedToken =  jwtProvider.issueToken(new UserAuthentication(userId, null, null));
+        user.updateRefreshToken(reissuedToken.getRefreshToken());
+        return reissuedToken;
     }
 
     @Transactional
@@ -81,12 +83,6 @@ public class AuthService {
         User user = getUserById(userId);
         user.updateRefreshToken(null);
         jwtProvider.deleteRefreshToken(userId);
-    }
-
-    private TokenDto generateToken(Authentication authentication) {
-        return TokenDto.of(
-                jwtProvider.generateAccessToken(authentication),
-                jwtProvider.generateRefreshToken(authentication));
     }
 
     private User getUserById(Long userId) {

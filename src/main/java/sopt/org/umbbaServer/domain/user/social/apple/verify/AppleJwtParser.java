@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
-import sopt.org.umbbaServer.error.CustomException;
-import sopt.org.umbbaServer.error.ErrorType;
+import sopt.org.umbbaServer.global.exception.CustomException;
+import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.security.PublicKey;
 import java.util.Map;

@@ -1,7 +1,7 @@
 package sopt.org.umbbaServer.domain.user.social.apple.verify;
 
-import sopt.org.umbbaServer.error.CustomException;
-import sopt.org.umbbaServer.error.ErrorType;
+import sopt.org.umbbaServer.global.exception.CustomException;
+import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

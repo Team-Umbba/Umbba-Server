@@ -8,8 +8,8 @@ import sopt.org.umbbaServer.domain.user.social.apple.response.ApplePublicKeys;
 import sopt.org.umbbaServer.domain.user.social.apple.verify.AppleClaimsValidator;
 import sopt.org.umbbaServer.domain.user.social.apple.verify.AppleJwtParser;
 import sopt.org.umbbaServer.domain.user.social.apple.verify.PublicKeyGenerator;
-import sopt.org.umbbaServer.error.CustomException;
-import sopt.org.umbbaServer.error.ErrorType;
+import sopt.org.umbbaServer.global.exception.CustomException;
+import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.security.PublicKey;
 import java.util.Map;
