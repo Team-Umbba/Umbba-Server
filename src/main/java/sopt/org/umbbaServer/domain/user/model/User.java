@@ -1,6 +1,8 @@
 package sopt.org.umbbaServer.domain.user.model;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import sopt.org.umbbaServer.domain.parentchild.model.ParentChild;
 import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 import sopt.org.umbbaServer.global.util.AuditingTimeEntity;
 
@@ -14,17 +16,26 @@ import javax.persistence.*;
 public class User extends AuditingTimeEntity {
 
     @Id
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @Column(nullable = false) // 사실 온보딩 단계에서 입력되기 때문에 nullable = true로 가져가야함
+    //    @Column(nullable = false) // 사실 온보딩 단계에서 입력되기 때문에 nullable = true로 가져가야함
     private String username;
 
-//    @Column(nullable = false)
+    //    @Column(nullable = false)
     private String gender;
 
-//    @Column(nullable = false)
+    //    @Column(nullable = false)
     private Integer bornYear;
+
+    @Column(nullable = false)
+    @ColumnDefault("true")
+    private Boolean hasAlarm;
+
+    @ManyToOne
+    @JoinColumn(name = "parentchild_id")
+    private ParentChild parentChild;
 
     private String refreshToken;
 
