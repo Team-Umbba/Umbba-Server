@@ -21,7 +21,7 @@ public class Parentchild extends AuditingTimeEntity {
     private Long id;
 
     @OneToMany
-    @JoinColumn
+    @JoinColumn(name = "parentchild_id")
     private List<QnA> qnaList;
 
     @Column(nullable = false)
