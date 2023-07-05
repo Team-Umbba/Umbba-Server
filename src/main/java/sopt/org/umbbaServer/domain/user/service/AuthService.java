@@ -45,7 +45,9 @@ public class AuthService {
 
             User user = User.builder()
                     .socialPlatform(socialPlatform)
-                    .socialId(socialId).build();
+                    .socialId(socialId)
+                    .hasAlarm(true)
+                    .build();
 
             userRepository.save(user);
         }

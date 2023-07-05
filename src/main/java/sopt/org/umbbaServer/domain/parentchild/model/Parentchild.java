@@ -22,7 +22,7 @@ public class Parentchild extends AuditingTimeEntity {
     private Long id;
 
     @OneToMany
-    @JoinColumn(name = "qna_id")
+    @JoinColumn
     private List<QnA> qnaList;
 
     @Column(nullable = false)

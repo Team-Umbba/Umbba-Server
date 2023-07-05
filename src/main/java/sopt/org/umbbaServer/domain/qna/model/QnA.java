@@ -2,6 +2,7 @@ package sopt.org.umbbaServer.domain.qna.model;
 
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import sopt.org.umbbaServer.global.util.AuditingTimeEntity;
 
 import javax.persistence.*;
@@ -27,10 +28,8 @@ public class QnA extends AuditingTimeEntity {
     private String childAnswer;
 
     @Column(nullable = false)
-    @ColumnDefault("false")
     private Boolean isParentAnswer;
 
     @Column(nullable = false)
-    @ColumnDefault("false")
     private Boolean isChildAnswer;
 }
