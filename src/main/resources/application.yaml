@@ -20,6 +20,8 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+      ejb:
+        naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
     properties:
       hibernate:
         format_sql: true
@@ -48,7 +50,3 @@ logging:
         type:
           descriptor:
             sql: trace
-
-server:
-  port:
-    9090

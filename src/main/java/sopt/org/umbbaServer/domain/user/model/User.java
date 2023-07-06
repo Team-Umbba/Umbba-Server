@@ -1,14 +1,14 @@
 package sopt.org.umbbaServer.domain.user.model;
 
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import sopt.org.umbbaServer.domain.parentchild.model.ParentChild;
+import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 import sopt.org.umbbaServer.global.util.AuditingTimeEntity;
 
 import javax.persistence.*;
 
 @Entity
+@Table(name = "`User`")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,12 +30,11 @@ public class User extends AuditingTimeEntity {
     private Integer bornYear;
 
     @Column(nullable = false)
-    @ColumnDefault("true")
     private Boolean hasAlarm;
 
     @ManyToOne
     @JoinColumn(name = "parentchild_id")
-    private ParentChild parentChild;
+    private Parentchild parentChild;
 
     private String refreshToken;
 
@@ -45,6 +44,7 @@ public class User extends AuditingTimeEntity {
 
     // ** 소셜 로그인 관련 **
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private SocialPlatform socialPlatform;
 
     @Column(nullable = false) // 이걸 PK로 가져갈지 고민
