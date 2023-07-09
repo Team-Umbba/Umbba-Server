@@ -36,4 +36,8 @@ public class Parentchild extends AuditingTimeEntity {
 
     @Column(nullable = false)
     private LocalTime pushTime;
+
+    public void addQnA(QnA qnA) {
+        qnaList.add(qnA);
+    }
 }
