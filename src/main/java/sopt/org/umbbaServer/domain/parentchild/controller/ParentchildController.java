@@ -28,7 +28,7 @@ public class ParentchildController {
         return ApiResponse.success(SuccessType.CREATE_PARENT_CHILD_SUCCESS, parentchildService.onboardInvite(request));
     }
 
-    @PostMapping("/match")
+    @PatchMapping("/match")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<InviteResultResponeDto> inviteRelation(@Valid @RequestBody InviteCodeRequestDto request, Principal principal) {
         Long userId = JwtProvider.getUserFromPrincial(principal);
