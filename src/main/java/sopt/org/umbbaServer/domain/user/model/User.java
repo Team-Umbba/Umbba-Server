@@ -67,6 +67,12 @@ public class User extends AuditingTimeEntity {
 //        this.socialRefreshToken = socialRefreshToken;
     }
 
+    public void updateOnboardingInfo(String name, String gender, int bornYear) {
+        this.username = name;
+        this.gender = gender;
+        this.bornYear = bornYear;
+    }
+
     public User(SocialPlatform socialPlatform, String socialId) {
         this.socialPlatform = socialPlatform;
         this.socialId = socialId;

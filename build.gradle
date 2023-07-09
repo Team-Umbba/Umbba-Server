@@ -59,6 +59,10 @@ dependencies {
 
 	// Social Login
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.7'
+
+	// random String
+	implementation 'org.apache.commons:commons-lang3'
+
 }
 
 tasks.named('test') {

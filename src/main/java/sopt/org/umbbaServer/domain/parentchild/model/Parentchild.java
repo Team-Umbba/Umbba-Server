@@ -30,6 +30,7 @@ public class Parentchild extends AuditingTimeEntity {
 //    @Column(nullable = false)
     private boolean isInvitorChild;
 
+    // TODO 기획에 따라 변경사항 있음
     private boolean liveTogether;
 
 //    @Column(nullable = false)
