@@ -28,8 +28,8 @@ import static java.util.Objects.isNull;
 @RequiredArgsConstructor
 public class JwtProvider {
 
-    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 60 * 1000L * 180;  // 액세스 토큰 만료 시간: 1분으로 지정
-    private static final Long REFRESH_TOKEN_EXPIRATION_TIME = 60 * 1000L * 2 * 180;  // 리프레시 토큰 만료 시간: 2분으로 지정
+    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 60 * 1000L * 60;  // 액세스 토큰 만료 시간: 1분으로 지정
+    private static final Long REFRESH_TOKEN_EXPIRATION_TIME = 60 * 1000L * 180;  // 리프레시 토큰 만료 시간: 2분으로 지정
 
     @Value("${jwt.secret}")
     private String JWT_SECRET;
