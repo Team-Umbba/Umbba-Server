@@ -114,7 +114,7 @@ public class ParentchildService {
         user.updateParentchild(newMatchRelation);
         log.info("로그인한 유저가 성립된 Parentchild Id: {}", user.getParentChild().getId());
 
-        List<User> parentChildUsers = userRepository.findUserByParentChildId(newMatchRelation);
+        List<User> parentChildUsers = userRepository.findUserByParentChild(newMatchRelation);
         log.info("성립된 부모자식: {} X {}", parentChildUsers.get(0).getId(), parentChildUsers.get(1).getId());
         // 부모자식 관계에 대한 예외처리
         if (parentChildUsers.isEmpty() || parentChildUsers == null) {

@@ -22,7 +22,7 @@ public interface UserRepository extends Repository<User, Long> {
     /*@Query(value = "select user " +
             "from User user " +
             "where user.parentChild.id = :parentchild_id")*/
-    List<User> findUserByParentChildId(Parentchild parentchild);
+    List<User> findUserByParentChild(Parentchild parentchild);
 
     // UPDATE
 

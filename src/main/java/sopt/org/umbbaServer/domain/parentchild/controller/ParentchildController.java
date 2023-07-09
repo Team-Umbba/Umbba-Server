@@ -32,11 +32,12 @@ public class ParentchildController {
 
     @PatchMapping("/match")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<InviteResultResponeDto> inviteRelation(@Valid @RequestBody InviteCodeRequestDto request, Principal principal) {
+    public ApiResponse<InviteResultResponeDto> inviteRelation(@Valid @RequestBody InviteCodeRequestDto request) {
         log.info("getUserFromPrincipal에는 문제가 없어요 - 요청 초대코드: {}", request.getInviteCode());
 
-        Long userId = JwtProvider.getUserFromPrincial(principal);
+//        Long userId = JwtProvider.getUserFromPrincial(principal);
         log.info("ParentchlidController 실행 - 요청 초대코드: {}", request.getInviteCode());
-        return ApiResponse.success(SuccessType.MATCH_PARENT_CHILD_SUCCESS, parentchildService.matchRelation(userId, request));
+        return ApiResponse.success(SuccessType.MATCH_PARENT_CHILD_SUCCESS, parentchildService.matchRelation(request.getUserId(), request));
     }
+
 }
