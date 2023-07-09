@@ -19,7 +19,9 @@ public enum ErrorType {
 
     // ParentChild - Onboarding
     INVALID_PARENT_CHILD_RELATION_INFO(HttpStatus.BAD_REQUEST, "부모자식 관계를 정의할 수 없는 요청값입니다."),
-
+    INVALID_INVITE_CODE(HttpStatus.BAD_REQUEST, "유효하지 않는 초대코드입니다."),
+    NOT_MATCH_PARENT_CHILD_RELATION(HttpStatus.BAD_REQUEST, "아직 부모자식 관계 매칭이 이루어지지 않았습니다."),
+    INVALID_PARENT_CHILD_RELATION(HttpStatus.BAD_REQUEST, "유효하지 않은 부모자식 관계입니다."),
 
     /**
      * 401 UNAUTHORIZED
@@ -33,6 +35,8 @@ public enum ErrorType {
      * 404 NOT FOUND
      */
     INVALID_USER(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
+    NOT_EXIST_PARENT_CHILD_USER(HttpStatus.NOT_FOUND, "해당 부모자식 관계에 해당하는 유저가 존재하지 않습니다."),
+
 
     /**
      * About Apple (HttpStatus 고민)
@@ -43,6 +47,7 @@ public enum ErrorType {
     INVALID_APPLE_CLAIMS(HttpStatus.BAD_REQUEST, "Apple OAuth Claims 값이 올바르지 않습니다."),
     INVALID_ENCRYPT_COMMUNICATION(HttpStatus.BAD_REQUEST, "Apple OAuth 통신 암호화 과정 중 문제가 발생했습니다."),
     CREATE_PUBLIC_KEY_EXCEPTION(HttpStatus.BAD_REQUEST, "Apple OAuth 로그인 중 public verify 생성에 문제가 발생했습니다."),
+
 
     /**
      * 500 INTERNAL SERVER ERROR

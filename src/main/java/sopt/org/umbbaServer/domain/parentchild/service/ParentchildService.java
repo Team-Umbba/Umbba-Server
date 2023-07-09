@@ -6,15 +6,20 @@ import net.bytebuddy.utility.RandomString;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.InviteCodeRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingInviteRequestDto;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponeDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingInviteResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.model.ParentchildRelation;
 import sopt.org.umbbaServer.domain.parentchild.respository.ParentchildRepository;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
+import sopt.org.umbbaServer.global.config.jwt.JwtProvider;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -94,5 +99,29 @@ public class ParentchildService {
     private String generateInviteCode() {
         return RandomStringUtils.randomAlphabetic(4).toUpperCase() +
                 "-" + RandomStringUtils.randomAlphanumeric(6);
+    }
+
+    // 초대코드 확인 후 부모자식 관계 성립
+    public InviteResultResponeDto matchRelation(Long userId, InviteCodeRequestDto request) {
+
+        Parentchild newMatchRelation = parentchildRepository.findByInviteCode(request.getInviteCode()).orElseThrow(
+                () -> new CustomException(ErrorType.INVALID_INVITE_CODE)
+        );
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ErrorType.INVALID_USER)
+        );
+        user.updateParentchild(newMatchRelation);
+
+        List<User> parentChildUsers = userRepository.findUserByParentChildId(newMatchRelation.getId()).orElseThrow(
+                () -> new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_USER)
+        );
+        // 부모자식 관계에 대한 예외처리
+        if (parentChildUsers.size() == 1) {
+            throw new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION);
+        } else if (parentChildUsers.size() != 2) {
+            throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
+        }
+
+        return InviteResultResponeDto.of(newMatchRelation, parentChildUsers);
     }
 }

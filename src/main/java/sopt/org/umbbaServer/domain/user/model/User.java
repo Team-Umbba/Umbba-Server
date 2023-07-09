@@ -1,6 +1,7 @@
 package sopt.org.umbbaServer.domain.user.model;
 
 import lombok.*;
+import org.hibernate.annotations.Parent;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 import sopt.org.umbbaServer.global.util.AuditingTimeEntity;
@@ -35,6 +36,10 @@ public class User extends AuditingTimeEntity {
     @ManyToOne
     @JoinColumn(name = "parentchild_id")
     private Parentchild parentChild;
+
+    public void updateParentchild(Parentchild parentchild) {
+        this.parentChild = parentchild;
+    }
 
     private String refreshToken;
 
