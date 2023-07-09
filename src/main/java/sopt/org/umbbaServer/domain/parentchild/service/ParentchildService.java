@@ -1,6 +1,7 @@
 package sopt.org.umbbaServer.domain.parentchild.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import sopt.org.umbbaServer.domain.user.repository.UserRepository;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -24,6 +26,7 @@ public class ParentchildService {
     private final UserRepository userRepository;
 
     // [발신] 초대하는 측의 온보딩 정보 입력
+    @Transactional
     public OnboardingInviteResponseDto onboardInvite(OnboardingInviteRequestDto request) {
 
         User user = userRepository.findById(request.getUserInfo().getUserId()).orElseThrow(
@@ -41,12 +44,14 @@ public class ParentchildService {
                 .relation(getRelation(request.getUserInfo().getGender(), request.getRelationInfo(), request.isInvitorChild()))
                 .pushTime(request.getPushTime())  // TODO 케이스에 따라 없을 수도 있음
                 .build();
+        parentchildRepository.save(parentchild);
 
+        log.info("userInfo: {}", request.getUserInfo().getBornYear());
         return OnboardingInviteResponseDto.of(parentchild, user);
     }
 
     // [수신] 초대받는 측의 온보딩 정보 입력
-    public OnboadringReceiveResponseDto
+//    public OnboadringReceiveResponseDto
 
     // 부모자식 관계 케이스 분류하기
     private ParentchildRelation getRelation(String gender, String relationInfo, boolean isInvitorChild) {

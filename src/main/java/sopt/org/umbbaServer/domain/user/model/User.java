@@ -27,7 +27,7 @@ public class User extends AuditingTimeEntity {
     private String gender;
 
     //    @Column(nullable = false)
-    private int bornYear;
+    private Integer bornYear;
 
     @Column(nullable = false)
     private boolean hasAlarm;
@@ -67,7 +67,7 @@ public class User extends AuditingTimeEntity {
 //        this.socialRefreshToken = socialRefreshToken;
     }
 
-    public void updateOnboardingInfo(String name, String gender, int bornYear) {
+    public void updateOnboardingInfo(String name, String gender, Integer bornYear) {
         this.username = name;
         this.gender = gender;
         this.bornYear = bornYear;
