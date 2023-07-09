@@ -19,7 +19,7 @@ public class UserLoginResponseDto {
 
     private String gender;
 
-    private Integer bornYear;
+    private int bornYear;
 
     private TokenDto tokenDto;
 

@@ -26,8 +26,8 @@ public class QnA extends AuditingTimeEntity {
     private String childAnswer;
 
     @Column(nullable = false)
-    private Boolean isParentAnswer;
+    private boolean isParentAnswer;
 
     @Column(nullable = false)
-    private Boolean isChildAnswer;
+    private boolean isChildAnswer;
 }
