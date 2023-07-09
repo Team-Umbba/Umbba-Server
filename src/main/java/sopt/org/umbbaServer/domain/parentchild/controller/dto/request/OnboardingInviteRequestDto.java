@@ -23,7 +23,6 @@ public class OnboardingInviteRequestDto {
 
     private String relationInfo; // 아들 or 딸  |  아빠 or 엄마
 
-    // TODO 디폴트 값 지정해줘야 할까? -> by 디폴트 생성자
     @JsonFormat(pattern = "kk:mm")
     private LocalTime pushTime;
 }
