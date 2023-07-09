@@ -28,7 +28,9 @@ public class Parentchild extends AuditingTimeEntity {
     private String inviteCode;
 
 //    @Column(nullable = false)
-    private Boolean isInvitorChild;
+    private boolean isInvitorChild;
+
+    private boolean liveTogether;
 
 //    @Column(nullable = false)
     @Enumerated(EnumType.STRING)

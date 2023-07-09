@@ -27,10 +27,10 @@ public class User extends AuditingTimeEntity {
     private String gender;
 
     //    @Column(nullable = false)
-    private Integer bornYear;
+    private int bornYear;
 
     @Column(nullable = false)
-    private Boolean hasAlarm;
+    private boolean hasAlarm;
 
     @ManyToOne
     @JoinColumn(name = "parentchild_id")
