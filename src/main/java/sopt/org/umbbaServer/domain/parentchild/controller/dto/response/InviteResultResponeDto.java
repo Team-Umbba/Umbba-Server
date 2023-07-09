@@ -11,7 +11,6 @@ import java.util.List;
 
 @Getter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class InviteResultResponeDto {
 
     Long parentchildId;

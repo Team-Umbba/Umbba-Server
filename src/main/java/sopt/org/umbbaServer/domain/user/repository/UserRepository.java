@@ -2,6 +2,7 @@ package sopt.org.umbbaServer.domain.user.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 
@@ -18,10 +19,10 @@ public interface UserRepository extends Repository<User, Long> {
     boolean existsBySocialPlatformAndSocialId(SocialPlatform socialPlatform, String socialId);
     Optional<User> findBySocialPlatformAndSocialId(SocialPlatform socialPlatform, String socialId);
 
-    @Query(value = "select user " +
+    /*@Query(value = "select user " +
             "from User user " +
-            "where user.parentChild.id = :parentchild_id")
-    Optional<List<User>> findUserByParentChildId(Long parentChildId);
+            "where user.parentChild.id = :parentchild_id")*/
+    List<User> findUserByParentChildId(Parentchild parentchild);
 
     // UPDATE
 

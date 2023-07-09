@@ -104,6 +104,7 @@ public class ParentchildService {
     // 초대코드 확인 후 부모자식 관계 성립
     public InviteResultResponeDto matchRelation(Long userId, InviteCodeRequestDto request) {
 
+        log.info("ParentchlidService 실행 - 요청 초대코드: {}", request.getInviteCode());
         Parentchild newMatchRelation = parentchildRepository.findByInviteCode(request.getInviteCode()).orElseThrow(
                 () -> new CustomException(ErrorType.INVALID_INVITE_CODE)
         );
@@ -111,16 +112,19 @@ public class ParentchildService {
                 () -> new CustomException(ErrorType.INVALID_USER)
         );
         user.updateParentchild(newMatchRelation);
+        log.info("로그인한 유저가 성립된 Parentchild Id: {}", user.getParentChild().getId());
 
-        List<User> parentChildUsers = userRepository.findUserByParentChildId(newMatchRelation.getId()).orElseThrow(
-                () -> new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_USER)
-        );
+        List<User> parentChildUsers = userRepository.findUserByParentChildId(newMatchRelation);
+        log.info("성립된 부모자식: {} X {}", parentChildUsers.get(0).getId(), parentChildUsers.get(1).getId());
         // 부모자식 관계에 대한 예외처리
+        if (parentChildUsers.isEmpty() || parentChildUsers == null) {
+            throw new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_USER);
+        }
         if (parentChildUsers.size() == 1) {
             throw new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION);
         } else if (parentChildUsers.size() != 2) {
             throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
-        }
+        } 
 
         return InviteResultResponeDto.of(newMatchRelation, parentChildUsers);
     }
