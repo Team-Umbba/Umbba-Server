@@ -14,7 +14,7 @@ import sopt.org.umbbaServer.global.exception.SuccessType;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiResponse<T> {
-혀
+
     private final int status;
     private final String message;
 

@@ -6,7 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.InviteCodeRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingInviteRequestDto;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingReceiveRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponeDto;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboadringReceiveResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingInviteResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.service.ParentchildService;
 import sopt.org.umbbaServer.global.common.dto.ApiResponse;
@@ -38,6 +40,12 @@ public class ParentchildController {
 //        Long userId = JwtProvider.getUserFromPrincial(principal);
         log.info("ParentchlidController 실행 - 요청 초대코드: {}", request.getInviteCode());
         return ApiResponse.success(SuccessType.MATCH_PARENT_CHILD_SUCCESS, parentchildService.matchRelation(request.getUserId(), request));
+    }
+
+    @PatchMapping("/receive")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<OnboadringReceiveResponseDto> onboardReceive(@Valid @RequestBody OnboardingReceiveRequestDto request) {
+        return ApiResponse.success(SuccessType.CREATE_PARENT_CHILD_SUCCESS, parentchildService.onboardReceive(request));
     }
 
 }
