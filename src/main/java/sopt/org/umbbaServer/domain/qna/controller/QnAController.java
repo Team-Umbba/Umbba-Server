@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.QnAListResponseDto;
+import sopt.org.umbbaServer.domain.qna.controller.dto.response.SingleQnAResponseDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.TodayQnAResponseDto;
 import sopt.org.umbbaServer.domain.qna.service.QnAService;
 import sopt.org.umbbaServer.global.common.dto.ApiResponse;
@@ -47,7 +48,7 @@ public class QnAController {
         return ApiResponse.success(SuccessType.ANSWER_TODAY_QUESTION_SUCCESS);
     }
 
-    @GetMapping("/qna/{sectionId}")
+    @GetMapping("/qna/list/{sectionId}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<List<QnAListResponseDto>> getQnaList(
             Principal principal,
@@ -55,7 +56,15 @@ public class QnAController {
 
         return ApiResponse.success(SuccessType.GET_QNA_LIST_SUCCESS,
                 qnAService.getQnaList(JwtProvider.getUserFromPrincial(principal), sectionId));
-
     }
 
+    @GetMapping("/qna/{qnaId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<SingleQnAResponseDto> getSingleQna(
+            Principal principal,
+            @PathVariable(name = "qnaId") Long qnaId) {
+
+        return ApiResponse.success(SuccessType.GET_SINGLE_QNA_SUCCESS,
+                qnAService.getSingleQna(JwtProvider.getUserFromPrincial(principal), qnaId));
+    }
 }

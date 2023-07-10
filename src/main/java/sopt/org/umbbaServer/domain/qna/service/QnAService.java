@@ -7,6 +7,7 @@ import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.QnAListResponseDto;
+import sopt.org.umbbaServer.domain.qna.controller.dto.response.SingleQnAResponseDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.TodayQnAResponseDto;
 import sopt.org.umbbaServer.domain.qna.model.QnA;
 import sopt.org.umbbaServer.domain.qna.model.Question;
@@ -19,6 +20,7 @@ import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -81,6 +83,19 @@ public class QnAService {
                 .collect(Collectors.toList());
     }
 
+    public SingleQnAResponseDto getSingleQna(Long userId, Long qnaId) {
+        User myUser = getUserById(userId);
+        Parentchild parentchild = getParentchildByUser(myUser);
+        QnA targetQnA = getQnAById(qnaId); // 이거 qnA로 할건지 qna로 할건지 통일 필요
+        Question todayQuestion = targetQnA.getQuestion();
+        User opponentUser = getOpponentByParentchild(parentchild, userId);
+
+        // 현재 회원이 자식이면 isMeChild가 true, 부모면 false
+        boolean isMeChild = myUser.getBornYear() >= opponentUser.getBornYear();
+
+        return SingleQnAResponseDto.of(myUser, opponentUser, targetQnA, todayQuestion, isMeChild);
+    }
+
     @Transactional
     public void createQnA() {
         QnA newQnA = QnA.builder()
@@ -128,6 +143,11 @@ public class QnAService {
         }
 
         return qnAList.get(qnAList.size() - 1); // 가장 최근의 QnA를 가져옴
+    }
+
+    private QnA getQnAById(Long qnaId) {
+        return qnARepository.findQnAById(qnaId)
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_QNA));
     }
 
     private User getOpponentByParentchild(Parentchild parentchild, Long userId) {
