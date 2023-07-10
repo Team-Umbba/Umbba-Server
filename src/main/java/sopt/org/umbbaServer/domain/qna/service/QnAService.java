@@ -69,13 +69,12 @@ public class QnAService {
 
         boolean isMeChild = myUser.getBornYear() >= opponentUser.getBornYear();
 
-        return IntStream.range(0, qnaList.size())
-                .filter(i -> Objects.equals(qnaList.get(i).getQuestion().getSection().getSectionId(), sectionId))
-                .mapToObj(i -> {
-                    QnA qna = qnaList.get(i);
+        return qnaList.stream()
+                .filter(qna -> Objects.equals(qna.getQuestion().getSection().getSectionId(), sectionId))
+                .map(qna -> {
                     String question = isMeChild ? qna.getQuestion().getChildQuestion() : qna.getQuestion().getParentQuestion();
                     return QnAListResponseDto.builder()
-                            .index(i)
+                            .index(qnaList.indexOf(qna) + 1)
                             .question(question)
                             .build();
                 })
