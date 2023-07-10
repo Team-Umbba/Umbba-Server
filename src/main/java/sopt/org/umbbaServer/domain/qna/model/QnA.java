@@ -39,4 +39,14 @@ public class QnA extends AuditingTimeEntity {
     public boolean isChildAnswer() {
         return isChildAnswer;
     }
+
+    public void saveParentAnswer(String answer) {
+        this.parentAnswer = answer;
+        this.isParentAnswer = true;
+    }
+
+    public void saveChildAnswer(String answer) {
+        this.childAnswer = answer;
+        this.isChildAnswer = true;
+    }
 }

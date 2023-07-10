@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
+import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.TodayQnAResponseDto;
 import sopt.org.umbbaServer.domain.qna.model.QnA;
 import sopt.org.umbbaServer.domain.qna.model.Question;
@@ -42,6 +43,22 @@ public class QnAService {
     }
 
     @Transactional
+    public void answerTodayQuestion(TodayAnswerRequestDto request, Long userId) {
+        User myUser = getUserById(userId);
+        Parentchild parentchild = getParentchildByUser(myUser);
+        QnA todayQnA = getQnAByParentchild(parentchild);
+        User opponentUser = getOpponentByParentchild(parentchild, userId);
+
+        boolean isMeChild = myUser.getBornYear() >= opponentUser.getBornYear();
+
+        if (isMeChild) {
+            todayQnA.saveChildAnswer(request.getAnswer());
+        } else {
+            todayQnA.saveParentAnswer(request.getAnswer());
+        }
+    }
+
+    @Transactional
     public void createQnA() {
         QnA newQnA = QnA.builder()
                 .question(questionRepository.findById(1L).get()) // 필터 로직 추가되어야함
@@ -55,6 +72,8 @@ public class QnAService {
         Parentchild parentchild = parentchildRepository.findById(1L).get();
         parentchild.addQnA(newQnA);
     }
+
+    // 리팩토링을 위해 아래로 뺀 메서드들
 
     private User getUserById(Long userId) {
         return userRepository.findById(userId)

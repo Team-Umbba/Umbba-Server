@@ -26,7 +26,7 @@ public enum SuccessType {
      * 201 CREATED
      */
     CREATE_PARENT_CHILD_SUCCESS(HttpStatus.CREATED, "온보딩 정보를 입력받아 부모자식 관계를 생성하는 데 성공했습니다."),
-
+    ANSWER_TODAY_QUESTION_SUCCESS(HttpStatus.CREATED, "오늘의 일일문답에 답변을 완료하였습니다."),
 
     ;
 
