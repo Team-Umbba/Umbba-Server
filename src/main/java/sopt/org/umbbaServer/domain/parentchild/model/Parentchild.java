@@ -27,13 +27,13 @@ public class Parentchild extends AuditingTimeEntity {
     @Column(nullable = false)
     private String inviteCode;
 
-//    @Column(nullable = false)
+    @Column(nullable = false)
     private boolean isInvitorChild;
 
     // TODO 기획에 따라 변경사항 있음
     private boolean liveTogether;
 
-//    @Column(nullable = false)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ParentchildRelation relation;
 
@@ -44,4 +44,5 @@ public class Parentchild extends AuditingTimeEntity {
     public void addQnA(QnA qnA) {
         qnaList.add(qnA);
     }
+
 }

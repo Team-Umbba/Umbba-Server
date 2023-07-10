@@ -59,6 +59,7 @@ public class ParentchildService {
     }
 
     // [수신] 초대받는 측의 온보딩 정보 입력
+    @Transactional
     public OnboadringReceiveResponseDto onboardReceive(OnboardingReceiveRequestDto request) {
 
         User user = userRepository.findById(request.getUserInfo().getUserId()).orElseThrow(
@@ -125,6 +126,7 @@ public class ParentchildService {
     }
 
     // 초대코드 확인 후 부모자식 관계 성립
+    @Transactional
     public InviteResultResponeDto matchRelation(Long userId, InviteCodeRequestDto request) {
 
         log.info("ParentchlidService 실행 - 요청 초대코드: {}", request.getInviteCode());
