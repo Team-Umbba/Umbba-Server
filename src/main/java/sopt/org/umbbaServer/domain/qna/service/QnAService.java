@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
+import sopt.org.umbbaServer.domain.qna.controller.dto.response.QnAListResponseDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.TodayQnAResponseDto;
 import sopt.org.umbbaServer.domain.qna.model.QnA;
 import sopt.org.umbbaServer.domain.qna.model.Question;
@@ -17,7 +18,9 @@ import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +35,7 @@ public class QnAService {
     public TodayQnAResponseDto getTodayQnA(Long userId) {
         User myUser = getUserById(userId);
         Parentchild parentchild = getParentchildByUser(myUser);
-        QnA todayQnA = getQnAByParentchild(parentchild);
+        QnA todayQnA = getTodayQnAByParentchild(parentchild);
         Question todayQuestion = todayQnA.getQuestion();
         User opponentUser = getOpponentByParentchild(parentchild, userId);
 
@@ -43,10 +46,10 @@ public class QnAService {
     }
 
     @Transactional
-    public void answerTodayQuestion(TodayAnswerRequestDto request, Long userId) {
+    public void answerTodayQuestion(Long userId, TodayAnswerRequestDto request) {
         User myUser = getUserById(userId);
         Parentchild parentchild = getParentchildByUser(myUser);
-        QnA todayQnA = getQnAByParentchild(parentchild);
+        QnA todayQnA = getTodayQnAByParentchild(parentchild);
         User opponentUser = getOpponentByParentchild(parentchild, userId);
 
         boolean isMeChild = myUser.getBornYear() >= opponentUser.getBornYear();
@@ -56,6 +59,27 @@ public class QnAService {
         } else {
             todayQnA.saveParentAnswer(request.getAnswer());
         }
+    }
+
+    public List<QnAListResponseDto> getQnaList(Long userId, Long sectionId) {
+        User myUser = getUserById(userId);
+        Parentchild parentchild = getParentchildByUser(myUser);
+        List<QnA> qnaList = getQnAListByParentchild(parentchild);
+        User opponentUser = getOpponentByParentchild(parentchild, userId);
+
+        boolean isMeChild = myUser.getBornYear() >= opponentUser.getBornYear();
+
+        return IntStream.range(0, qnaList.size())
+                .filter(i -> Objects.equals(qnaList.get(i).getQuestion().getSection().getSectionId(), sectionId))
+                .mapToObj(i -> {
+                    QnA qna = qnaList.get(i);
+                    String question = isMeChild ? qna.getQuestion().getChildQuestion() : qna.getQuestion().getParentQuestion();
+                    return QnAListResponseDto.builder()
+                            .index(i)
+                            .question(question)
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -89,7 +113,16 @@ public class QnAService {
         return parentchild;
     }
 
-    private QnA getQnAByParentchild(Parentchild parentchild) {
+    private List<QnA> getQnAListByParentchild(Parentchild parentchild) {
+        List<QnA> qnAList = parentchild.getQnaList();
+        if (qnAList == null || qnAList.isEmpty()) {
+            throw new CustomException(ErrorType.PARENTCHILD_HAVE_NO_QNALIST);
+        }
+
+        return qnAList;
+    }
+
+    private QnA getTodayQnAByParentchild(Parentchild parentchild) {
         List<QnA> qnAList = parentchild.getQnaList();
         if (qnAList == null || qnAList.isEmpty()) {
             throw new CustomException(ErrorType.PARENTCHILD_HAVE_NO_QNALIST);
@@ -100,7 +133,7 @@ public class QnAService {
 
     private User getOpponentByParentchild(Parentchild parentchild, Long userId) {
         // Parentchild에 속한 User들 중 자신이 아닌 객체를 가져옴
-        List<User> opponentUserList = parentchildRepository.findUsersByParentChild(parentchild)
+        List<User> opponentUserList = userRepository.findUserByParentChild(parentchild)
                 .stream()
                 .filter(user -> !user.getId().equals(userId))
                 .collect(Collectors.toList());
