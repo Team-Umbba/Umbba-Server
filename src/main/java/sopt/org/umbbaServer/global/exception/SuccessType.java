@@ -16,6 +16,7 @@ public enum SuccessType {
     REISSUE_SUCCESS(HttpStatus.OK, "Access 토큰 재발급에 성공했습니다."),
     LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃에 성공했습니다."),
     KAKAO_ACCESS_TOKEN_SUCCESS(HttpStatus.OK, "카카오 엑세스 토큰을 가져오는데 성공했습니다"),
+    GET_TODAY_QNA_SUCCESS(HttpStatus.OK, "일일문답 조회에 성공했습니다."),
 
     MATCH_PARENT_CHILD_SUCCESS(HttpStatus.OK, "부모자식 관계 매칭에 성공했습니다."),
 

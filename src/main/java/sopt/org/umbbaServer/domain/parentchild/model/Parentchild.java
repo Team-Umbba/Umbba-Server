@@ -37,11 +37,11 @@ public class Parentchild extends AuditingTimeEntity {
     @Enumerated(EnumType.STRING)
     private ParentchildRelation relation;
 
-    @Column(nullable = false)  // TODO 푸시알림 시간 디폴트 값 없으면 nullable: true로 변경
-    private LocalTime pushTime;  // default: 오후 11시
 
-    //== 연관관계 메서드 ==//
-    public void addQna(QnA qna) {
-        this.qnaList.add(qna);
+    @Column(nullable = false)
+    private LocalTime pushTime;
+
+    public void addQnA(QnA qnA) {
+        qnaList.add(qnA);
     }
 }

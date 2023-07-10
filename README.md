@@ -2,7 +2,6 @@
 > 부모의 추억을 자식과 공유하며 공감대를 찾는 문답형 아카이빙 서비스, 엄빠도 어렸다
 
 <img src="https://github.com/Team-Umbba/Umbba-Server/assets/67463603/601fc7dc-3a54-41e6-a133-0a43f585236b" width="400"/>
----
 
 ## 🌸 금쪽이들
 |                             이동섭                             |                                                                박예준                                                                 |
@@ -64,19 +63,16 @@
             🗂 domain
                 🗂 parentchild
                     🗂 controller
-                    🗂 dto
                     🗂 model
                     🗂 repository
                     🗂 service
                 🗂 qna
                     🗂 controller
-                    🗂 dto
                     🗂 model
                     🗂 repository
                     🗂 service
                 🗂 user
                     🗂 controller
-                    🗂 dto
                     🗂 model
                     🗂 repository
                     🗂 service
