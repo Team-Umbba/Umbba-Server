@@ -39,34 +39,41 @@ public class QnAService {
         // 현재 회원이 자식이면 isMeChild가 true, 부모면 false
         boolean isMeChild = myUser.getBornYear() >= opponentUser.getBornYear();
 
-        if (isMeChild) {
-            return TodayQnAResponseDto.builder()
-                    .section(todayQuestion.getSection())
-                    .effect(todayQuestion.getEffect())
-                    .opponentQuestion(todayQuestion.getParentQuestion())
-                    .myQuestion(todayQuestion.getChildQuestion())
-                    .opponentAnswer(todayQnA.getParentAnswer())
-                    .myAnswer(todayQnA.getChildAnswer())
-                    .isOpponentAnswer(todayQnA.isParentAnswer())
-                    .isMyAnswer(todayQnA.isChildAnswer())
-                    .opponentUsername(opponentUser.getUsername())
-                    .myUsername(myUser.getUsername())
-                    .build();
+        String opponentQuestion;
+        String myQuestion;
+        String opponentAnswer;
+        String myAnswer;
+        boolean isOpponentAnswer;
+        boolean isMyAnswer;
 
+        if (isMeChild) {
+            opponentQuestion = todayQuestion.getParentQuestion();
+            myQuestion = todayQuestion.getChildQuestion();
+            opponentAnswer = todayQnA.getParentAnswer();
+            myAnswer = todayQnA.getChildAnswer();
+            isOpponentAnswer = todayQnA.isParentAnswer();
+            isMyAnswer = todayQnA.isChildAnswer();
         } else {
-            return TodayQnAResponseDto.builder()
-                    .section(todayQuestion.getSection())
-                    .effect(todayQuestion.getEffect())
-                    .opponentQuestion(todayQuestion.getChildQuestion())
-                    .myQuestion(todayQuestion.getParentQuestion())
-                    .opponentAnswer(todayQnA.getChildAnswer())
-                    .myAnswer(todayQnA.getParentAnswer())
-                    .isOpponentAnswer(todayQnA.isChildAnswer())
-                    .isMyAnswer(todayQnA.isParentAnswer())
-                    .opponentUsername(opponentUser.getUsername())
-                    .myUsername(myUser.getUsername())
-                    .build();
+            opponentQuestion = todayQuestion.getChildQuestion();
+            myQuestion = todayQuestion.getParentQuestion();
+            opponentAnswer = todayQnA.getChildAnswer();
+            myAnswer = todayQnA.getParentAnswer();
+            isOpponentAnswer = todayQnA.isChildAnswer();
+            isMyAnswer = todayQnA.isParentAnswer();
         }
+
+        return TodayQnAResponseDto.builder()
+                .section(todayQuestion.getSection())
+                .effect(todayQuestion.getEffect())
+                .opponentQuestion(opponentQuestion)
+                .myQuestion(myQuestion)
+                .opponentAnswer(opponentAnswer)
+                .myAnswer(myAnswer)
+                .isOpponentAnswer(isOpponentAnswer)
+                .isMyAnswer(isMyAnswer)
+                .opponentUsername(opponentUser.getUsername())
+                .myUsername(myUser.getUsername())
+                .build();
     }
 
     @Transactional
