@@ -48,4 +48,5 @@ public class ParentchildController {
         return ApiResponse.success(SuccessType.CREATE_PARENT_CHILD_SUCCESS, parentchildService.onboardReceive(request));
     }
 
+
 }

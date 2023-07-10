@@ -11,6 +11,7 @@ import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.Onboarding
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingReceiveRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponeDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboadringReceiveResponseDto;
+
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingInviteResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.model.ParentchildRelation;
@@ -135,6 +136,7 @@ public class ParentchildService {
                 () -> new CustomException(ErrorType.INVALID_USER)
         );
         user.updateParentchild(newMatchRelation);
+
         log.info("로그인한 유저가 성립된 Parentchild Id: {}", user.getParentChild().getId());
 
         List<User> parentChildUsers = getParentChildUsers(newMatchRelation);
@@ -150,11 +152,13 @@ public class ParentchildService {
         if (parentChildUsers.isEmpty() || parentChildUsers == null) {
             throw new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_USER);
         }
+
         if (parentChildUsers.size() == 1) {
             throw new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION);
         } else if (parentChildUsers.size() != 2) {
             throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
         }
         return parentChildUsers;
+
     }
 }
