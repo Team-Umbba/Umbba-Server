@@ -40,6 +40,7 @@ public class ParentchildController {
 //        Long userId = JwtProvider.getUserFromPrincial(principal);
         log.info("ParentchlidController 실행 - 요청 초대코드: {}", request.getInviteCode());
         return ApiResponse.success(SuccessType.MATCH_PARENT_CHILD_SUCCESS, parentchildService.matchRelation(request.getUserId(), request));
+
     }
 
     @PatchMapping("/receive")

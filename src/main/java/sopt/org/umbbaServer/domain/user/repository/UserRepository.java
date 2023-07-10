@@ -24,6 +24,7 @@ public interface UserRepository extends Repository<User, Long> {
             "where user.parentChild.id = :parentchild_id")*/
     List<User> findUserByParentChild(Parentchild parentchild);
 
+
     // UPDATE
 
     // DELETE

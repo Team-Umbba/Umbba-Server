@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 @Getter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class InviteResultResponeDto {
 
     private Long parentchildId;

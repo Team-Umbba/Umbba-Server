@@ -136,7 +136,6 @@ public class ParentchildService {
                 () -> new CustomException(ErrorType.INVALID_USER)
         );
         user.updateParentchild(newMatchRelation);
-
         log.info("로그인한 유저가 성립된 Parentchild Id: {}", user.getParentChild().getId());
 
         List<User> parentChildUsers = getParentChildUsers(newMatchRelation);
@@ -148,6 +147,7 @@ public class ParentchildService {
         List<User> parentChildUsers = userRepository.findUserByParentChild(newMatchRelation);
         log.info("성립된 부모자식: {} X {}, 관계: {}", parentChildUsers.get(0).getUsername(), parentChildUsers.get(1).getUsername(), newMatchRelation.getRelation());
 
+
         // 부모자식 관계에 대한 예외처리
         if (parentChildUsers.isEmpty() || parentChildUsers == null) {
             throw new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_USER);
@@ -158,7 +158,9 @@ public class ParentchildService {
         } else if (parentChildUsers.size() != 2) {
             throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
         }
+
         return parentChildUsers;
+
 
     }
 }
