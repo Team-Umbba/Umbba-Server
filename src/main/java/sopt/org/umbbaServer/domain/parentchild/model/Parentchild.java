@@ -27,17 +27,21 @@ public class Parentchild extends AuditingTimeEntity {
     @Column(nullable = false)
     private String inviteCode;
 
-    @Column(nullable = false)
-    private Boolean isInvitorChild;
+//    @Column(nullable = false)
+    private boolean isInvitorChild;
 
-    @Column(nullable = false)
+    // TODO 기획에 따라 변경사항 있음
+    private boolean liveTogether;
+
+//    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ParentchildRelation relation;
 
-    @Column(nullable = false)
-    private LocalTime pushTime;
+    @Column(nullable = false)  // TODO 푸시알림 시간 디폴트 값 없으면 nullable: true로 변경
+    private LocalTime pushTime;  // default: 오후 11시
 
-    public void addQnA(QnA qnA) {
-        qnaList.add(qnA);
+    //== 연관관계 메서드 ==//
+    public void addQna(QnA qna) {
+        this.qnaList.add(qna);
     }
 }

@@ -30,7 +30,7 @@ public class User extends AuditingTimeEntity {
     private Integer bornYear;
 
     @Column(nullable = false)
-    private Boolean hasAlarm;
+    private boolean hasAlarm;
 
     @ManyToOne
     @JoinColumn(name = "parentchild_id")
@@ -65,6 +65,12 @@ public class User extends AuditingTimeEntity {
         this.socialProfileImage = socialProfileImage;
         this.socialAccessToken = socialAccessToken;
 //        this.socialRefreshToken = socialRefreshToken;
+    }
+
+    public void updateOnboardingInfo(String name, String gender, Integer bornYear) {
+        this.username = name;
+        this.gender = gender;
+        this.bornYear = bornYear;
     }
 
     public User(SocialPlatform socialPlatform, String socialId) {

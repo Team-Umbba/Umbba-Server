@@ -21,6 +21,9 @@ public enum SuccessType {
     /**
      * 201 CREATED
      */
+    CREATE_PARENT_CHILD_SUCCESS(HttpStatus.CREATED, "온보딩 정보를 입력받아 부모자식 관계를 생성하는 데 성공했습니다."),
+
+
     ;
 
     private final HttpStatus httpStatus;
