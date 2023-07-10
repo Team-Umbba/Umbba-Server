@@ -12,7 +12,7 @@ import sopt.org.umbbaServer.domain.user.model.User;
 public class TodayQnAResponseDto {
 
     private String section;
-    private String effect;
+    private String topic;
     private String opponentQuestion;
     private String myQuestion;
 
@@ -54,7 +54,7 @@ public class TodayQnAResponseDto {
 
         return TodayQnAResponseDto.builder()
                 .section(todayQuestion.getSection().getValue())
-                .effect(todayQuestion.getEffect().getValue())
+                .topic(todayQuestion.getTopic())
                 .opponentQuestion(opponentQuestion)
                 .myQuestion(myQuestion)
                 .opponentAnswer(opponentAnswer)
