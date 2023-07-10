@@ -30,7 +30,6 @@ public class QnAService {
 
     public TodayQnAResponseDto getTodayQnA(Long userId) {
         User myUser = getUserById(userId);
-
         Parentchild parentchild = getParentchildByUser(myUser);
         QnA todayQnA = getQnAByParentchild(parentchild);
         Question todayQuestion = todayQnA.getQuestion();
@@ -39,41 +38,7 @@ public class QnAService {
         // 현재 회원이 자식이면 isMeChild가 true, 부모면 false
         boolean isMeChild = myUser.getBornYear() >= opponentUser.getBornYear();
 
-        String opponentQuestion;
-        String myQuestion;
-        String opponentAnswer;
-        String myAnswer;
-        boolean isOpponentAnswer;
-        boolean isMyAnswer;
-
-        if (isMeChild) {
-            opponentQuestion = todayQuestion.getParentQuestion();
-            myQuestion = todayQuestion.getChildQuestion();
-            opponentAnswer = todayQnA.getParentAnswer();
-            myAnswer = todayQnA.getChildAnswer();
-            isOpponentAnswer = todayQnA.isParentAnswer();
-            isMyAnswer = todayQnA.isChildAnswer();
-        } else {
-            opponentQuestion = todayQuestion.getChildQuestion();
-            myQuestion = todayQuestion.getParentQuestion();
-            opponentAnswer = todayQnA.getChildAnswer();
-            myAnswer = todayQnA.getParentAnswer();
-            isOpponentAnswer = todayQnA.isChildAnswer();
-            isMyAnswer = todayQnA.isParentAnswer();
-        }
-
-        return TodayQnAResponseDto.builder()
-                .section(todayQuestion.getSection())
-                .effect(todayQuestion.getEffect())
-                .opponentQuestion(opponentQuestion)
-                .myQuestion(myQuestion)
-                .opponentAnswer(opponentAnswer)
-                .myAnswer(myAnswer)
-                .isOpponentAnswer(isOpponentAnswer)
-                .isMyAnswer(isMyAnswer)
-                .opponentUsername(opponentUser.getUsername())
-                .myUsername(myUser.getUsername())
-                .build();
+        return TodayQnAResponseDto.of(myUser, opponentUser, todayQnA, todayQuestion, isMeChild);
     }
 
     @Transactional
