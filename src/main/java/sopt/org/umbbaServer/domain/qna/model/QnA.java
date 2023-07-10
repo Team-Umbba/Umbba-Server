@@ -30,8 +30,7 @@ public class QnA extends AuditingTimeEntity {
 
     @Column(nullable = false)
     private boolean isChildAnswer;
-<<<<<<< HEAD
-=======
+
 
     public boolean isParentAnswer() {
         return isParentAnswer;
@@ -40,5 +39,4 @@ public class QnA extends AuditingTimeEntity {
     public boolean isChildAnswer() {
         return isChildAnswer;
     }
->>>>>>> 23749f2 ([FEAT] 일일문답 페이지 최근 질문과 답변 조회 API 구현 #14)
 }
