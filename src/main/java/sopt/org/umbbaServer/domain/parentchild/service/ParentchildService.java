@@ -11,7 +11,6 @@ import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.Onboarding
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingReceiveRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponeDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboadringReceiveResponseDto;
-
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingInviteResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.model.ParentchildRelation;
@@ -146,7 +145,6 @@ public class ParentchildService {
     private List<User> getParentChildUsers(Parentchild newMatchRelation) {
         List<User> parentChildUsers = userRepository.findUserByParentChild(newMatchRelation);
         log.info("성립된 부모자식: {} X {}, 관계: {}", parentChildUsers.get(0).getUsername(), parentChildUsers.get(1).getUsername(), newMatchRelation.getRelation());
-
 
         // 부모자식 관계에 대한 예외처리
         if (parentChildUsers.isEmpty() || parentChildUsers == null) {
