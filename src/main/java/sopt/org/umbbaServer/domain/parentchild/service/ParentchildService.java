@@ -5,7 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.InviteCodeRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingInviteRequestDto;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingReceiveRequestDto;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponeDto;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingReceiveResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingInviteResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.model.ParentchildRelation;
@@ -14,6 +18,8 @@ import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -28,6 +34,7 @@ public class ParentchildService {
     @Transactional
     public OnboardingInviteResponseDto onboardInvite(OnboardingInviteRequestDto request) {
 
+        // TODO userId 토큰 provider에서 정보 꺼내오도록
         User user = userRepository.findById(request.getUserInfo().getUserId()).orElseThrow(
                 () -> new CustomException(ErrorType.INVALID_USER)
         );
@@ -50,7 +57,28 @@ public class ParentchildService {
     }
 
     // [수신] 초대받는 측의 온보딩 정보 입력
-//    public OnboadringReceiveResponseDto
+    @Transactional
+    public OnboardingReceiveResponseDto onboardReceive(OnboardingReceiveRequestDto request) {
+
+        User user = userRepository.findById(request.getUserInfo().getUserId()).orElseThrow(
+                () -> new CustomException(ErrorType.INVALID_USER)
+        );
+        user.updateOnboardingInfo(
+                request.getUserInfo().getName(),
+                request.getUserInfo().getGender(),
+                request.getUserInfo().getBornYear()
+        );
+
+        // TODO 추가 질문 답변 저장
+        Parentchild parentchild = parentchildRepository.findById(request.getParentChildId()).orElseThrow(
+                () -> new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION)
+        );
+//        parentchild.updateInfo();
+        List<User> parentChildUsers = getParentChildUsers(parentchild);
+
+
+        return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
+    }
 
     // 부모자식 관계 케이스 분류하기
     private ParentchildRelation getRelation(String gender, String relationInfo, boolean isInvitorChild) {
@@ -94,4 +122,44 @@ public class ParentchildService {
         return RandomStringUtils.randomAlphabetic(4).toUpperCase() +
                 "-" + RandomStringUtils.randomAlphanumeric(6);
     }
+
+    // 초대코드 확인 후 부모자식 관계 성립
+    @Transactional
+    public InviteResultResponeDto matchRelation(Long userId, InviteCodeRequestDto request) {
+
+        log.info("ParentchlidService 실행 - 요청 초대코드: {}", request.getInviteCode());
+        Parentchild newMatchRelation = parentchildRepository.findByInviteCode(request.getInviteCode()).orElseThrow(
+                () -> new CustomException(ErrorType.INVALID_INVITE_CODE)
+        );
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ErrorType.INVALID_USER)
+        );
+        user.updateParentchild(newMatchRelation);
+        log.info("로그인한 유저가 성립된 Parentchild Id: {}", user.getParentChild().getId());
+
+        List<User> parentChildUsers = getParentChildUsers(newMatchRelation);
+
+        return InviteResultResponeDto.of(newMatchRelation, parentChildUsers);
+    }
+
+    private List<User> getParentChildUsers(Parentchild newMatchRelation) {
+        List<User> parentChildUsers = userRepository.findUserByParentChild(newMatchRelation);
+        log.info("성립된 부모자식: {} X {}, 관계: {}", parentChildUsers.get(0).getUsername(), parentChildUsers.get(1).getUsername(), newMatchRelation.getRelation());
+
+        // 부모자식 관계에 대한 예외처리
+        if (parentChildUsers.isEmpty() || parentChildUsers == null) {
+            throw new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_USER);
+        }
+
+        if (parentChildUsers.size() == 1) {
+            throw new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION);
+        } else if (parentChildUsers.size() != 2) {
+            throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
+        }
+
+        return parentChildUsers;
+
+
+    }
+
 }

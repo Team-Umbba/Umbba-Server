@@ -1,6 +1,7 @@
 package sopt.org.umbbaServer.domain.parentchild.controller.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,11 +18,11 @@ public class OnboardingInviteRequestDto {
     @NotNull
     private UserInfoDto userInfo;
 
+    @JsonProperty("isInvitorChild")
     private boolean isInvitorChild;
 
     private String relationInfo; // 아들 or 딸  |  아빠 or 엄마
 
-    // TODO 디폴트 값 지정해줘야 할까? -> by 디폴트 생성자
     @JsonFormat(pattern = "kk:mm")
     private LocalTime pushTime;
 }

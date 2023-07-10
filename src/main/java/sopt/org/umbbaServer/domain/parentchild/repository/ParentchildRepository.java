@@ -19,6 +19,9 @@ public interface ParentchildRepository extends Repository<Parentchild, Long> {
 
     // READ
     Optional<Parentchild> findById(Long id);
+    Optional<Parentchild> findByInviteCode(String inviteCode);
+
+
 
 
     // UPDATE

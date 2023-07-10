@@ -25,7 +25,8 @@ public class SecurityConfig {
             "/kakao/**", "/login", "/reissue",
             "/qna/**", "onboard/**", "/home", "/dummy",
 //          "/log-out",
-            "/test", "/profile", "/health", "/actuator/health"
+            "/test", "/profile", "/health", "/actuator/health",
+            "/onboard/**"
     };
 
     @Bean
