@@ -3,21 +3,19 @@ package sopt.org.umbbaServer.domain.parentchild.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.InviteCodeRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingInviteRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingReceiveRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponeDto;
-import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboadringReceiveResponseDto;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingReceiveResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingInviteResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.model.ParentchildRelation;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
-import sopt.org.umbbaServer.global.config.jwt.JwtProvider;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 
@@ -60,7 +58,7 @@ public class ParentchildService {
 
     // [수신] 초대받는 측의 온보딩 정보 입력
     @Transactional
-    public OnboadringReceiveResponseDto onboardReceive(OnboardingReceiveRequestDto request) {
+    public OnboardingReceiveResponseDto onboardReceive(OnboardingReceiveRequestDto request) {
 
         User user = userRepository.findById(request.getUserInfo().getUserId()).orElseThrow(
                 () -> new CustomException(ErrorType.INVALID_USER)
@@ -79,7 +77,7 @@ public class ParentchildService {
         List<User> parentChildUsers = getParentChildUsers(parentchild);
 
 
-        return OnboadringReceiveResponseDto.of(parentchild, user, parentChildUsers);
+        return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
     }
 
     // 부모자식 관계 케이스 분류하기

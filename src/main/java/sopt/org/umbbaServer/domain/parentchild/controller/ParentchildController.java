@@ -8,15 +8,13 @@ import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.InviteCode
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingInviteRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingReceiveRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponeDto;
-import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboadringReceiveResponseDto;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingReceiveResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingInviteResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.service.ParentchildService;
 import sopt.org.umbbaServer.global.common.dto.ApiResponse;
-import sopt.org.umbbaServer.global.config.jwt.JwtProvider;
 import sopt.org.umbbaServer.global.exception.SuccessType;
 
 import javax.validation.Valid;
-import java.security.Principal;
 
 @Slf4j
 @RestController
@@ -45,7 +43,7 @@ public class ParentchildController {
 
     @PatchMapping("/receive")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<OnboadringReceiveResponseDto> onboardReceive(@Valid @RequestBody OnboardingReceiveRequestDto request) {
+    public ApiResponse<OnboardingReceiveResponseDto> onboardReceive(@Valid @RequestBody OnboardingReceiveRequestDto request) {
         return ApiResponse.success(SuccessType.CREATE_PARENT_CHILD_SUCCESS, parentchildService.onboardReceive(request));
     }
 

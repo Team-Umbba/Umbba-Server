@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class OnboadringReceiveResponseDto {
+public class OnboardingReceiveResponseDto {
 
     private UserInfoDto userInfo;
 
@@ -22,8 +22,8 @@ public class OnboadringReceiveResponseDto {
 
     private LocalTime pushTime;
 
-    public static OnboadringReceiveResponseDto of(Parentchild parentchild, User user, List<User> parentChildUsers) {
-        return OnboadringReceiveResponseDto.builder()
+    public static OnboardingReceiveResponseDto of(Parentchild parentchild, User user, List<User> parentChildUsers) {
+        return OnboardingReceiveResponseDto.builder()
                 .userInfo(UserInfoDto.of(user))
                 .parentchildInfo(InviteResultResponeDto.of(parentchild, parentChildUsers))
                 .pushTime(parentchild.getPushTime())
