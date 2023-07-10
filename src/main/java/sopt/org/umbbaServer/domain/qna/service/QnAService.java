@@ -53,7 +53,7 @@ public class QnAService {
         qnARepository.save(newQnA);
 
         Parentchild parentchild = parentchildRepository.findById(1L).get();
-        parentchild.addQnA(newQnA);
+        parentchild.addQna(newQnA);
     }
 
     private User getUserById(Long userId) {
