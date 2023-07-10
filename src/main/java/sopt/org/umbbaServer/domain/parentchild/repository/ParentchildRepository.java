@@ -23,6 +23,7 @@ public interface ParentchildRepository extends Repository<Parentchild, Long> {
 
 
 
+
     // UPDATE
 
     // DELETE
