@@ -14,7 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class   User extends AuditingTimeEntity {
+public class User extends AuditingTimeEntity {
 
     @Id
     @Column(name = "user_id")
