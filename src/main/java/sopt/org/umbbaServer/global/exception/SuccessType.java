@@ -20,7 +20,8 @@ public enum SuccessType {
     GET_QNA_LIST_SUCCESS(HttpStatus.OK, "섹션별 과거의 문답 리스트 조회에 성공했습니다."),
     GET_SINGLE_QNA_SUCCESS(HttpStatus.OK, "과거의 문답 개별 조회에 성공했습니다."),
     MATCH_PARENT_CHILD_SUCCESS(HttpStatus.OK, "부모자식 관계 매칭에 성공했습니다."),
-
+    GET_MAIN_HOME_SUCCESS(HttpStatus.OK, "메인 홈 화면 정보 불러오기에 성공했습니다."),
+    GET_INVITE_CODE_SUCCESS(HttpStatus.OK, "초대장을 보낼 코드 조회에 성공했습니다."),
 
 
     /**

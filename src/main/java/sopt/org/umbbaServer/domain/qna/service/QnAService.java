@@ -3,12 +3,15 @@ package sopt.org.umbbaServer.domain.qna.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.GetInviteCodeResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.QnAListResponseDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.SingleQnAResponseDto;
+import sopt.org.umbbaServer.domain.qna.controller.dto.response.GetMainViewResponseDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.TodayQnAResponseDto;
+import sopt.org.umbbaServer.domain.qna.dao.QnADao;
 import sopt.org.umbbaServer.domain.qna.model.QnA;
 import sopt.org.umbbaServer.domain.qna.model.Question;
 import sopt.org.umbbaServer.domain.qna.repository.QnARepository;
@@ -33,6 +36,7 @@ public class QnAService {
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
     private final ParentchildRepository parentchildRepository;
+    private final QnADao qnADao;
 
     public TodayQnAResponseDto getTodayQnA(Long userId) {
         User myUser = getUserById(userId);
@@ -162,4 +166,16 @@ public class QnAService {
 
         return opponentUserList.get(0);
     }
+
+
+    // 메인페이지 정보
+    public GetMainViewResponseDto getMainInfo(Long userId) {
+
+        List<QnA> qnAList = qnADao.findQnASByUserId(userId);
+        QnA lastQna = qnAList.get(qnAList.size()-1);
+
+        return GetMainViewResponseDto.of(lastQna);
+
+    }
+
 }

@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.InviteCodeRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingInviteRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingReceiveRequestDto;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.GetInviteCodeResponseDto;
+import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
+import sopt.org.umbbaServer.domain.qna.controller.dto.response.GetMainViewResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponeDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingReceiveResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingInviteResponseDto;
@@ -27,6 +30,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class ParentchildService {
 
+    private final ParentchildDao parentchildDao;
     private final ParentchildRepository parentchildRepository;
     private final UserRepository userRepository;
 
@@ -160,6 +164,15 @@ public class ParentchildService {
         return parentChildUsers;
 
 
+    }
+
+
+    // 메인페이지에서 초대장 보내기 (초대코드 조회)
+    public GetInviteCodeResponseDto getInvitation(Long userId) {
+
+        Parentchild parentchild = parentchildDao.findByUserId(userId);
+
+        return GetInviteCodeResponseDto.of(parentchild);
     }
 
 }
