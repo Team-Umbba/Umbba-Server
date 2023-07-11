@@ -1,24 +1,24 @@
 # 👨‍👩‍👧‍👦 엄빠도 어렸다
 > 부모의 추억을 자식과 공유하며 공감대를 찾는 문답형 아카이빙 서비스, 엄빠도 어렸다
 
-<img src="https://github.com/Team-Umbba/Umbba-Server/assets/67463603/601fc7dc-3a54-41e6-a133-0a43f585236b" width="400"/>
+<img src="https://github.com/Team-Umbba/Umbba-Server/assets/67463603/601fc7dc-3a54-41e6-a133-0a43f585236b" width="350"/>
 
 ## 🌸 금쪽이들
 |                             이동섭                             |                                                                박예준                                                                 |
 | :----------------------------------------------------------: |:----------------------------------------------------------------------------------------------------------------------------------:|
 | <img src="https://github.com/GOSOPT-CDS-TEAM7-DeskTop/Backend/assets/67463603/3c92f168-1ff0-42a4-a91f-9fbd11189d35" width="300"/> | <img src="https://user-images.githubusercontent.com/80024278/222954622-1c2da6cb-d1fe-4b0c-9eaa-cf5608d11e9c.jpeg" width="300"/> |
 |              [ddongseop](https://github.com/ddongseop)               |                                             [jun02160](https://github.com/jun02160)                                              |
-<hr>
 
 ## 👻 Role
 
 | 담당 역할              |   Role   |
 |:-------------------|:--------:|
 | Nginx 배포, CI/CD 구축 |   이동섭    |
-| DB 구축 (RDS)        |   이동섭    |
-| ERD 작성             | 이동섭, 박예준 |
-| 소셜로그인 기능 구현        | 이동섭 |
-| 푸시알림 기능 구현         | 박예준 |
+| DB 구축 (RDS)         |   이동섭    |
+| ERD 작성              | 이동섭, 박예준 |
+| API 구현              | 이동섭, 박예준 |
+| 소셜로그인 기능 구현      | 이동섭 |
+| 푸시알림 기능 구현       | 박예준 |
 
 
 <hr>
@@ -29,29 +29,31 @@
 | --- | --- |
 | 통합 개발 환경 | IntelliJ |
 | Spring 버전 | 2.7.13 |
-| 데이터베이스 | AWS RDS(MySQL) |
-| 배포 | AWS EC2(Ubuntu), CodeDeploy |
+| 데이터베이스 | AWS RDS(MySQL), Redis |
+| 배포 | AWS EC2(Ubuntu), S3 |
 | Project 빌드 관리 도구 | Gradle |
-| CI/CD 툴 | Github Actions |
+| CI/CD 툴 | Github Actions, CodeDeploy |
 | ERD 다이어그램 툴 | ERDCloud |
 | Java version | Java 11  |
 | 패키지 구조 | 도메인 패키지 구조 |
+| API 테스트 | PostMan, Swagger |
+| 외부 연동 | Slack, FCM |
+
 
 ## 🔧 시스템 아키텍처
 
-<img width="500" src="">
+<img width="950" src="https://github.com/Team-Umbba/Umbba-Server/assets/67463603/bef5f0c3-fc9a-45dc-a50d-da3c68c7833f">
 
 <hr>
 
 ## 📜 API Docs
 
-### 🔗 [API Docs](https://www.notion.so/API-887ec56c3fdd48e19fec44820b63a83d?pvs=4)
-
+### 🔗 [API Docs](https://harsh-step-7dd.notion.site/9e5e7a93f4904a0795b15d54f79d9bae?v=c252004af7b248c1bf408fedd45ebb37&pvs=4)
 
 <hr>
 
 ## ☁️ ERD
-<img width="500" src="https://github.com/Team-Umbba/Umbba-Server/assets/67463603/d7230c16-016f-4119-b5cd-595053a55a5c">
+<img width="600" src="https://github.com/Team-Umbba/Umbba-Server/assets/67463603/d7230c16-016f-4119-b5cd-595053a55a5c">
 
 <hr>
 
@@ -63,11 +65,13 @@
             🗂 domain
                 🗂 parentchild
                     🗂 controller
+                    🗂 dao
                     🗂 model
                     🗂 repository
                     🗂 service
                 🗂 qna
                     🗂 controller
+                    🗂 dao
                     🗂 model
                     🗂 repository
                     🗂 service
@@ -95,6 +99,8 @@
     🗂 test 
     
 ```
+
+<hr>
 
 # 🌱 Branch
 
