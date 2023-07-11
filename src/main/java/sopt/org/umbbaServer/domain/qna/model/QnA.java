@@ -18,7 +18,7 @@ public class QnA extends AuditingTimeEntity {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "question_id")
+    @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
     private String parentAnswer;
