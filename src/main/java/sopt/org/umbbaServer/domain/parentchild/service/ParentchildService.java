@@ -172,7 +172,7 @@ public class ParentchildService {
 
         Parentchild parentchild = parentchildDao.findByUserId(userId);
 
-        return GetInviteCodeResponseDto.of()
+        return GetInviteCodeResponseDto.of(parentchild);
     }
 
 }
