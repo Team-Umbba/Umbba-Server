@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.InviteCodeRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingInviteRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingReceiveRequestDto;
+import sopt.org.umbbaServer.domain.qna.controller.dto.response.GetMainViewResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponeDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingReceiveResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingInviteResponseDto;
