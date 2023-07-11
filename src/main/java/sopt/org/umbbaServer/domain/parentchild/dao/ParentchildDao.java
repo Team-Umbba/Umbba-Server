@@ -1,11 +1,13 @@
 package sopt.org.umbbaServer.domain.parentchild.dao;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+@Slf4j
 @Repository
 public class ParentchildDao {
 

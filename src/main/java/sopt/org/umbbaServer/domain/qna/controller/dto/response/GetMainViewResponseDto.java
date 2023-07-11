@@ -9,12 +9,12 @@ import sopt.org.umbbaServer.domain.qna.model.QnA;
 public class GetMainViewResponseDto {
 
     private String section;
-    private String effect;
+    private String topic;
 
     public static GetMainViewResponseDto of (QnA qnA) {
         return GetMainViewResponseDto.builder()
                 .section(qnA.getQuestion().getSection().getValue())
-                .effect(qnA.getQuestion().getEffect().getValue())
+                .topic(qnA.getQuestion().getTopic())
                 .build();
     }
 }
