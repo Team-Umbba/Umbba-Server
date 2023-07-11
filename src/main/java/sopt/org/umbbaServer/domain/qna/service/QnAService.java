@@ -121,7 +121,7 @@ public class QnAService {
         List<QnA> qnAList = qnADao.findQnASByUserId(userId);
         QnA lastQna = qnAList.get(qnAList.size()-1);
 
-        return GetMainViewResponseDto.of
+        return GetMainViewResponseDto.of(lastQna);
 
     }
 }
