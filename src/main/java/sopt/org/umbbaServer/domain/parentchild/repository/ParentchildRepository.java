@@ -14,9 +14,6 @@ public interface ParentchildRepository extends Repository<Parentchild, Long> {
     // CREATE
     void save(Parentchild parentchild);
 
-    @Query("SELECT u FROM User u WHERE u.parentChild = :parentChild")
-    List<User> findUsersByParentChild(@Param("parentChild") Parentchild parentChild);
-
     // READ
     Optional<Parentchild> findById(Long id);
     Optional<Parentchild> findByInviteCode(String inviteCode);

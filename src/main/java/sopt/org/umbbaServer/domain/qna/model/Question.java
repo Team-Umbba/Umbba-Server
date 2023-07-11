@@ -28,6 +28,5 @@ public class Question extends AuditingTimeEntity {
     private QuestionSection section;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private QuestionEffect effect;
+    private String topic;
 }
