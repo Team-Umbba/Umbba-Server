@@ -27,6 +27,9 @@ public class UserInfoDto {
     @NotBlank(message = "출생연도는 필수 입력 값입니다.")
     private int bornYear;
 
+    private boolean isMeChild;
+
+
     public static UserInfoDto of(User user) {
         return UserInfoDto.builder()
                 .userId(user.getId())

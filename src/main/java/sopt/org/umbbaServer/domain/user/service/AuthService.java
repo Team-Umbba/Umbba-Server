@@ -46,6 +46,7 @@ public class AuthService {
                     .socialPlatform(socialPlatform)
                     .socialId(socialId)
                     .hasAlarm(true)
+                    .isMeChild(true)
                     .build();
 
             userRepository.save(user);
