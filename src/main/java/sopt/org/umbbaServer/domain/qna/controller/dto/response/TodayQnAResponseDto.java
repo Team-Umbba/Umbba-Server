@@ -1,7 +1,7 @@
 package sopt.org.umbbaServer.domain.qna.controller.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 import sopt.org.umbbaServer.domain.qna.model.QnA;
@@ -11,7 +11,7 @@ import sopt.org.umbbaServer.domain.user.model.User;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TodayQnAResponseDto {
 
     private Long qnaId;
