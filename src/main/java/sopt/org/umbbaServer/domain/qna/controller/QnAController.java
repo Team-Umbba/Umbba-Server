@@ -3,8 +3,6 @@ package sopt.org.umbbaServer.domain.qna.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.GetInviteCodeResponseDto;
-import sopt.org.umbbaServer.domain.parentchild.service.ParentchildService;
 import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.QnAListResponseDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.SingleQnAResponseDto;
@@ -25,14 +23,14 @@ public class QnAController {
 
     private final QnAService qnAService;
 
-    @GetMapping("/qna")
+    @GetMapping("/qna/today")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<TodayQnAResponseDto> getTodayQna(Principal principal) {
 
         return ApiResponse.success(SuccessType.GET_TODAY_QNA_SUCCESS, qnAService.getTodayQnA(JwtProvider.getUserFromPrincial(principal)));
     }
 
-    @GetMapping("/dummy")
+    @GetMapping("/qna/dummy")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse dummy() {
         qnAService.createQnA();
@@ -40,7 +38,7 @@ public class QnAController {
         return ApiResponse.success(SuccessType.GET_TODAY_QNA_SUCCESS);
     }
 
-    @PostMapping("/qna")
+    @PostMapping("/qna/answer")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse answerTodayQuestion(
             Principal principal,
