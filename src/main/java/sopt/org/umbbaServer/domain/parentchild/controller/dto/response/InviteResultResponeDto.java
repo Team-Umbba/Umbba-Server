@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
 public class InviteResultResponeDto {
 
     private Long parentchildId;
-    private List<UserInfoDto> parentChildUsers;
+    private List<UserInfoDto> parentchildUsers;
     private String parentchildRelation;
 
     public static InviteResultResponeDto of(Parentchild parentchild, List<User> parentChildUsers) {
         return InviteResultResponeDto.builder()
                 .parentchildId(parentchild.getId())
-                .parentChildUsers(parentChildUsers.stream().map(u -> UserInfoDto.of(u)).collect(Collectors.toList()))
+                .parentchildUsers(parentChildUsers.stream().map(u -> UserInfoDto.of(u)).collect(Collectors.toList()))
                 .parentchildRelation(parentchild.getRelation().getValue())
                 .build();
     }

@@ -84,7 +84,7 @@ public class ParentchildService {
 
         // TODO 추가 질문 답변 저장
         Parentchild parentchild = parentchildRepository.findById(request.getParentChildId()).orElseThrow(
-                () -> new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION)
+                () -> new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_RELATION)
         );
         user.updateIsMeChild(!parentchild.isInvitorChild());
 

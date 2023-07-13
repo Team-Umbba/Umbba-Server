@@ -19,8 +19,8 @@ public enum ErrorType {
     // ParentChild - Onboarding
     INVALID_PARENT_CHILD_RELATION_INFO(HttpStatus.BAD_REQUEST, "부모자식 관계를 정의할 수 없는 요청값입니다."),
     INVALID_INVITE_CODE(HttpStatus.BAD_REQUEST, "유효하지 않는 초대코드입니다."),
+    INVALID_PARENT_CHILD_RELATION(HttpStatus.BAD_REQUEST, "유효하지 않는 부모자식 관계입니다."),
     NOT_MATCH_PARENT_CHILD_RELATION(HttpStatus.BAD_REQUEST, "아직 부모자식 관계 매칭이 이루어지지 않았습니다."),
-    INVALID_PARENT_CHILD_RELATION(HttpStatus.BAD_REQUEST, "유효하지 않은 부모자식 관계입니다."),
     ALREADY_EXISTS_PARENT_CHILD_USER(HttpStatus.BAD_REQUEST, "이미 해당 유저의 부모자식 관계가 존재합니다."),
 
     /**
@@ -39,6 +39,7 @@ public enum ErrorType {
     NOT_EXIST_PARENT_CHILD_USER(HttpStatus.NOT_FOUND, "해당 부모자식 관계에 해당하는 유저가 존재하지 않습니다."),
     NOT_FOUND_QNA(HttpStatus.NOT_FOUND, "해당 아이디와 일치하는 QnA 데이터가 없습니다."),
     USER_HAVE_NO_PARENTCHILD(HttpStatus.NOT_FOUND, "회원이 속한 부모자식 관계가 없습니다."),
+    NOT_EXIST_PARENT_CHILD_RELATION(HttpStatus.NOT_FOUND, "존재하지 않는 부모자식 관계입니다."),
     PARENTCHILD_HAVE_NO_QNALIST(HttpStatus.NOT_FOUND, "부모자식 관계가 가지고 있는 QnA 데이터가 없습니다."),
     PARENTCHILD_HAVE_NO_OPPONENT(HttpStatus.NOT_FOUND, "부모자식 관계에 1명만 참여하고 있습니다."),
 
