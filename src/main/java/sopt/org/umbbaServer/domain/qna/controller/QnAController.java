@@ -42,7 +42,7 @@ public class QnAController {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse answerTodayQuestion(
             Principal principal,
-            @Valid @RequestBody TodayAnswerRequestDto request) {
+            @Valid @RequestBody final TodayAnswerRequestDto request) {
 
         qnAService.answerTodayQuestion(JwtProvider.getUserFromPrincial(principal), request);
 

@@ -38,7 +38,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<TokenDto> reissue(
             @RequestHeader("Authorization") String refreshToken,
-            @RequestBody RefreshRequestDto request) throws Exception {
+            @RequestBody final RefreshRequestDto request) throws Exception {
 
         return ApiResponse.success(SuccessType.REISSUE_SUCCESS, authService.reissueToken(request, refreshToken));
     }

@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.format.annotation.DateTimeFormat;
 import sopt.org.umbbaServer.domain.user.controller.dto.request.UserInfoDto;
 
 import javax.validation.constraints.NotNull;
