@@ -3,8 +3,6 @@ package sopt.org.umbbaServer.domain.qna.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.GetInviteCodeResponseDto;
-import sopt.org.umbbaServer.domain.parentchild.service.ParentchildService;
 import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.QnAListResponseDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.SingleQnAResponseDto;

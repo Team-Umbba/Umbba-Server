@@ -3,7 +3,6 @@ package sopt.org.umbbaServer.domain.qna.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.GetInviteCodeResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
@@ -23,9 +22,7 @@ import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -80,6 +77,7 @@ public class QnAService {
                 .map(qna -> {
                     String question = isMeChild ? qna.getQuestion().getChildQuestion() : qna.getQuestion().getParentQuestion();
                     return QnAListResponseDto.builder()
+                            .qnaId(qna.getId())
                             .index(qnaList.indexOf(qna) + 1)
                             .question(question)
                             .build();
@@ -104,9 +102,7 @@ public class QnAService {
     public void createQnA() {
         QnA newQnA = QnA.builder()
                 .question(questionRepository.findById(1L).get()) // 필터 로직 추가되어야함
-                .parentAnswer("부모 답변")
-                .childAnswer("자식 답변")
-                .isParentAnswer(true)
+                .isParentAnswer(false)
                 .isChildAnswer(false)
                 .build();
         qnARepository.save(newQnA);
