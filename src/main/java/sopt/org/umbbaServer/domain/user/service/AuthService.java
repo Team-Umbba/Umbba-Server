@@ -91,6 +91,14 @@ public class AuthService {
         jwtProvider.deleteRefreshToken(userId);
     }
 
+    @Transactional
+    public void signout(Long userId) {
+        User user = getUserById(userId);
+        user.updateRefreshToken(null);
+        jwtProvider.deleteRefreshToken(userId);
+        user.deleteSocialInfo();
+    }
+
     private User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorType.INVALID_USER));
