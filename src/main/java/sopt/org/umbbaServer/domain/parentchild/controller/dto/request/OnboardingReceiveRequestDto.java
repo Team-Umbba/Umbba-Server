@@ -1,5 +1,7 @@
 package sopt.org.umbbaServer.domain.parentchild.controller.dto.request;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +11,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class OnboardingReceiveRequestDto {
 
     private Long parentChildId;
