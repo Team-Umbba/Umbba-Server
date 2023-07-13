@@ -50,7 +50,7 @@ public class ParentchildService {
         );
         log.info("isInvitorChild 요청값: {}", request.isInvitorChild());
         user.updateIsMeChild(request.isInvitorChild());
-        log.info("업데이트 된 isMeChild 필드: {}", user.isMeChild());
+        log.info("업데이트 된 isMeChild 필드: {}", user.getIsMeChild());
 
 
         Parentchild parentchild = Parentchild.builder()
@@ -145,6 +145,9 @@ public class ParentchildService {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ErrorType.INVALID_USER)
         );
+
+        // TODO ParentChild에 연관된 User 수에 따른 예외처리
+        // TODO 하나의 유저는 하나의 관계만 가지도록 예외처리
         user.updateParentchild(newMatchRelation);
         log.info("로그인한 유저가 성립된 Parentchild Id: {}", user.getParentChild().getId());
 

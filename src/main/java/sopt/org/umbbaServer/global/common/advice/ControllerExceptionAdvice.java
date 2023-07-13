@@ -40,11 +40,11 @@ public class ControllerExceptionAdvice {
         return ApiResponse.error(ErrorType.REQUEST_VALIDATION_EXCEPTION, String.format("%s. (%s)", fieldError.getDefaultMessage(), fieldError.getField()));
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    /*@ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UnexpectedTypeException.class)
     protected ApiResponse handleUnexpectedTypeException(final UnexpectedTypeException e) {
         return ApiResponse.error(ErrorType.VALIDATION_WRONG_TYPE_EXCEPTION);
-    }
+    }*/
 
     // Header에 원하는 Key가 없는 경우
     @ResponseStatus(HttpStatus.BAD_REQUEST)

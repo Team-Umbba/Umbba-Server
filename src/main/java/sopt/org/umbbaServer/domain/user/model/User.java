@@ -38,7 +38,7 @@ public class User extends AuditingTimeEntity {
     private Parentchild parentChild;
 
     @Column(nullable = false)
-    private boolean isMeChild;
+    private Boolean isMeChild;
 
     public void updateParentchild(Parentchild parentchild) {
         this.parentChild = parentchild;
@@ -83,6 +83,14 @@ public class User extends AuditingTimeEntity {
         this.username = name;
         this.gender = gender;
         this.bornYear = bornYear;
+    }
+
+    public boolean isHasAlarm() {
+        return hasAlarm;
+    }
+
+    public boolean isMeChild() {
+        return isMeChild;
     }
 
     public User(SocialPlatform socialPlatform, String socialId) {

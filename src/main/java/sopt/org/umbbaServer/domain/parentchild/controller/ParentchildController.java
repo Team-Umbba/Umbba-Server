@@ -17,6 +17,7 @@ import sopt.org.umbbaServer.global.config.jwt.JwtProvider;
 import sopt.org.umbbaServer.global.exception.SuccessType;
 
 import javax.validation.Valid;
+import javax.validation.Validator;
 import java.security.Principal;
 
 @Slf4j
@@ -25,10 +26,12 @@ import java.security.Principal;
 public class ParentchildController {
 
     private final ParentchildService parentchildService;
+    private final Validator validator;
 
     @PostMapping("/onboard/invite")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<OnboardingInviteResponseDto> onboardInvite(@Valid @RequestBody final OnboardingInviteRequestDto request, Principal principal) {
+        request.validate(validator);
         return ApiResponse.success(SuccessType.CREATE_PARENT_CHILD_SUCCESS, parentchildService.onboardInvite(JwtProvider.getUserFromPrincial(principal), request));
     }
 
@@ -46,6 +49,7 @@ public class ParentchildController {
     @PatchMapping("/onboard/receive")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<OnboardingReceiveResponseDto> onboardReceive(@Valid @RequestBody final OnboardingReceiveRequestDto request, Principal principal) {
+        request.validate(validator);
         return ApiResponse.success(SuccessType.CREATE_PARENT_CHILD_SUCCESS, parentchildService.onboardReceive(JwtProvider.getUserFromPrincial(principal), request));
     }
 
