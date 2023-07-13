@@ -50,9 +50,6 @@ public class ParentchildService {
         user.updateIsMeChild(request.isInvitorChild());
         log.info("업데이트 된 isMeChild 필드: {}", user.getIsMeChild());
 
-        if (user.getParentChild() != null) {
-            throw new CustomException(ErrorType.ALREADY_EXISTS_PARENT_CHILD_USER);
-        }
 
         Parentchild parentchild = Parentchild.builder()
                 .inviteCode(generateInviteCode())
@@ -84,7 +81,6 @@ public class ParentchildService {
         Parentchild parentchild = parentchildRepository.findById(request.getParentChildId()).orElseThrow(
                 () -> new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_RELATION)
         );
-        user.updateIsMeChild(!parentchild.isInvitorChild());
 
 //        parentchild.updateInfo();
         List<User> parentChildUsers = getParentChildUsers(parentchild);
@@ -146,6 +142,11 @@ public class ParentchildService {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ErrorType.INVALID_USER)
         );
+        user.updateIsMeChild(!newMatchRelation.isInvitorChild());
+
+        if (user.getParentChild() != null) {
+            throw new CustomException(ErrorType.ALREADY_EXISTS_PARENT_CHILD_USER);
+        }
 
         // TODO ParentChild에 연관된 User 수에 따른 예외처리
         // TODO 하나의 유저는 하나의 관계만 가지도록 예외처리
@@ -182,6 +183,9 @@ public class ParentchildService {
     public GetInviteCodeResponseDto getInvitation(Long userId) {
 
         Parentchild parentchild = parentchildDao.findByUserId(userId);
+        if (parentchild == null) {
+            throw new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION);
+        }
 
         return GetInviteCodeResponseDto.of(parentchild);
     }
