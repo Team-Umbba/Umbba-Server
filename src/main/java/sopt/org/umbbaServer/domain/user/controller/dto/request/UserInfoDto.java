@@ -1,5 +1,6 @@
 package sopt.org.umbbaServer.domain.user.controller.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AccessLevel;
@@ -27,6 +28,7 @@ public class UserInfoDto {
     @NotBlank(message = "출생연도는 필수 입력 값입니다.")
     private int bornYear;
 
+    @JsonProperty("is_me_child")
     private boolean isMeChild;
 
 
@@ -36,6 +38,7 @@ public class UserInfoDto {
                 .name(user.getUsername())
                 .gender(user.getGender())
                 .bornYear(user.getBornYear())
+                .isMeChild(user.isMeChild())
                 .build();
     }
 }
