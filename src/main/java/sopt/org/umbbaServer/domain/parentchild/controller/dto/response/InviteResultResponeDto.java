@@ -1,5 +1,7 @@
 package sopt.org.umbbaServer.domain.parentchild.controller.dto.response;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Builder
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class InviteResultResponeDto {
 
     private Long parentchildId;

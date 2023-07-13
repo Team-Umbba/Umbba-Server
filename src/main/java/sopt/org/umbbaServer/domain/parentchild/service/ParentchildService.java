@@ -23,6 +23,7 @@ import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -36,10 +37,10 @@ public class ParentchildService {
 
     // [발신] 초대하는 측의 온보딩 정보 입력
     @Transactional
-    public OnboardingInviteResponseDto onboardInvite(OnboardingInviteRequestDto request) {
+    public OnboardingInviteResponseDto onboardInvite(Long userId, OnboardingInviteRequestDto request) {
 
         // TODO userId 토큰 provider에서 정보 꺼내오도록
-        User user = userRepository.findById(request.getUserInfo().getUserId()).orElseThrow(
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ErrorType.INVALID_USER)
         );
         user.updateOnboardingInfo(
@@ -47,6 +48,10 @@ public class ParentchildService {
                 request.getUserInfo().getGender(),
                 request.getUserInfo().getBornYear()
         );
+        log.info("isInvitorChild 요청값: {}", request.isInvitorChild());
+        user.updateIsMeChild(request.isInvitorChild());
+        log.info("업데이트 된 isMeChild 필드: {}", user.isMeChild());
+
 
         Parentchild parentchild = Parentchild.builder()
                 .inviteCode(generateInviteCode())
@@ -62,9 +67,9 @@ public class ParentchildService {
 
     // [수신] 초대받는 측의 온보딩 정보 입력
     @Transactional
-    public OnboardingReceiveResponseDto onboardReceive(OnboardingReceiveRequestDto request) {
+    public OnboardingReceiveResponseDto onboardReceive(Long userId, OnboardingReceiveRequestDto request) {
 
-        User user = userRepository.findById(request.getUserInfo().getUserId()).orElseThrow(
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ErrorType.INVALID_USER)
         );
         user.updateOnboardingInfo(
@@ -73,13 +78,15 @@ public class ParentchildService {
                 request.getUserInfo().getBornYear()
         );
 
+
         // TODO 추가 질문 답변 저장
         Parentchild parentchild = parentchildRepository.findById(request.getParentChildId()).orElseThrow(
                 () -> new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION)
         );
+        user.updateIsMeChild(!parentchild.isInvitorChild());
+
 //        parentchild.updateInfo();
         List<User> parentChildUsers = getParentChildUsers(parentchild);
-
 
         return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
     }

@@ -1,5 +1,7 @@
 package sopt.org.umbbaServer.domain.parentchild.controller.dto.response;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +15,7 @@ import java.util.List;
 
 @Getter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class OnboardingReceiveResponseDto {
 
     private UserInfoDto userInfo;

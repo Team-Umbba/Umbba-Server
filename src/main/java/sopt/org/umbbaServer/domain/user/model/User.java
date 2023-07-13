@@ -37,8 +37,15 @@ public class User extends AuditingTimeEntity {
     @JoinColumn(name = "parentchild_id")
     private Parentchild parentChild;
 
+    @Column(nullable = false)
+    private boolean isMeChild;
+
     public void updateParentchild(Parentchild parentchild) {
         this.parentChild = parentchild;
+    }
+    
+    public void updateIsMeChild(boolean isMeChild) {
+        this.isMeChild = isMeChild;
     }
 
     private String refreshToken;
