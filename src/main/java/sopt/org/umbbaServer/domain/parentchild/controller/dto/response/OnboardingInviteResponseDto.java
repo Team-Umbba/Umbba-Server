@@ -15,7 +15,6 @@ import java.time.LocalTime;
 
 @Getter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class OnboardingInviteResponseDto {
 

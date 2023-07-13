@@ -13,7 +13,6 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Builder
-@AllArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class UserInfoDto {
 
