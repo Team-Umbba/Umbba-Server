@@ -62,7 +62,7 @@ public class AuthService {
         TokenDto tokenDto = jwtProvider.issueToken(new UserAuthentication(loginUser.getId(), null, null));
         loginUser.updateRefreshToken(tokenDto.getRefreshToken());
 
-        return UserLoginResponseDto.of(loginUser, tokenDto.getAccessToken());
+        return UserLoginResponseDto.of(isRegistered, loginUser, tokenDto.getAccessToken());
     }
 
     @Transactional
