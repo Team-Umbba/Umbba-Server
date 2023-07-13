@@ -12,8 +12,6 @@ import javax.validation.constraints.Size;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class InviteCodeRequestDto {
 
-    private Long userId;
-
     @NotBlank(message = "초대코드는 필수 입력 값입니다.")
     @Size(max = 11)
     private String inviteCode;
