@@ -28,7 +28,7 @@ import java.util.Set;
 public class OnboardingInviteRequestDto {
 
     @NotNull
-    @Valid
+//    @Valid
     private UserInfoDto userInfo;
 
     @JsonProperty("is_invitor_child")

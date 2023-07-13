@@ -52,6 +52,9 @@ public class ParentchildService {
         user.updateIsMeChild(request.isInvitorChild());
         log.info("업데이트 된 isMeChild 필드: {}", user.getIsMeChild());
 
+        if (user.getParentChild() != null) {
+            throw new CustomException(ErrorType.ALREADY_EXISTS_PARENT_CHILD_USER);
+        }
 
         Parentchild parentchild = Parentchild.builder()
                 .inviteCode(generateInviteCode())

@@ -21,6 +21,7 @@ public enum ErrorType {
     INVALID_INVITE_CODE(HttpStatus.BAD_REQUEST, "유효하지 않는 초대코드입니다."),
     NOT_MATCH_PARENT_CHILD_RELATION(HttpStatus.BAD_REQUEST, "아직 부모자식 관계 매칭이 이루어지지 않았습니다."),
     INVALID_PARENT_CHILD_RELATION(HttpStatus.BAD_REQUEST, "유효하지 않은 부모자식 관계입니다."),
+    ALREADY_EXISTS_PARENT_CHILD_USER(HttpStatus.BAD_REQUEST, "이미 해당 유저의 부모자식 관계가 존재합니다."),
 
     /**
      * 401 UNAUTHORIZED

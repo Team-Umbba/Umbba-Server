@@ -56,7 +56,7 @@ public class ControllerExceptionAdvice {
     /**
      * 500 INTERNEL_SERVER  // TODO 셔비스 단에서 예외가 꼼꼼하게 처리된 상태에서 500 에러를 가장 마지막에 던지도록 처리
      */
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    /*@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     protected ApiResponse<Object> handleException(final Exception e, final HttpServletRequest request) throws IOException {
         //slackApi.sendAlert(e, request);  // TODO 슬랙 예외발생 알림 설정 시 사용
@@ -64,7 +64,7 @@ public class ControllerExceptionAdvice {
         log.error("Unexpected exception occurred: {}", e.getMessage(), e);
 
         return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR);
-    }
+    }*/
 
     /**
      * CUSTOM_ERROR
