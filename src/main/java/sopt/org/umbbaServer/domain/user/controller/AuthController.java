@@ -13,6 +13,7 @@ import sopt.org.umbbaServer.domain.user.social.kakao.KakaoLoginService;
 import sopt.org.umbbaServer.global.common.dto.ApiResponse;
 import sopt.org.umbbaServer.global.exception.SuccessType;
 
+import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.security.spec.InvalidKeySpecException;
@@ -28,7 +29,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<UserLoginResponseDto> login(
             @RequestHeader("Authorization") String socialAccessToken,
-            @RequestBody SocialLoginRequestDto request) throws NoSuchAlgorithmException, InvalidKeySpecException {
+            @RequestBody final SocialLoginRequestDto request) throws NoSuchAlgorithmException, InvalidKeySpecException {
 
         return ApiResponse.success(SuccessType.LOGIN_SUCCESS, authService.login(socialAccessToken, request));
     }
