@@ -8,7 +8,7 @@ import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.InviteCode
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingInviteRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingReceiveRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.GetInviteCodeResponseDto;
-import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponeDto;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingReceiveResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingInviteResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.service.ParentchildService;
@@ -37,7 +37,7 @@ public class ParentchildController {
 
     @PatchMapping("/onboard/match")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<InviteResultResponeDto> inviteRelation(@Valid @RequestBody final InviteCodeRequestDto request, Principal principal) {
+    public ApiResponse<InviteResultResponseDto> inviteRelation(@Valid @RequestBody final InviteCodeRequestDto request, Principal principal) {
         log.info("getUserFromPrincipal에는 문제가 없어요 - 요청 초대코드: {}", request.getInviteCode());
 
 //        Long userId = JwtProvider.getUserFromPrincial(principal);

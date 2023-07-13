@@ -10,8 +10,7 @@ import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.Onboarding
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingReceiveRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.GetInviteCodeResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
-import sopt.org.umbbaServer.domain.qna.controller.dto.response.GetMainViewResponseDto;
-import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponeDto;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingReceiveResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingInviteResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
@@ -23,7 +22,6 @@ import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -139,7 +137,7 @@ public class ParentchildService {
 
     // 초대코드 확인 후 부모자식 관계 성립
     @Transactional
-    public InviteResultResponeDto matchRelation(Long userId, InviteCodeRequestDto request) {
+    public InviteResultResponseDto matchRelation(Long userId, InviteCodeRequestDto request) {
 
         log.info("ParentchlidService 실행 - 요청 초대코드: {}", request.getInviteCode());
         Parentchild newMatchRelation = parentchildRepository.findByInviteCode(request.getInviteCode()).orElseThrow(
@@ -156,7 +154,7 @@ public class ParentchildService {
 
         List<User> parentChildUsers = getParentChildUsers(newMatchRelation);
 
-        return InviteResultResponeDto.of(newMatchRelation, parentChildUsers);
+        return InviteResultResponseDto.of(newMatchRelation, parentChildUsers);
     }
 
     private List<User> getParentChildUsers(Parentchild newMatchRelation) {
