@@ -1,6 +1,8 @@
 package sopt.org.umbbaServer.domain.qna.controller.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 import sopt.org.umbbaServer.domain.qna.model.QnA;
 import sopt.org.umbbaServer.domain.qna.model.Question;
@@ -9,8 +11,10 @@ import sopt.org.umbbaServer.domain.user.model.User;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class TodayQnAResponseDto {
 
+    private Long qnaId;
     private String section;
     private String topic;
     private String opponentQuestion;
@@ -19,10 +23,10 @@ public class TodayQnAResponseDto {
     private String opponentAnswer;
     private String myAnswer;
 
-    @JsonProperty("isOpponentAnswer")
+    @JsonProperty("is_opponent_answer")
     private boolean isOpponentAnswer;
 
-    @JsonProperty("isMyAnswer")
+    @JsonProperty("is_my_answer")
     private boolean isMyAnswer;
 
     private String opponentUsername;
@@ -53,6 +57,7 @@ public class TodayQnAResponseDto {
         }
 
         return TodayQnAResponseDto.builder()
+                .qnaId(todayQnA.getId())
                 .section(todayQuestion.getSection().getValue())
                 .topic(todayQuestion.getTopic())
                 .opponentQuestion(opponentQuestion)

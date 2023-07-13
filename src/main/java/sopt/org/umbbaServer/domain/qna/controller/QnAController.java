@@ -25,14 +25,14 @@ public class QnAController {
 
     private final QnAService qnAService;
 
-    @GetMapping("/qna")
+    @GetMapping("/qna/today")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<TodayQnAResponseDto> getTodayQna(Principal principal) {
 
         return ApiResponse.success(SuccessType.GET_TODAY_QNA_SUCCESS, qnAService.getTodayQnA(JwtProvider.getUserFromPrincial(principal)));
     }
 
-    @GetMapping("/dummy")
+    @GetMapping("/qna/dummy")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse dummy() {
         qnAService.createQnA();
@@ -40,7 +40,7 @@ public class QnAController {
         return ApiResponse.success(SuccessType.GET_TODAY_QNA_SUCCESS);
     }
 
-    @PostMapping("/qna")
+    @PostMapping("/qna/answer")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse answerTodayQuestion(
             Principal principal,
