@@ -10,7 +10,6 @@ import sopt.org.umbbaServer.domain.user.model.User;
 
 @Getter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TodayQnAResponseDto {
 
