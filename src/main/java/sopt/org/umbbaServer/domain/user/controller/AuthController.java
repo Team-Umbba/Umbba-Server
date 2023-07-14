@@ -43,7 +43,7 @@ public class AuthController {
         return ApiResponse.success(SuccessType.REISSUE_SUCCESS, authService.reissueToken(request, refreshToken));
     }
 
-    @GetMapping("/log-out") // Spring Security 자체 로그아웃과 충돌하기 때문에 이렇게 써줌
+    @PatchMapping("/log-out") // Spring Security 자체 로그아웃과 충돌하기 때문에 이렇게 써줌
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse logout(Principal principal) {
 
@@ -51,7 +51,7 @@ public class AuthController {
         return ApiResponse.success(SuccessType.LOGOUT_SUCCESS);
     }
 
-    @DeleteMapping("/sign-out")
+    @PatchMapping("/sign-out")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse signout(Principal principal) {
 
