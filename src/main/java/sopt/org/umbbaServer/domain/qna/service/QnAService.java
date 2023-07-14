@@ -1,6 +1,7 @@
 package sopt.org.umbbaServer.domain.qna.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
@@ -25,8 +26,10 @@ import sopt.org.umbbaServer.global.exception.ErrorType;
 import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -161,21 +164,17 @@ public class QnAService {
     // 메인페이지 정보
     public GetMainViewResponseDto getMainInfo(Long userId) {
 
-        try {
-            User matchUser = parentchildDao.findMatchUserByUserId(userId).orElseThrow(
-                    () -> new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_USER)
-            );
+        Optional<User> matchUser = parentchildDao.findMatchUserByUserId(userId);
+        log.info("matchUser: {} -> parentchildDao.findMatchUserByUserId()의 결과", matchUser);
 
-            // 유저의 상태에 따른 분기처리
-            if (matchUser.getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
-                return withdrawUser();
-            }
-            if (matchUser.getParentChild() == null) {
-                return invitation(userId);
-            }
-        } catch (NoResultException e) {
-            throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
+        // 유저의 상태에 따른 분기처리
+        if (matchUser.isEmpty()) {
+            return invitation(userId);
         }
+        if (matchUser.get().getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
+            return withdrawUser();
+        }
+
 
         List<QnA> qnAList = qnADao.findQnASByUserId(userId).orElseThrow(
                 () -> new CustomException(ErrorType.USER_HAVE_NO_QNALIST)

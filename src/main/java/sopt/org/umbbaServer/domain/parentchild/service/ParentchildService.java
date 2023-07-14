@@ -57,6 +57,7 @@ public class ParentchildService {
                 .pushTime(request.getPushTime())  // TODO 케이스에 따라 없을 수도 있음
                 .build();
         parentchildRepository.save(parentchild);
+        user.updateParentchild(parentchild);
 
         log.info("userInfo: {}", request.getUserInfo().getBornYear());
         return OnboardingInviteResponseDto.of(parentchild, user);
