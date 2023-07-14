@@ -38,7 +38,6 @@ public class ParentchildService {
     @Transactional
     public OnboardingInviteResponseDto onboardInvite(Long userId, OnboardingInviteRequestDto request) {
 
-        // TODO userId 토큰 provider에서 정보 꺼내오도록
         User user = getUserById(userId);
         user.updateOnboardingInfo(
                 request.getUserInfo().getName(),
@@ -48,7 +47,6 @@ public class ParentchildService {
         log.info("isInvitorChild 요청값: {}", request.getIsInvitorChild());
         user.updateIsMeChild(request.getIsInvitorChild());
         log.info("업데이트 된 isMeChild 필드: {}", user.isMeChild());
-
 
         Parentchild parentchild = Parentchild.builder()
                 .inviteCode(generateInviteCode())
@@ -73,7 +71,6 @@ public class ParentchildService {
                 request.getUserInfo().getGender(),
                 request.getUserInfo().getBornYear()
         );
-
 
         // TODO 추가 질문 답변 저장
         Parentchild parentchild = getParentchildById(request.getParentChildId());

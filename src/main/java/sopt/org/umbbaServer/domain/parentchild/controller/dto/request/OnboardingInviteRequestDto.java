@@ -8,11 +8,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import sopt.org.umbbaServer.domain.qna.model.OnboardingAnswer;
 import sopt.org.umbbaServer.domain.user.controller.dto.request.UserInfoDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
+import java.util.List;
 
 @Slf4j
 @Getter
@@ -32,6 +34,5 @@ public class OnboardingInviteRequestDto {
     @JsonFormat(pattern = "kk:mm")
     private LocalTime pushTime;
 
-    // TODO 선택질문에 대한 답변 필드 추가 필요
-
+    private List<OnboardingAnswer> onboardingAnswerList;
 }
