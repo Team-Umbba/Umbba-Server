@@ -191,7 +191,7 @@ public class QnAService {
 
         User user = getUserById(userId);
         Parentchild parentchild = parentchildDao.findByUserId(userId).orElseThrow(
-                () -> new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION)
+                () -> new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD)
         );
 
         return TodayQnAResponseDto.of(parentchild.getInviteCode(), user.getUsername(), "url");  // TODO url 설정 필요 (Firebase)
