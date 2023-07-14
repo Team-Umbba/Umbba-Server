@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.InviteCodeRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingInviteRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingReceiveRequestDto;
-import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.GetInviteCodeResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingReceiveResponseDto;
@@ -16,13 +15,13 @@ import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.Onboardin
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.model.ParentchildRelation;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
+import sopt.org.umbbaServer.domain.qna.dao.QnADao;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -33,6 +32,7 @@ public class ParentchildService {
     private final ParentchildDao parentchildDao;
     private final ParentchildRepository parentchildRepository;
     private final UserRepository userRepository;
+    private final QnADao qnADao;
 
     // [발신] 초대하는 측의 온보딩 정보 입력
     @Transactional
@@ -57,6 +57,7 @@ public class ParentchildService {
                 .pushTime(request.getPushTime())  // TODO 케이스에 따라 없을 수도 있음
                 .build();
         parentchildRepository.save(parentchild);
+        user.updateParentchild(parentchild);
 
         log.info("userInfo: {}", request.getUserInfo().getBornYear());
         return OnboardingInviteResponseDto.of(parentchild, user);
@@ -167,20 +168,8 @@ public class ParentchildService {
 
         return parentChildUsers;
 
-
     }
 
-
-    // 메인페이지에서 초대장 보내기 (초대코드 조회)
-    public GetInviteCodeResponseDto getInvitation(Long userId) {
-
-        Parentchild parentchild = parentchildDao.findByUserId(userId);
-        if (parentchild == null) {
-            throw new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION);
-        }
-
-        return GetInviteCodeResponseDto.of(parentchild);
-    }
 
     private Parentchild getParentchildById(Long parentchildId) {
         return parentchildRepository.findById(parentchildId).orElseThrow(

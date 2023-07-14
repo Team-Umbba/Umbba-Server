@@ -1,6 +1,5 @@
 package sopt.org.umbbaServer.domain.user.repository;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.user.model.User;

@@ -1,14 +1,16 @@
 package sopt.org.umbbaServer.domain.qna.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
+import sopt.org.umbbaServer.domain.qna.controller.dto.response.GetMainViewResponseDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.QnAListResponseDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.SingleQnAResponseDto;
-import sopt.org.umbbaServer.domain.qna.controller.dto.response.GetMainViewResponseDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.TodayQnAResponseDto;
 import sopt.org.umbbaServer.domain.qna.dao.QnADao;
 import sopt.org.umbbaServer.domain.qna.model.QnA;
@@ -17,13 +19,16 @@ import sopt.org.umbbaServer.domain.qna.repository.QnARepository;
 import sopt.org.umbbaServer.domain.qna.repository.QuestionRepository;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
+import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -33,14 +38,28 @@ public class QnAService {
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
     private final ParentchildRepository parentchildRepository;
+    private final ParentchildDao parentchildDao;
     private final QnADao qnADao;
 
     public TodayQnAResponseDto getTodayQnA(Long userId) {
+
+        Optional<User> matchUser = parentchildDao.findMatchUserByUserId(userId);
+        log.info("matchUser: {} -> parentchildDao.findMatchUserByUserId()의 결과", matchUser);
+
+        // 유저의 상태에 따른 분기처리
+        if (matchUser.isEmpty()) {
+            return invitation(userId);
+        }
+        if (matchUser.get().getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
+            return withdrawUser();
+        }
+
         User myUser = getUserById(userId);
         Parentchild parentchild = getParentchildByUser(myUser);
         QnA todayQnA = getTodayQnAByParentchild(parentchild);
         Question todayQuestion = todayQnA.getQuestion();
         User opponentUser = getOpponentByParentchild(parentchild, userId);
+
 
         return TodayQnAResponseDto.of(myUser, opponentUser, todayQnA, todayQuestion, myUser.isMeChild());
     }
@@ -102,7 +121,7 @@ public class QnAService {
     }
 
     /*
-     리팩토링을 위해 아래로 뺀 메서드들
+    리팩토링을 위해 아래로 뺀 메서드들
      */
     private User getUserById(Long userId) {
         return userRepository.findById(userId)
@@ -158,11 +177,30 @@ public class QnAService {
     // 메인페이지 정보
     public GetMainViewResponseDto getMainInfo(Long userId) {
 
-        List<QnA> qnAList = qnADao.findQnASByUserId(userId);
-        QnA lastQna = qnAList.get(qnAList.size());
+
+        List<QnA> qnAList = qnADao.findQnASByUserId(userId).orElseThrow(
+                () -> new CustomException(ErrorType.USER_HAVE_NO_QNALIST)
+        );
+        QnA lastQna = qnAList.get(qnAList.size()-1);
 
         return GetMainViewResponseDto.of(lastQna, qnAList.size());
-
     }
+
+    private TodayQnAResponseDto invitation(Long userId) {
+
+        User user = getUserById(userId);
+        Parentchild parentchild = parentchildDao.findByUserId(userId).orElseThrow(
+                () -> new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD)
+        );
+
+        return TodayQnAResponseDto.of(parentchild.getInviteCode(), user.getUsername(), "url");  // TODO url 설정 필요 (Firebase)
+    }
+
+    private TodayQnAResponseDto withdrawUser() {
+
+        return TodayQnAResponseDto.of(false);
+    }
+
+
 
 }

@@ -18,12 +18,8 @@ import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 import sopt.org.umbbaServer.global.util.slack.SlackApi;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.UnexpectedTypeException;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Slf4j
 @RestControllerAdvice

@@ -6,14 +6,13 @@ import org.springframework.web.bind.annotation.*;
 import sopt.org.umbbaServer.domain.user.controller.dto.request.RefreshRequestDto;
 import sopt.org.umbbaServer.domain.user.controller.dto.request.SocialLoginRequestDto;
 import sopt.org.umbbaServer.domain.user.controller.dto.response.UserLoginResponseDto;
-import sopt.org.umbbaServer.global.config.jwt.JwtProvider;
-import sopt.org.umbbaServer.global.config.jwt.TokenDto;
 import sopt.org.umbbaServer.domain.user.service.AuthService;
 import sopt.org.umbbaServer.domain.user.social.kakao.KakaoLoginService;
 import sopt.org.umbbaServer.global.common.dto.ApiResponse;
+import sopt.org.umbbaServer.global.config.jwt.JwtProvider;
+import sopt.org.umbbaServer.global.config.jwt.TokenDto;
 import sopt.org.umbbaServer.global.exception.SuccessType;
 
-import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.security.spec.InvalidKeySpecException;
