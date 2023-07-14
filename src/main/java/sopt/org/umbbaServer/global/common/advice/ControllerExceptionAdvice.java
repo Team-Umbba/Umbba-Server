@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -51,6 +52,13 @@ public class ControllerExceptionAdvice {
     @ExceptionHandler(MissingRequestHeaderException.class)
     protected ApiResponse<Object> handlerMissingRequestHeaderException(final MissingRequestHeaderException e) {
         return ApiResponse.error(ErrorType.HEADER_REQUEST_MISSING_EXCEPTION);
+    }
+
+    // Enum 값에 존재하지 않는 request가 입력되었을 때
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    protected ApiResponse<Object> handlerHttpMessageNotReadableException(final HttpMessageNotReadableException e) {
+        return ApiResponse.error(ErrorType.VALIDATION_WRONG_ENUM_EXCEPTION);
     }
 
     /**

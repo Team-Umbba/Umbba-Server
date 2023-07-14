@@ -42,10 +42,7 @@ public class QnAService {
         Question todayQuestion = todayQnA.getQuestion();
         User opponentUser = getOpponentByParentchild(parentchild, userId);
 
-        // 현재 회원이 자식이면 isMeChild가 true, 부모면 false
-        boolean isMeChild = myUser.getBornYear() >= opponentUser.getBornYear();
-
-        return TodayQnAResponseDto.of(myUser, opponentUser, todayQnA, todayQuestion, isMeChild);
+        return TodayQnAResponseDto.of(myUser, opponentUser, todayQnA, todayQuestion, myUser.isMeChild());
     }
 
     @Transactional
@@ -55,9 +52,7 @@ public class QnAService {
         QnA todayQnA = getTodayQnAByParentchild(parentchild);
         User opponentUser = getOpponentByParentchild(parentchild, userId);
 
-        boolean isMeChild = myUser.getBornYear() >= opponentUser.getBornYear();
-
-        if (isMeChild) {
+        if (myUser.isMeChild()) {
             todayQnA.saveChildAnswer(request.getAnswer());
         } else {
             todayQnA.saveParentAnswer(request.getAnswer());
@@ -70,12 +65,10 @@ public class QnAService {
         List<QnA> qnaList = getQnAListByParentchild(parentchild);
         User opponentUser = getOpponentByParentchild(parentchild, userId);
 
-        boolean isMeChild = myUser.getBornYear() >= opponentUser.getBornYear();
-
         return qnaList.stream()
                 .filter(qna -> Objects.equals(qna.getQuestion().getSection().getSectionId(), sectionId))
                 .map(qna -> {
-                    String question = isMeChild ? qna.getQuestion().getChildQuestion() : qna.getQuestion().getParentQuestion();
+                    String question = myUser.isMeChild() ? qna.getQuestion().getChildQuestion() : qna.getQuestion().getParentQuestion();
                     return QnAListResponseDto.builder()
                             .qnaId(qna.getId())
                             .index(qnaList.indexOf(qna) + 1)
@@ -92,10 +85,7 @@ public class QnAService {
         Question todayQuestion = targetQnA.getQuestion();
         User opponentUser = getOpponentByParentchild(parentchild, userId);
 
-        // 현재 회원이 자식이면 isMeChild가 true, 부모면 false
-        boolean isMeChild = myUser.getBornYear() >= opponentUser.getBornYear();
-
-        return SingleQnAResponseDto.of(myUser, opponentUser, targetQnA, todayQuestion, isMeChild);
+        return SingleQnAResponseDto.of(myUser, opponentUser, targetQnA, todayQuestion, myUser.isMeChild());
     }
 
     @Transactional
@@ -111,8 +101,9 @@ public class QnAService {
         parentchild.addQnA(newQnA);
     }
 
-    // 리팩토링을 위해 아래로 뺀 메서드들
-
+    /*
+     리팩토링을 위해 아래로 뺀 메서드들
+     */
     private User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorType.INVALID_USER));

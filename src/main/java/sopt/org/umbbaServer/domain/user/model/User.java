@@ -85,6 +85,14 @@ public class User extends AuditingTimeEntity {
         this.bornYear = bornYear;
     }
 
+    public void deleteSocialInfo() {
+        this.socialPlatform = null;
+        this.socialId = null;
+        this.socialNickname = null;
+        this.socialProfileImage = null;
+        this.socialAccessToken = null;
+    }
+
     public User(SocialPlatform socialPlatform, String socialId) {
         this.socialPlatform = socialPlatform;
         this.socialId = socialId;
