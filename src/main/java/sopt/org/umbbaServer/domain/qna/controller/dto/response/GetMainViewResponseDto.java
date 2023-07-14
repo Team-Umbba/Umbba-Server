@@ -11,7 +11,6 @@ import sopt.org.umbbaServer.domain.qna.model.QnA;
 @Getter
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GetMainViewResponseDto {
 
     private String section;
