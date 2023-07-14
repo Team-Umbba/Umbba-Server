@@ -162,7 +162,9 @@ public class QnAService {
     public GetMainViewResponseDto getMainInfo(Long userId) {
 
         try {
-            User matchUser = parentchildDao.findMatchUserByUserId(userId);
+            User matchUser = parentchildDao.findMatchUserByUserId(userId).orElseThrow(
+                    () -> new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_USER)
+            );
 
             // 유저의 상태에 따른 분기처리
             if (matchUser.getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
@@ -175,7 +177,9 @@ public class QnAService {
             throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
         }
 
-        List<QnA> qnAList = qnADao.findQnASByUserId(userId);
+        List<QnA> qnAList = qnADao.findQnASByUserId(userId).orElseThrow(
+                () -> new CustomException(ErrorType.USER_HAVE_NO_QNALIST)
+        );
         QnA lastQna = qnAList.get(qnAList.size()-1);
 
         return GetMainViewResponseDto.of(lastQna, qnAList.size());
@@ -184,10 +188,9 @@ public class QnAService {
     private GetMainViewResponseDto invitation(Long userId) {
 
         User user = getUserById(userId);
-        Parentchild parentchild = parentchildDao.findByUserId(userId);
-        if (parentchild == null) {
-            throw new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION);
-        }
+        Parentchild parentchild = parentchildDao.findByUserId(userId).orElseThrow(
+                () -> new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION)
+        );
 
         return GetMainViewResponseDto.of(parentchild.getInviteCode(), user.getUsername(), "url");  // TODO url 설정 필요 (Firebase)
     }
