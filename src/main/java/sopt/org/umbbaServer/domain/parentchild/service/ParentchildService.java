@@ -22,6 +22,7 @@ import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -38,9 +39,7 @@ public class ParentchildService {
     public OnboardingInviteResponseDto onboardInvite(Long userId, OnboardingInviteRequestDto request) {
 
         // TODO userId 토큰 provider에서 정보 꺼내오도록
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ErrorType.INVALID_USER)
-        );
+        User user = getUserById(userId);
         user.updateOnboardingInfo(
                 request.getUserInfo().getName(),
                 request.getUserInfo().getGender(),
@@ -48,7 +47,7 @@ public class ParentchildService {
         );
         log.info("isInvitorChild 요청값: {}", request.getIsInvitorChild());
         user.updateIsMeChild(request.getIsInvitorChild());
-        log.info("업데이트 된 isMeChild 필드: {}", user.getIsMeChild());
+        log.info("업데이트 된 isMeChild 필드: {}", user.isMeChild());
 
 
         Parentchild parentchild = Parentchild.builder()
@@ -67,9 +66,7 @@ public class ParentchildService {
     @Transactional
     public OnboardingReceiveResponseDto onboardReceive(Long userId, OnboardingReceiveRequestDto request) {
 
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ErrorType.INVALID_USER)
-        );
+        User user = getUserById(userId);
         user.updateOnboardingInfo(
                 request.getUserInfo().getName(),
                 request.getUserInfo().getGender(),
@@ -78,9 +75,7 @@ public class ParentchildService {
 
 
         // TODO 추가 질문 답변 저장
-        Parentchild parentchild = parentchildRepository.findById(request.getParentChildId()).orElseThrow(
-                () -> new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_RELATION)
-        );
+        Parentchild parentchild = getParentchildById(parentchildRepository.findById(request.getParentChildId()), ErrorType.NOT_EXIST_PARENT_CHILD_RELATION);
 
 //        parentchild.updateInfo();
         List<User> parentChildUsers = getParentChildUsers(parentchild);
@@ -136,12 +131,8 @@ public class ParentchildService {
     public InviteResultResponseDto matchRelation(Long userId, InviteCodeRequestDto request) {
 
         log.info("ParentchlidService 실행 - 요청 초대코드: {}", request.getInviteCode());
-        Parentchild newMatchRelation = parentchildRepository.findByInviteCode(request.getInviteCode()).orElseThrow(
-                () -> new CustomException(ErrorType.INVALID_INVITE_CODE)
-        );
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ErrorType.INVALID_USER)
-        );
+        Parentchild newMatchRelation = getParentchildById(parentchildRepository.findByInviteCode(request.getInviteCode()), ErrorType.INVALID_INVITE_CODE);
+        User user = getUserById(userId);
         user.updateIsMeChild(!newMatchRelation.isInvitorChild());
 
         if (user.getParentChild() != null) {
@@ -188,6 +179,19 @@ public class ParentchildService {
         }
 
         return GetInviteCodeResponseDto.of(parentchild);
+    }
+
+    private Parentchild getParentchildById(Optional<Parentchild> parentchildRepository, ErrorType notExistParentChildRelation) {
+        return parentchildRepository.orElseThrow(
+                () -> new CustomException(notExistParentChildRelation)
+        );
+    }
+
+    private User getUserById(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ErrorType.INVALID_USER)
+        );
+        return user;
     }
 
 }

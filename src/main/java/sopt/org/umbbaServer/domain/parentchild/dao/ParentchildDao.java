@@ -6,7 +6,6 @@ import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 
 @Slf4j
 @Repository

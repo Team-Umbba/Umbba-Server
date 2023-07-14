@@ -38,7 +38,7 @@ public class User extends AuditingTimeEntity {
     private Parentchild parentChild;
 
     @Column(nullable = false)
-    private Boolean isMeChild;
+    private boolean isMeChild;
 
     public void updateParentchild(Parentchild parentchild) {
         this.parentChild = parentchild;
