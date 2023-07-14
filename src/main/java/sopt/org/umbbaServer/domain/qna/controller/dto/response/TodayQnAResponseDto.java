@@ -12,7 +12,6 @@ import sopt.org.umbbaServer.domain.user.model.User;
 @Getter
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TodayQnAResponseDto {
 
     private int responseCase;  // case를 1,2,3으로 구분 (Client)
