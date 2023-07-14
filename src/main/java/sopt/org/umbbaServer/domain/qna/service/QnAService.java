@@ -3,7 +3,6 @@ package sopt.org.umbbaServer.domain.qna.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.GetInviteCodeResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
@@ -23,6 +22,7 @@ import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 
+import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -158,30 +158,45 @@ public class QnAService {
         return opponentUserList.get(0);
     }
 
-
     // 메인페이지 정보
     public GetMainViewResponseDto getMainInfo(Long userId) {
 
-        User user = getUserById(userId);
+        try {
+            User matchUser = parentchildDao.findMatchUserByUserId(userId);
 
-        // 유저의 상태에 따른 분기처리
-        if (user.getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
-
-        }
-        // TODO 매칭 되었는지 체크
-        if (user.getParentChild().equals(null)) {
-            Parentchild parentchild = parentchildDao.findByUserId(userId);
-            if (parentchild == null) {
-                throw new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION);
+            // 유저의 상태에 따른 분기처리
+            if (matchUser.getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
+                return withdrawUser();
             }
-
-            return GetMainViewResponseDto.of(parentchild.getInviteCode());
+            if (matchUser.getParentChild() == null) {
+                return invitation(userId);
+            }
+        } catch (NoResultException e) {
+            throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
         }
 
         List<QnA> qnAList = qnADao.findQnASByUserId(userId);
-        QnA lastQna = qnAList.get(qnAList.size());
+        QnA lastQna = qnAList.get(qnAList.size()-1);
 
         return GetMainViewResponseDto.of(lastQna, qnAList.size());
     }
+
+    private GetMainViewResponseDto invitation(Long userId) {
+
+        User user = getUserById(userId);
+        Parentchild parentchild = parentchildDao.findByUserId(userId);
+        if (parentchild == null) {
+            throw new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION);
+        }
+
+        return GetMainViewResponseDto.of(parentchild.getInviteCode(), user.getUsername(), "url");  // TODO url 설정 필요 (Firebase)
+    }
+
+    private GetMainViewResponseDto withdrawUser() {
+
+        return GetMainViewResponseDto.of(false);
+    }
+
+
 
 }

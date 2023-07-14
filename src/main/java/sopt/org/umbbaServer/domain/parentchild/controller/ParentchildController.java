@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.InviteCodeRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingInviteRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingReceiveRequestDto;
-import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.GetInviteCodeResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingReceiveResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingInviteResponseDto;

@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.InviteCodeRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingInviteRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingReceiveRequestDto;
-import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.GetInviteCodeResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingReceiveResponseDto;
@@ -16,13 +15,13 @@ import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.Onboardin
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.model.ParentchildRelation;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
+import sopt.org.umbbaServer.domain.qna.dao.QnADao;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -33,6 +32,7 @@ public class ParentchildService {
     private final ParentchildDao parentchildDao;
     private final ParentchildRepository parentchildRepository;
     private final UserRepository userRepository;
+    private final QnADao qnADao;
 
     // [발신] 초대하는 측의 온보딩 정보 입력
     @Transactional
@@ -166,7 +166,6 @@ public class ParentchildService {
         }
 
         return parentChildUsers;
-
 
     }
 
