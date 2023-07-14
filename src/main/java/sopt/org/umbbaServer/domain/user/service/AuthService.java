@@ -1,9 +1,12 @@
 package sopt.org.umbbaServer.domain.user.service;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
 import sopt.org.umbbaServer.domain.user.controller.dto.request.RefreshRequestDto;
 import sopt.org.umbbaServer.domain.user.controller.dto.request.SocialLoginRequestDto;
 import sopt.org.umbbaServer.domain.user.controller.dto.response.UserLoginResponseDto;
@@ -20,6 +23,7 @@ import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -62,7 +66,7 @@ public class AuthService {
         TokenDto tokenDto = jwtProvider.issueToken(new UserAuthentication(loginUser.getId(), null, null));
         loginUser.updateRefreshToken(tokenDto.getRefreshToken());
 
-        return UserLoginResponseDto.of(loginUser, tokenDto.getAccessToken());
+        return UserLoginResponseDto.of(isRegistered, loginUser, tokenDto.getAccessToken());
     }
 
     @Transactional
@@ -87,6 +91,14 @@ public class AuthService {
         jwtProvider.deleteRefreshToken(userId);
     }
 
+    @Transactional
+    public void signout(Long userId) {
+        User user = getUserById(userId);
+        user.updateRefreshToken(null);
+        jwtProvider.deleteRefreshToken(userId);
+        user.deleteSocialInfo();
+    }
+
     private User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorType.INVALID_USER));
@@ -102,14 +114,18 @@ public class AuthService {
     }
 
     private String login(SocialPlatform socialPlatform, String socialAccessToken) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        switch (socialPlatform.toString()) {
-            case "APPLE":
-                return appleLoginService.getAppleId(socialAccessToken);
-            case "KAKAO":
-                return kakaoLoginService.getKakaoId(socialAccessToken);
-            default:
-                throw new CustomException(ErrorType.INVALID_SOCIAL_ACCESS_TOKEN);
-        }
 
+            try {
+                switch (socialPlatform.toString()) {
+                    case "APPLE":
+                        return appleLoginService.getAppleId(socialAccessToken);
+                    case "KAKAO":
+                        return kakaoLoginService.getKakaoId(socialAccessToken);
+                    default:
+                        throw new CustomException(ErrorType.INVALID_SOCIAL_PLATFORM);
+                }
+            } catch (FeignException e) {
+                throw new CustomException(ErrorType.INVALID_SOCIAL_ACCESS_TOKEN);
+            }
     }
 }

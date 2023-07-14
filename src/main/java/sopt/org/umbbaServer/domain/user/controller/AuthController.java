@@ -13,6 +13,7 @@ import sopt.org.umbbaServer.domain.user.social.kakao.KakaoLoginService;
 import sopt.org.umbbaServer.global.common.dto.ApiResponse;
 import sopt.org.umbbaServer.global.exception.SuccessType;
 
+import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.security.spec.InvalidKeySpecException;
@@ -28,7 +29,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<UserLoginResponseDto> login(
             @RequestHeader("Authorization") String socialAccessToken,
-            @RequestBody SocialLoginRequestDto request) throws NoSuchAlgorithmException, InvalidKeySpecException {
+            @RequestBody final SocialLoginRequestDto request) throws NoSuchAlgorithmException, InvalidKeySpecException {
 
         return ApiResponse.success(SuccessType.LOGIN_SUCCESS, authService.login(socialAccessToken, request));
     }
@@ -37,17 +38,25 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<TokenDto> reissue(
             @RequestHeader("Authorization") String refreshToken,
-            @RequestBody RefreshRequestDto request) throws Exception {
+            @RequestBody final RefreshRequestDto request) throws Exception {
 
         return ApiResponse.success(SuccessType.REISSUE_SUCCESS, authService.reissueToken(request, refreshToken));
     }
 
-    @PostMapping("/log-out") // Spring Security 자체 로그아웃과 충돌하기 때문에 이렇게 써줌
+    @GetMapping("/log-out") // Spring Security 자체 로그아웃과 충돌하기 때문에 이렇게 써줌
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse logout(Principal principal) {
 
         authService.logout(JwtProvider.getUserFromPrincial(principal));
         return ApiResponse.success(SuccessType.LOGOUT_SUCCESS);
+    }
+
+    @DeleteMapping("/sign-out")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse signout(Principal principal) {
+
+        authService.signout(JwtProvider.getUserFromPrincial(principal));
+        return ApiResponse.success(SuccessType.SIGNOUT_SUCCESS);
     }
 
     @PostMapping("/kakao")
