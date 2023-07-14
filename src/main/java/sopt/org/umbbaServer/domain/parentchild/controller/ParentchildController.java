@@ -50,12 +50,5 @@ public class ParentchildController {
     }
 
 
-    @GetMapping("/home/invite")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<GetInviteCodeResponseDto> invitation(Principal principal) {
-
-        return ApiResponse.success(SuccessType.GET_INVITE_CODE_SUCCESS, parentchildService.getInvitation(JwtProvider.getUserFromPrincial(principal)));
-    }
-
 
 }

@@ -171,17 +171,6 @@ public class ParentchildService {
     }
 
 
-    // 메인페이지에서 초대장 보내기 (초대코드 조회)
-    public GetInviteCodeResponseDto getInvitation(Long userId) {
-
-        Parentchild parentchild = parentchildDao.findByUserId(userId);
-        if (parentchild == null) {
-            throw new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION);
-        }
-
-        return GetInviteCodeResponseDto.of(parentchild);
-    }
-
     private Parentchild getParentchildById(Long parentchildId) {
         return parentchildRepository.findById(parentchildId).orElseThrow(
                 () -> new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_RELATION)

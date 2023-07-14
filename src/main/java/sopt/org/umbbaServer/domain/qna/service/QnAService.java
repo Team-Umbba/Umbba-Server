@@ -3,6 +3,8 @@ package sopt.org.umbbaServer.domain.qna.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.GetInviteCodeResponseDto;
+import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
@@ -17,6 +19,7 @@ import sopt.org.umbbaServer.domain.qna.repository.QnARepository;
 import sopt.org.umbbaServer.domain.qna.repository.QuestionRepository;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
+import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 
@@ -33,6 +36,7 @@ public class QnAService {
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
     private final ParentchildRepository parentchildRepository;
+    private final ParentchildDao parentchildDao;
     private final QnADao qnADao;
 
     public TodayQnAResponseDto getTodayQnA(Long userId) {
@@ -158,11 +162,26 @@ public class QnAService {
     // 메인페이지 정보
     public GetMainViewResponseDto getMainInfo(Long userId) {
 
+        User user = getUserById(userId);
+
+        // 유저의 상태에 따른 분기처리
+        if (user.getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
+
+        }
+        // TODO 매칭 되었는지 체크
+        if (user.getParentChild().equals(null)) {
+            Parentchild parentchild = parentchildDao.findByUserId(userId);
+            if (parentchild == null) {
+                throw new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION);
+            }
+
+            return GetMainViewResponseDto.of(parentchild.getInviteCode());
+        }
+
         List<QnA> qnAList = qnADao.findQnASByUserId(userId);
         QnA lastQna = qnAList.get(qnAList.size());
 
         return GetMainViewResponseDto.of(lastQna, qnAList.size());
-
     }
 
 }

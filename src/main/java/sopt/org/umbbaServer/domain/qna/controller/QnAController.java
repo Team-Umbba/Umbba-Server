@@ -74,6 +74,9 @@ public class QnAController {
     public ApiResponse<GetMainViewResponseDto> home(Principal principal) {
 
         return ApiResponse.success(SuccessType.GET_MAIN_HOME_SUCCESS, qnAService.getMainInfo(JwtProvider.getUserFromPrincial(principal)));
+
+        return ApiResponse.success(SuccessType.GET_INVITE_CODE_SUCCESS, qnAService.getInvitation(JwtProvider.getUserFromPrincial(principal)));
+
     }
 
 }
