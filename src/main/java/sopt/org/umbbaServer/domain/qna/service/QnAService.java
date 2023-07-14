@@ -43,11 +43,6 @@ public class QnAService {
     private final QnADao qnADao;
 
     public TodayQnAResponseDto getTodayQnA(Long userId) {
-        User myUser = getUserById(userId);
-        Parentchild parentchild = getParentchildByUser(myUser);
-        QnA todayQnA = getTodayQnAByParentchild(parentchild);
-        Question todayQuestion = todayQnA.getQuestion();
-        User opponentUser = getOpponentByParentchild(parentchild, userId);
 
         Optional<User> matchUser = parentchildDao.findMatchUserByUserId(userId);
         log.info("matchUser: {} -> parentchildDao.findMatchUserByUserId()의 결과", matchUser);
@@ -59,6 +54,12 @@ public class QnAService {
         if (matchUser.get().getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
             return withdrawUser();
         }
+
+        User myUser = getUserById(userId);
+        Parentchild parentchild = getParentchildByUser(myUser);
+        QnA todayQnA = getTodayQnAByParentchild(parentchild);
+        Question todayQuestion = todayQnA.getQuestion();
+        User opponentUser = getOpponentByParentchild(parentchild, userId);
 
 
         return TodayQnAResponseDto.of(myUser, opponentUser, todayQnA, todayQuestion, myUser.isMeChild());
