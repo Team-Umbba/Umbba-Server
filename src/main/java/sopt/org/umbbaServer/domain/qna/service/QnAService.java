@@ -4,17 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
-import sopt.org.umbbaServer.domain.parentchild.model.OnboardingAnswer;
+import sopt.org.umbbaServer.domain.qna.model.*;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
-import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.QnAListResponseDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.SingleQnAResponseDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.GetMainViewResponseDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.TodayQnAResponseDto;
 import sopt.org.umbbaServer.domain.qna.dao.QnADao;
-import sopt.org.umbbaServer.domain.qna.model.QnA;
-import sopt.org.umbbaServer.domain.qna.model.Question;
 import sopt.org.umbbaServer.domain.qna.repository.QnARepository;
 import sopt.org.umbbaServer.domain.qna.repository.QuestionRepository;
 import sopt.org.umbbaServer.domain.user.model.User;
@@ -25,6 +22,11 @@ import sopt.org.umbbaServer.global.exception.ErrorType;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static sopt.org.umbbaServer.domain.qna.model.OnboardingAnswer.YES;
+import static sopt.org.umbbaServer.domain.qna.model.QuestionGroup.*;
+import static sopt.org.umbbaServer.domain.qna.model.QuestionSection.SCHOOL;
+import static sopt.org.umbbaServer.domain.qna.model.QuestionSection.YOUNG;
 
 @Service
 @RequiredArgsConstructor
@@ -126,18 +128,23 @@ public class QnAService {
         List<OnboardingAnswer> childList = parentchild.getChildOnboardingAnswerList();
         List<OnboardingAnswer> parentList = parentchild.getParentOnboardingAnswerList();
 
-        if (Objects.equals(childList.get(0).toString(), "YES"))
+        QuestionGroup selectedGroup = selectGroup(childList, parentList);
 
+        for (QuestionSection section : QuestionSection.values()) {
+            if (section == YOUNG) continue;
 
-        // 첫번째 질문은 MVP 단에서는 고정
-        QnA newQnA = QnA.builder()
-                .question(questionRepository.findById(1L/* 수정 필요 */).get()) // TODO 예외처리 필요
-                .isParentAnswer(false)
-                .isChildAnswer(false)
-                .build();
-        qnARepository.save(newQnA);
+            List<Question> selectedQuestions = questionRepository.findBySectionAndGroupRandom(section, selectedGroup, section.getQuestionCount());
 
-        parentchild.addQnA(newQnA);
+            for (Question question : selectedQuestions) {
+                QnA newQnA = QnA.builder()
+                        .question(question)
+                        .isParentAnswer(false)
+                        .isChildAnswer(false)
+                        .build();
+                qnARepository.save(newQnA);
+                parentchild.addQnA(newQnA);
+            }
+        }
     }
 
     /*
@@ -193,6 +200,29 @@ public class QnAService {
         return opponentUserList.get(0);
     }
 
+    private QuestionGroup selectGroup(List<OnboardingAnswer> childList, List<OnboardingAnswer> parentList) {
+
+        // 그룹 선택 알고리즘
+        if (childList.get(0) == YES && parentList.get(0) == YES) {
+            return GROUP1;
+        }
+        if (childList.get(1) == YES && parentList.get(1) == YES) {
+            return GROUP2;
+        }
+        if (childList.get(2) == YES && parentList.get(2) == YES) {
+            return GROUP3;
+        }
+        if (childList.get(3) == YES && parentList.get(3) == YES) {
+            return GROUP4;
+        }
+        if (childList.get(4) == YES && parentList.get(4) == YES) {
+            return GROUP5;
+        }
+        if (childList.get(5) == YES && parentList.get(5) == YES) {
+            return GROUP6;
+        }
+        return GROUP7;
+    }
 
     // 메인페이지 정보
     public GetMainViewResponseDto getMainInfo(Long userId) {
@@ -203,5 +233,4 @@ public class QnAService {
         return GetMainViewResponseDto.of(lastQna, qnAList.size());
 
     }
-
 }

@@ -70,7 +70,6 @@ public class ParentchildService {
                 request.getUserInfo().getBornYear()
         );
 
-
         // TODO 추가 질문 답변 저장
         Parentchild parentchild = getParentchildById(request.getParentChildId());
 

@@ -1,4 +1,4 @@
-package sopt.org.umbbaServer.domain.parentchild.model;
+package sopt.org.umbbaServer.domain.qna.model;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,7 +10,7 @@ public enum OnboardingAnswer {
 
     YES("응"),
     NO("아니"),
-    DONT_KNOW("잘 모르겠어");
+    SKIP("잘 모르겠어");
 
     private final String value;
 }

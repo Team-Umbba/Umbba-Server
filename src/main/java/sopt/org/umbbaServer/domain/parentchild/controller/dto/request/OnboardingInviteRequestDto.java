@@ -8,7 +8,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import sopt.org.umbbaServer.domain.parentchild.model.OnboardingAnswer;
+import sopt.org.umbbaServer.domain.qna.model.OnboardingAnswer;
 import sopt.org.umbbaServer.domain.user.controller.dto.request.UserInfoDto;
 
 import javax.validation.Valid;

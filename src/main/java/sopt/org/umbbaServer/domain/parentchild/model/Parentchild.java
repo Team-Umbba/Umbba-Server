@@ -1,6 +1,7 @@
 package sopt.org.umbbaServer.domain.parentchild.model;
 
 import lombok.*;
+import sopt.org.umbbaServer.domain.qna.model.OnboardingAnswer;
 import sopt.org.umbbaServer.domain.qna.model.QnA;
 import sopt.org.umbbaServer.global.util.AuditingTimeEntity;
 

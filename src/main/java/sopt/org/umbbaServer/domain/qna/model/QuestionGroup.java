@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum QuestionFilterGroup {
+public enum QuestionGroup {
 
     GROUP1(1L, "그룹1"),
     GROUP2(2L, "그룹2"),
