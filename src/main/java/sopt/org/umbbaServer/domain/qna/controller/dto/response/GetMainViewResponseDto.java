@@ -13,13 +13,13 @@ public class GetMainViewResponseDto {
 
     private String section;
     private String topic;
-    private Integer count;
+    private Integer index;
 
-    public static GetMainViewResponseDto of (QnA qnA, int count) {
+    public static GetMainViewResponseDto of (QnA qnA, int index) {
         return GetMainViewResponseDto.builder()
                 .section(qnA.getQuestion().getSection().getValue())
                 .topic(qnA.getQuestion().getTopic())
-                .count(count)
+                .index(index)
                 .build();
     }
 }

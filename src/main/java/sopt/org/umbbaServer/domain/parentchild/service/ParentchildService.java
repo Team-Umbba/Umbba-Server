@@ -75,7 +75,7 @@ public class ParentchildService {
 
 
         // TODO 추가 질문 답변 저장
-        Parentchild parentchild = getParentchildById(parentchildRepository.findById(request.getParentChildId()), ErrorType.NOT_EXIST_PARENT_CHILD_RELATION);
+        Parentchild parentchild = getParentchildById(request.getParentChildId());
 
 //        parentchild.updateInfo();
         List<User> parentChildUsers = getParentChildUsers(parentchild);
@@ -131,7 +131,8 @@ public class ParentchildService {
     public InviteResultResponseDto matchRelation(Long userId, InviteCodeRequestDto request) {
 
         log.info("ParentchlidService 실행 - 요청 초대코드: {}", request.getInviteCode());
-        Parentchild newMatchRelation = getParentchildById(parentchildRepository.findByInviteCode(request.getInviteCode()), ErrorType.INVALID_INVITE_CODE);
+        Parentchild newMatchRelation = parentchildRepository.findByInviteCode(request.getInviteCode()).orElseThrow(
+                () -> new CustomException(ErrorType.INVALID_INVITE_CODE));
         User user = getUserById(userId);
         user.updateIsMeChild(!newMatchRelation.isInvitorChild());
 
@@ -181,9 +182,9 @@ public class ParentchildService {
         return GetInviteCodeResponseDto.of(parentchild);
     }
 
-    private Parentchild getParentchildById(Optional<Parentchild> parentchildRepository, ErrorType notExistParentChildRelation) {
-        return parentchildRepository.orElseThrow(
-                () -> new CustomException(notExistParentChildRelation)
+    private Parentchild getParentchildById(Long parentchildId) {
+        return parentchildRepository.findById(parentchildId).orElseThrow(
+                () -> new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_RELATION)
         );
     }
 
