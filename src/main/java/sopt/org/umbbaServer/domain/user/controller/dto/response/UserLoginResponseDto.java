@@ -14,13 +14,13 @@ import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 public class UserLoginResponseDto {
     private Long userId;
 
-    private boolean isNewUser;
+    private Boolean isNewUser;
 
     private String username;
 
     private String gender;
 
-    private int bornYear;
+    private Integer bornYear;
 
     private TokenDto tokenDto;
 

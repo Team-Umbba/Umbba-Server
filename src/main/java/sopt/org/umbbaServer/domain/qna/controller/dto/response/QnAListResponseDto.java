@@ -11,6 +11,6 @@ import lombok.Getter;
 public class QnAListResponseDto {
 
     private Long qnaId;
-    private int index;
+    private Integer index;
     private String question;
 }

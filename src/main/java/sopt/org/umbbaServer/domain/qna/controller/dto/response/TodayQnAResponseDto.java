@@ -22,11 +22,8 @@ public class TodayQnAResponseDto {
     private String opponentAnswer;
     private String myAnswer;
 
-    @JsonProperty("is_opponent_answer")
-    private boolean isOpponentAnswer;
-
-    @JsonProperty("is_my_answer")
-    private boolean isMyAnswer;
+    private Boolean isOpponentAnswer;
+    private Boolean isMyAnswer;
 
     private String opponentUsername;
     private String myUsername;
