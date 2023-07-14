@@ -26,12 +26,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Slf4j
 import static sopt.org.umbbaServer.domain.qna.model.OnboardingAnswer.YES;
 import static sopt.org.umbbaServer.domain.qna.model.QuestionGroup.*;
 import static sopt.org.umbbaServer.domain.qna.model.QuestionSection.SCHOOL;
 import static sopt.org.umbbaServer.domain.qna.model.QuestionSection.YOUNG;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -40,7 +40,6 @@ public class QnAService {
     private final QnARepository qnARepository;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
-    private final ParentchildRepository parentchildRepository;
     private final QnADao qnADao;
     private final ParentchildDao parentchildDao;
 
@@ -113,7 +112,7 @@ public class QnAService {
     @Transactional
     public void filterFirstQuestion(Long userId, List<OnboardingAnswer> onboardingAnswerList) {
 
-        Parentchild parentchild = parentchildDao.findByUserId(userId); // TODO 예외처리 필요
+        Parentchild parentchild = getParentchildByUserId(userId);
 
         if (getUserById(userId).isMeChild()) {
             parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
@@ -135,7 +134,7 @@ public class QnAService {
     @Transactional
     public void filterAllQuestion(Long userId, List<OnboardingAnswer> onboardingAnswerList) {
 
-        Parentchild parentchild = parentchildDao.findByUserId(userId); // TODO 예외처리 필요
+        Parentchild parentchild = getParentchildByUserId(userId);
 
         if (getUserById(userId).isMeChild()) {
             parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
@@ -180,6 +179,11 @@ public class QnAService {
         }
 
         return parentchild;
+    }
+
+    private Parentchild getParentchildByUserId(Long userId) {
+        return parentchildDao.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD));
     }
 
     private List<QnA> getQnAListByParentchild(Parentchild parentchild) {
@@ -265,7 +269,6 @@ public class QnAService {
     }
 
     private TodayQnAResponseDto withdrawUser() {
-
-    }
         return TodayQnAResponseDto.of(false);
+    }
 }
