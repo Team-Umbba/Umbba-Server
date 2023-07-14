@@ -11,6 +11,7 @@ import lombok.Getter;
 import sopt.org.umbbaServer.domain.user.model.User;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Builder
@@ -25,8 +26,8 @@ public class UserInfoDto {
     @NotBlank(message = "성별은 필수 입력 값입니다.")
     private String gender;
 
-    @NotBlank(message = "출생연도는 필수 입력 값입니다.")
-    private int bornYear;
+    @NotNull(message = "출생연도는 필수 입력 값입니다.")
+    private Integer bornYear;
 
     private Boolean isMeChild;
 

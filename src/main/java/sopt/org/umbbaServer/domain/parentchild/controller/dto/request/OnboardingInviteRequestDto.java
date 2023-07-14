@@ -28,11 +28,11 @@ import java.util.Set;
 public class OnboardingInviteRequestDto {
 
     @NotNull
-//    @Valid
+    @Valid
     private UserInfoDto userInfo;
 
     @JsonProperty("is_invitor_child")
-    private boolean isInvitorChild;
+    private Boolean isInvitorChild;
 
     private String relationInfo; // 아들 or 딸  |  아빠 or 엄마
 

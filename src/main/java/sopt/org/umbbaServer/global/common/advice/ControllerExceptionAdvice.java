@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
@@ -19,6 +20,8 @@ import sopt.org.umbbaServer.global.util.slack.SlackApi;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.UnexpectedTypeException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -36,8 +39,15 @@ public class ControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ApiResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
-        FieldError fieldError = Objects.requireNonNull(e.getFieldError());
-        return ApiResponse.error(ErrorType.REQUEST_VALIDATION_EXCEPTION, String.format("%s. (%s)", fieldError.getDefaultMessage(), fieldError.getField()));
+
+        Errors errors = e.getBindingResult();
+        Map<String, String> validateDetails = new HashMap<>();
+
+        for (FieldError error : errors.getFieldErrors()) {
+            String validKeyName = String.format("valid_%s", error.getField());
+            validateDetails.put(validKeyName, error.getDefaultMessage());
+        }
+        return ApiResponse.error(ErrorType.REQUEST_VALIDATION_EXCEPTION, validateDetails);
     }
 
     /*@ResponseStatus(HttpStatus.BAD_REQUEST)

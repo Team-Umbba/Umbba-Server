@@ -46,15 +46,15 @@ public class ParentchildService {
                 request.getUserInfo().getGender(),
                 request.getUserInfo().getBornYear()
         );
-        log.info("isInvitorChild 요청값: {}", request.isInvitorChild());
-        user.updateIsMeChild(request.isInvitorChild());
+        log.info("isInvitorChild 요청값: {}", request.getIsInvitorChild());
+        user.updateIsMeChild(request.getIsInvitorChild());
         log.info("업데이트 된 isMeChild 필드: {}", user.getIsMeChild());
 
 
         Parentchild parentchild = Parentchild.builder()
                 .inviteCode(generateInviteCode())
-                .isInvitorChild(request.isInvitorChild())
-                .relation(getRelation(request.getUserInfo().getGender(), request.getRelationInfo(), request.isInvitorChild()))
+                .isInvitorChild(request.getIsInvitorChild())
+                .relation(getRelation(request.getUserInfo().getGender(), request.getRelationInfo(), request.getIsInvitorChild()))
                 .pushTime(request.getPushTime())  // TODO 케이스에 따라 없을 수도 있음
                 .build();
         parentchildRepository.save(parentchild);

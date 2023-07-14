@@ -24,10 +24,10 @@ public class TodayQnAResponseDto {
     private String myAnswer;
 
     @JsonProperty("is_opponent_answer")
-    private boolean isOpponentAnswer;
+    private Boolean isOpponentAnswer;
 
     @JsonProperty("is_my_answer")
-    private boolean isMyAnswer;
+    private Boolean isMyAnswer;
 
     private String opponentUsername;
     private String myUsername;

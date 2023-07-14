@@ -13,7 +13,7 @@ public class GetMainViewResponseDto {
 
     private String section;
     private String topic;
-    private int count;
+    private Integer count;
 
     public static GetMainViewResponseDto of (QnA qnA, int count) {
         return GetMainViewResponseDto.builder()
