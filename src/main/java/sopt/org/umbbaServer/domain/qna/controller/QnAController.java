@@ -30,14 +30,6 @@ public class QnAController {
         return ApiResponse.success(SuccessType.GET_TODAY_QNA_SUCCESS, qnAService.getTodayQnA(JwtProvider.getUserFromPrincial(principal)));
     }
 
-    @GetMapping("/qna/dummy")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse dummy() {
-        qnAService.createQnA();
-
-        return ApiResponse.success(SuccessType.GET_TODAY_QNA_SUCCESS);
-    }
-
     @PostMapping("/qna/answer")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse answerTodayQuestion(

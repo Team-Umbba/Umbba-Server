@@ -34,7 +34,19 @@ public class Parentchild extends AuditingTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "answer", nullable = false)
     @ElementCollection
-    private List<OnboardingAnswer> OnboardingAnswerList = new ArrayList<>();
+    private List<OnboardingAnswer> childOnboardingAnswerList = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "answer", nullable = false)
+    @ElementCollection
+    private List<OnboardingAnswer> parentOnboardingAnswerList = new ArrayList<>();
+
+    public void changeChildOnboardingAnswerList(List<OnboardingAnswer> onboardingAnswerList) {
+        this.childOnboardingAnswerList = onboardingAnswerList;
+    }
+    public void changeParentOnboardingAnswerList(List<OnboardingAnswer> onboardingAnswerList) {
+        this.parentOnboardingAnswerList = onboardingAnswerList;
+    }
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

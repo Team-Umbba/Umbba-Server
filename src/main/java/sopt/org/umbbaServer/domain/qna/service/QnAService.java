@@ -3,6 +3,8 @@ package sopt.org.umbbaServer.domain.qna.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
+import sopt.org.umbbaServer.domain.parentchild.model.OnboardingAnswer;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
@@ -32,8 +34,8 @@ public class QnAService {
     private final QnARepository qnARepository;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
-    private final ParentchildRepository parentchildRepository;
     private final QnADao qnADao;
+    private final ParentchildDao parentchildDao;
 
     public TodayQnAResponseDto getTodayQnA(Long userId) {
         User myUser = getUserById(userId);
@@ -89,15 +91,52 @@ public class QnAService {
     }
 
     @Transactional
-    public void createQnA() {
+    public void filterFirstQuestion(Long userId, List<OnboardingAnswer> onboardingAnswerList) {
+
+        Parentchild parentchild = parentchildDao.findByUserId(userId); // TODO 예외처리 필요
+
+        if (getUserById(userId).isMeChild()) {
+            parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
+        } else {
+            parentchild.changeParentOnboardingAnswerList(onboardingAnswerList);
+        }
+
+        // 첫번째 질문은 MVP 단에서는 고정
         QnA newQnA = QnA.builder()
-                .question(questionRepository.findById(1L).get()) // 필터 로직 추가되어야함
+                .question(questionRepository.findById(1L/* 수정 필요 */).get()) // TODO 예외처리 필요
                 .isParentAnswer(false)
                 .isChildAnswer(false)
                 .build();
         qnARepository.save(newQnA);
 
-        Parentchild parentchild = parentchildRepository.findById(1L).get();
+        parentchild.addQnA(newQnA);
+    }
+
+    @Transactional
+    public void filterAllQuestion(Long userId, List<OnboardingAnswer> onboardingAnswerList) {
+
+        Parentchild parentchild = parentchildDao.findByUserId(userId); // TODO 예외처리 필요
+
+        if (getUserById(userId).isMeChild()) {
+            parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
+        } else {
+            parentchild.changeParentOnboardingAnswerList(onboardingAnswerList);
+        }
+
+        List<OnboardingAnswer> childList = parentchild.getChildOnboardingAnswerList();
+        List<OnboardingAnswer> parentList = parentchild.getParentOnboardingAnswerList();
+
+        if (Objects.equals(childList.get(0).toString(), "YES"))
+
+
+        // 첫번째 질문은 MVP 단에서는 고정
+        QnA newQnA = QnA.builder()
+                .question(questionRepository.findById(1L/* 수정 필요 */).get()) // TODO 예외처리 필요
+                .isParentAnswer(false)
+                .isChildAnswer(false)
+                .build();
+        qnARepository.save(newQnA);
+
         parentchild.addQnA(newQnA);
     }
 

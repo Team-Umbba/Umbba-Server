@@ -22,7 +22,6 @@ import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -38,7 +37,6 @@ public class ParentchildService {
     @Transactional
     public OnboardingInviteResponseDto onboardInvite(Long userId, OnboardingInviteRequestDto request) {
 
-        // TODO userId 토큰 provider에서 정보 꺼내오도록
         User user = getUserById(userId);
         user.updateOnboardingInfo(
                 request.getUserInfo().getName(),
@@ -48,7 +46,6 @@ public class ParentchildService {
         log.info("isInvitorChild 요청값: {}", request.getIsInvitorChild());
         user.updateIsMeChild(request.getIsInvitorChild());
         log.info("업데이트 된 isMeChild 필드: {}", user.isMeChild());
-
 
         Parentchild parentchild = Parentchild.builder()
                 .inviteCode(generateInviteCode())
