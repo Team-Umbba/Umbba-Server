@@ -8,9 +8,9 @@ import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
+import sopt.org.umbbaServer.domain.qna.controller.dto.response.GetMainViewResponseDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.QnAListResponseDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.SingleQnAResponseDto;
-import sopt.org.umbbaServer.domain.qna.controller.dto.response.GetMainViewResponseDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.TodayQnAResponseDto;
 import sopt.org.umbbaServer.domain.qna.dao.QnADao;
 import sopt.org.umbbaServer.domain.qna.model.QnA;
@@ -23,7 +23,6 @@ import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 
-import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;

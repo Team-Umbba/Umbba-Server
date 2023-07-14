@@ -1,9 +1,6 @@
 package sopt.org.umbbaServer.domain.qna.dao;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import sopt.org.umbbaServer.domain.qna.model.QnA;
 
@@ -11,7 +8,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 

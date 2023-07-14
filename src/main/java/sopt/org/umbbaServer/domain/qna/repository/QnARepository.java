@@ -1,6 +1,5 @@
 package sopt.org.umbbaServer.domain.qna.repository;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import sopt.org.umbbaServer.domain.qna.model.QnA;
 
