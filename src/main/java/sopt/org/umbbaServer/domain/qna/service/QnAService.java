@@ -159,9 +159,9 @@ public class QnAService {
     public GetMainViewResponseDto getMainInfo(Long userId) {
 
         List<QnA> qnAList = qnADao.findQnASByUserId(userId);
-        QnA lastQna = qnAList.get(qnAList.size()-1);
+        QnA lastQna = qnAList.get(qnAList.size());
 
-        return GetMainViewResponseDto.of(lastQna);
+        return GetMainViewResponseDto.of(lastQna, qnAList.size());
 
     }
 

@@ -24,4 +24,5 @@ public class ParentchildDao {
                 .setParameter("id", userId)
                 .getSingleResult();
     }
+
 }

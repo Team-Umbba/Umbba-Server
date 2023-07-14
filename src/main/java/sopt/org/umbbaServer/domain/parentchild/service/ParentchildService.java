@@ -10,8 +10,7 @@ import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.Onboarding
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingReceiveRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.GetInviteCodeResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
-import sopt.org.umbbaServer.domain.qna.controller.dto.response.GetMainViewResponseDto;
-import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponeDto;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingReceiveResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingInviteResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
@@ -23,7 +22,7 @@ import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -40,23 +39,21 @@ public class ParentchildService {
     public OnboardingInviteResponseDto onboardInvite(Long userId, OnboardingInviteRequestDto request) {
 
         // TODO userId 토큰 provider에서 정보 꺼내오도록
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ErrorType.INVALID_USER)
-        );
+        User user = getUserById(userId);
         user.updateOnboardingInfo(
                 request.getUserInfo().getName(),
                 request.getUserInfo().getGender(),
                 request.getUserInfo().getBornYear()
         );
-        log.info("isInvitorChild 요청값: {}", request.isInvitorChild());
-        user.updateIsMeChild(request.isInvitorChild());
+        log.info("isInvitorChild 요청값: {}", request.getIsInvitorChild());
+        user.updateIsMeChild(request.getIsInvitorChild());
         log.info("업데이트 된 isMeChild 필드: {}", user.isMeChild());
 
 
         Parentchild parentchild = Parentchild.builder()
                 .inviteCode(generateInviteCode())
-                .isInvitorChild(request.isInvitorChild())
-                .relation(getRelation(request.getUserInfo().getGender(), request.getRelationInfo(), request.isInvitorChild()))
+                .isInvitorChild(request.getIsInvitorChild())
+                .relation(getRelation(request.getUserInfo().getGender(), request.getRelationInfo(), request.getIsInvitorChild()))
                 .pushTime(request.getPushTime())  // TODO 케이스에 따라 없을 수도 있음
                 .build();
         parentchildRepository.save(parentchild);
@@ -69,9 +66,7 @@ public class ParentchildService {
     @Transactional
     public OnboardingReceiveResponseDto onboardReceive(Long userId, OnboardingReceiveRequestDto request) {
 
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ErrorType.INVALID_USER)
-        );
+        User user = getUserById(userId);
         user.updateOnboardingInfo(
                 request.getUserInfo().getName(),
                 request.getUserInfo().getGender(),
@@ -80,10 +75,7 @@ public class ParentchildService {
 
 
         // TODO 추가 질문 답변 저장
-        Parentchild parentchild = parentchildRepository.findById(request.getParentChildId()).orElseThrow(
-                () -> new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION)
-        );
-        user.updateIsMeChild(!parentchild.isInvitorChild());
+        Parentchild parentchild = getParentchildById(request.getParentChildId());
 
 //        parentchild.updateInfo();
         List<User> parentChildUsers = getParentChildUsers(parentchild);
@@ -136,21 +128,26 @@ public class ParentchildService {
 
     // 초대코드 확인 후 부모자식 관계 성립
     @Transactional
-    public InviteResultResponeDto matchRelation(Long userId, InviteCodeRequestDto request) {
+    public InviteResultResponseDto matchRelation(Long userId, InviteCodeRequestDto request) {
 
         log.info("ParentchlidService 실행 - 요청 초대코드: {}", request.getInviteCode());
         Parentchild newMatchRelation = parentchildRepository.findByInviteCode(request.getInviteCode()).orElseThrow(
-                () -> new CustomException(ErrorType.INVALID_INVITE_CODE)
-        );
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ErrorType.INVALID_USER)
-        );
+                () -> new CustomException(ErrorType.INVALID_INVITE_CODE));
+        User user = getUserById(userId);
+        user.updateIsMeChild(!newMatchRelation.isInvitorChild());
+
+        if (user.getParentChild() != null) {
+            throw new CustomException(ErrorType.ALREADY_EXISTS_PARENT_CHILD_USER);
+        }
+
+        // TODO ParentChild에 연관된 User 수에 따른 예외처리
+        // TODO 하나의 유저는 하나의 관계만 가지도록 예외처리
         user.updateParentchild(newMatchRelation);
         log.info("로그인한 유저가 성립된 Parentchild Id: {}", user.getParentChild().getId());
 
         List<User> parentChildUsers = getParentChildUsers(newMatchRelation);
 
-        return InviteResultResponeDto.of(newMatchRelation, parentChildUsers);
+        return InviteResultResponseDto.of(newMatchRelation, parentChildUsers);
     }
 
     private List<User> getParentChildUsers(Parentchild newMatchRelation) {
@@ -178,8 +175,24 @@ public class ParentchildService {
     public GetInviteCodeResponseDto getInvitation(Long userId) {
 
         Parentchild parentchild = parentchildDao.findByUserId(userId);
+        if (parentchild == null) {
+            throw new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION);
+        }
 
         return GetInviteCodeResponseDto.of(parentchild);
+    }
+
+    private Parentchild getParentchildById(Long parentchildId) {
+        return parentchildRepository.findById(parentchildId).orElseThrow(
+                () -> new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_RELATION)
+        );
+    }
+
+    private User getUserById(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ErrorType.INVALID_USER)
+        );
+        return user;
     }
 
 }
