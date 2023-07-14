@@ -49,6 +49,18 @@ public class QnAService {
         Question todayQuestion = todayQnA.getQuestion();
         User opponentUser = getOpponentByParentchild(parentchild, userId);
 
+        Optional<User> matchUser = parentchildDao.findMatchUserByUserId(userId);
+        log.info("matchUser: {} -> parentchildDao.findMatchUserByUserId()의 결과", matchUser);
+
+        // 유저의 상태에 따른 분기처리
+        if (matchUser.isEmpty()) {
+            return invitation(userId);
+        }
+        if (matchUser.get().getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
+            return withdrawUser();
+        }
+
+
         return TodayQnAResponseDto.of(myUser, opponentUser, todayQnA, todayQuestion, myUser.isMeChild());
     }
 
@@ -109,7 +121,7 @@ public class QnAService {
     }
 
     /*
-     리팩토링을 위해 아래로 뺀 메서드들
+    리팩토링을 위해 아래로 뺀 메서드들
      */
     private User getUserById(Long userId) {
         return userRepository.findById(userId)
@@ -161,19 +173,9 @@ public class QnAService {
         return opponentUserList.get(0);
     }
 
+
     // 메인페이지 정보
     public GetMainViewResponseDto getMainInfo(Long userId) {
-
-        Optional<User> matchUser = parentchildDao.findMatchUserByUserId(userId);
-        log.info("matchUser: {} -> parentchildDao.findMatchUserByUserId()의 결과", matchUser);
-
-        // 유저의 상태에 따른 분기처리
-        if (matchUser.isEmpty()) {
-            return invitation(userId);
-        }
-        if (matchUser.get().getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
-            return withdrawUser();
-        }
 
 
         List<QnA> qnAList = qnADao.findQnASByUserId(userId).orElseThrow(
@@ -184,19 +186,19 @@ public class QnAService {
         return GetMainViewResponseDto.of(lastQna, qnAList.size());
     }
 
-    private GetMainViewResponseDto invitation(Long userId) {
+    private TodayQnAResponseDto invitation(Long userId) {
 
         User user = getUserById(userId);
         Parentchild parentchild = parentchildDao.findByUserId(userId).orElseThrow(
                 () -> new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION)
         );
 
-        return GetMainViewResponseDto.of(parentchild.getInviteCode(), user.getUsername(), "url");  // TODO url 설정 필요 (Firebase)
+        return TodayQnAResponseDto.of(parentchild.getInviteCode(), user.getUsername(), "url");  // TODO url 설정 필요 (Firebase)
     }
 
-    private GetMainViewResponseDto withdrawUser() {
+    private TodayQnAResponseDto withdrawUser() {
 
-        return GetMainViewResponseDto.of(false);
+        return TodayQnAResponseDto.of(false);
     }
 
 
