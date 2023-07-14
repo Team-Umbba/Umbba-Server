@@ -1,7 +1,6 @@
 package sopt.org.umbbaServer.domain.user.model;
 
 import lombok.*;
-import org.hibernate.annotations.Parent;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 import sopt.org.umbbaServer.global.util.AuditingTimeEntity;

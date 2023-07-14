@@ -1,29 +1,26 @@
 package sopt.org.umbbaServer.domain.user.service;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Base64Utils;
 import sopt.org.umbbaServer.domain.user.controller.dto.request.RefreshRequestDto;
 import sopt.org.umbbaServer.domain.user.controller.dto.request.SocialLoginRequestDto;
 import sopt.org.umbbaServer.domain.user.controller.dto.response.UserLoginResponseDto;
-import sopt.org.umbbaServer.global.config.jwt.JwtProvider;
-import sopt.org.umbbaServer.global.config.jwt.TokenDto;
-import sopt.org.umbbaServer.global.config.auth.UserAuthentication;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
 import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 import sopt.org.umbbaServer.domain.user.social.apple.AppleLoginService;
 import sopt.org.umbbaServer.domain.user.social.kakao.KakaoLoginService;
+import sopt.org.umbbaServer.global.config.auth.UserAuthentication;
+import sopt.org.umbbaServer.global.config.jwt.JwtProvider;
+import sopt.org.umbbaServer.global.config.jwt.TokenDto;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor

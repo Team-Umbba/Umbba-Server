@@ -15,11 +15,12 @@ public class GetMainViewResponseDto {
     private String topic;
     private Integer index;
 
-    public static GetMainViewResponseDto of (QnA qnA, int index) {
+    public static GetMainViewResponseDto of(QnA qnA, int index) {
         return GetMainViewResponseDto.builder()
                 .section(qnA.getQuestion().getSection().getValue())
                 .topic(qnA.getQuestion().getTopic())
                 .index(index)
                 .build();
     }
+
 }

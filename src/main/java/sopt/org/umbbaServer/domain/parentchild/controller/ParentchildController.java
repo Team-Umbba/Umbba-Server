@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.InviteCodeRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingInviteRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingReceiveRequestDto;
-import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.GetInviteCodeResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingReceiveResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingInviteResponseDto;
@@ -56,13 +55,6 @@ public class ParentchildController {
         return ApiResponse.success(SuccessType.CREATE_PARENT_CHILD_SUCCESS, response);
     }
 
-
-    @GetMapping("/home/invite")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<GetInviteCodeResponseDto> invitation(Principal principal) {
-
-        return ApiResponse.success(SuccessType.GET_INVITE_CODE_SUCCESS, parentchildService.getInvitation(JwtProvider.getUserFromPrincial(principal)));
-    }
 
 
 }
