@@ -55,7 +55,7 @@ jobs:
         mkdir ./firebase
         cd ./firebase
         
-        aws s3 cp --region ap-northeast-2 s3://${{ secrets.S3_BUCKET_NAME }}/json/umbba-fcm-firebase-adminsdk.json ./umbba-fcm-firebase-adminsdk.json
+        aws s3 cp --region ap-northeast-2 s3://${{ secrets.S3_BUCKET_NAME }}/json/umbba-fcm-firebase-adminsdk.json .
         
         cat src/main/resources/firebase/umbba-fcm-firebase-adminsdk.json
         
