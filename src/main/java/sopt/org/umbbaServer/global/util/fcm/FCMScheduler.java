@@ -29,14 +29,15 @@ public class FCMScheduler {
 
     private final FCMService fcmService;
 
-    @Scheduled(cron = "0 0 0 * * ?")  // 초기값
+    @Scheduled(cron = "0 0 0 * * ?", zone = "Asia/Seoul")  // 초기값
     public String pushTodayQna() {
 
         log.info("오늘의 질문 알람 - 유저마다 보내는 시간 다름");
         List<Parentchild> parentchildList = parentchildRepository.findAll();
         parentchildList.stream()
                 .forEach(pc -> {
-                    String cronExpression = String.format("0 %s %s * * ?", pc.getPushTime().getMinute(), pc.getPushTime().getHour());
+//                    String cronExpression = String.format("0 %s %s * * ?", pc.getPushTime().getMinute(), pc.getPushTime().getHour());
+                    String cronExpression = String.format("10 * * * * ?");
                     Question todayQnA = qnADao.findQuestionByParentchildId(pc.getId()).orElseThrow(
                             () -> new CustomException(ErrorType.PARENTCHILD_HAVE_NO_QNALIST)
                     );
