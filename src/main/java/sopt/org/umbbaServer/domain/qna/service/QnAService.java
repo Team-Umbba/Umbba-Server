@@ -20,7 +20,7 @@ import sopt.org.umbbaServer.domain.user.repository.UserRepository;
 import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
-import sopt.org.umbbaServer.global.util.fcm.FCMScheduler;
+import sopt.org.umbbaServer.global.util.fcm.FCMService;
 
 import java.util.List;
 import java.util.Objects;
@@ -42,7 +42,7 @@ public class QnAService {
     private final UserRepository userRepository;
     private final QnADao qnADao;
     private final ParentchildDao parentchildDao;
-    private final FCMScheduler fcmScheduler;  //TODO Service에서 Service를 주입받는 부분 수정
+    private final FCMService fcmService;  //TODO Service에서 Service를 주입받는 부분 수정
 
     public TodayQnAResponseDto getTodayQnA(Long userId) {
 
@@ -76,10 +76,10 @@ public class QnAService {
 
         if (myUser.isMeChild()) {
             todayQnA.saveChildAnswer(request.getAnswer());
-            fcmScheduler.pushOpponentReply(todayQnA.getQuestion().getChildQuestion());
+            fcmService.pushOpponentReply(todayQnA.getQuestion().getChildQuestion(), opponentUser.getId());
         } else {
             todayQnA.saveParentAnswer(request.getAnswer());
-            fcmScheduler.pushOpponentReply(todayQnA.getQuestion().getParentQuestion());
+            fcmService.pushOpponentReply(todayQnA.getQuestion().getParentQuestion(), opponentUser.getId());
         }
 
     }

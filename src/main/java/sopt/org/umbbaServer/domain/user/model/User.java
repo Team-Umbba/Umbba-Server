@@ -54,10 +54,10 @@ public class User extends AuditingTimeEntity {
     }
 
     // ** FCM 푸시 알림 관련 **
-    private String firebaseToken;  // registration+token
+    private String fcmToken;  // registration+token
 
-    public void updateFirebaseToken(String firebaseToken) {
-        this.firebaseToken = firebaseToken;
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 
 

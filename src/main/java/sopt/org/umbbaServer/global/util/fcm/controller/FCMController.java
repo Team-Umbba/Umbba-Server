@@ -7,7 +7,6 @@ import sopt.org.umbbaServer.global.common.dto.ApiResponse;
 import sopt.org.umbbaServer.global.config.jwt.JwtProvider;
 import sopt.org.umbbaServer.global.exception.SuccessType;
 import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
-import sopt.org.umbbaServer.global.util.fcm.FCMScheduler;
 import sopt.org.umbbaServer.global.util.fcm.FCMService;
 
 import java.io.IOException;
@@ -19,19 +18,18 @@ import java.security.Principal;
 public class FCMController {
 
     private final FCMService fcmService;
-    private final FCMScheduler fcmScheduler;
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse sendNotificationByToken(@RequestBody FCMPushRequestDto request, Principal principal) throws IOException {
 
-        return ApiResponse.success(SuccessType.PUSH_ALARM_SUCCESS, fcmService.sendMessageTo(request, JwtProvider.getUserFromPrincial(principal)));
+        return ApiResponse.success(SuccessType.PUSH_ALARM_SUCCESS, fcmService.pushAlarm(request, JwtProvider.getUserFromPrincial(principal)));
     }
 
     @PostMapping("/qna")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse sendScheduledTest() {
-        fcmScheduler.pushTodayQna();
+        fcmService.pushTodayQna();
         return ApiResponse.success(SuccessType.PUSH_ALARM_SUCCESS);
     }
 

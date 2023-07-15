@@ -1,5 +1,7 @@
 package sopt.org.umbbaServer.global.util.fcm.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 @Getter
@@ -9,49 +11,38 @@ import lombok.*;
 public class FCMPushRequestDto {
 
     private String targetToken;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String title;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String body;
 
-    @Getter
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public enum PushMessage {
 
-        // 새로운 주제가 도착했을 떄
-        TODAY_QNA("로부터 교신이 도착했어요", "에 대한 질문에 답변하고 추억을 나눠보세요 ☺️(수신거부 : 설정 - 푸시알림 off)"),
-
-
-        // 주제에 대한 상대의 답변이 입력되었을 때
-        OPPONENT_REPLY("📞상대방이 교신에 응답했어요", "에 대한 상대의 답변을 확인해 볼까요? ☺️ ️(수신거부 : 설정 - 푸시알림 off)");
-
-        private String title;
-        private String body;
-
-        public void setTitle(String section) {
-            this.title = "📞 " + section + this.title;
-        }
-
-        public void setBody(String question) {
-            this.body = question + this.body;
-        }
-    }
-
-
-    public static PushMessage sendTodayQna(String section, String question) {
+    // Spring Scheduler를 이용해 Parentchild 테이블의 모든 값을 주기적으로 검사한 후 보낼 때 호출 -> 다수기기 or 주제구독 방식으로 다수의 사용자에 전송
+    public static FCMPushRequestDto sendTodayQna(String targetToken, String section, String question) {
 
         PushMessage result = PushMessage.TODAY_QNA;
         result.setTitle(section);
         result.setBody(question);
 
-        return result;
+        return FCMPushRequestDto.builder()
+                .targetToken(targetToken)
+                .title(result.getTitle())
+                .body(result.getBody())
+                .build();
     }
 
-    public static PushMessage sendOpponentReply(String question) {
+    // QnAService or QnAController에서 특정 유저의 답변 입력 시 관계에 속한 상대 측 유저의 fcm 토큰으로 푸시 전송
+    public static FCMPushRequestDto sendOpponentReply(String targetToken, String question) {
 
         PushMessage result = PushMessage.OPPONENT_REPLY;
         result.setBody(question);
 
-        return result;
+        return FCMPushRequestDto.builder()
+                .title(result.getTitle())
+                .body(result.getBody())
+                .build();
     }
-
 
 }
