@@ -28,6 +28,13 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
+        
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+        aws-region: ap-northeast-2
     
     # 3) 환경변수 파일 생성
     - name: make application.properties 파일 생성
