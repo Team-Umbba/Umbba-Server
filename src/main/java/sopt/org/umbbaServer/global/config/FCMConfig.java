@@ -15,7 +15,6 @@ import sopt.org.umbbaServer.global.exception.ErrorType;
 import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMNotificationRequestDto;
 
 import javax.annotation.PostConstruct;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -32,7 +31,7 @@ public class FCMConfig {
     public void init() {
         try {
             Resource resource = new ClassPathResource(SERVICE_ACCOUNT_JSON);
-            FileInputStream serviceAccount = new FileInputStream(resource.getFile());
+            InputStream serviceAccount = resource.getInputStream();
 
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
