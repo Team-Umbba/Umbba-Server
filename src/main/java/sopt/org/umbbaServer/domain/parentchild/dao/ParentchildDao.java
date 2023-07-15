@@ -28,6 +28,7 @@ public class ParentchildDao {
                     .setParameter("id", userId)
                     .getSingleResult();
             return Optional.ofNullable(parentchild);
+
         } catch (NoResultException e) {
             return Optional.empty();
         }

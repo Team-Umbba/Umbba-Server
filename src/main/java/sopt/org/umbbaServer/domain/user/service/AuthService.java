@@ -110,7 +110,7 @@ public class AuthService {
         return userRepository.existsBySocialPlatformAndSocialId(socialPlatform, socialId);
     }
 
-    private String login(SocialPlatform socialPlatform, String socialAccessToken) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    private String login(SocialPlatform socialPlatform, String socialAccessToken) {
 
             try {
                 switch (socialPlatform.toString()) {

@@ -12,5 +12,5 @@ public class QnAListResponseDto {
 
     private Long qnaId;
     private Integer index;
-    private String question;
+    private String topic;
 }

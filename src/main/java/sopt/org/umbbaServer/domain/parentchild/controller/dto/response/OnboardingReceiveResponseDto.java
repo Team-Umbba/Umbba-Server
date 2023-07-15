@@ -1,5 +1,6 @@
 package sopt.org.umbbaServer.domain.parentchild.controller.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
@@ -20,6 +21,7 @@ public class OnboardingReceiveResponseDto {
 
     private InviteResultResponseDto parentchildInfo;
 
+    @JsonFormat(pattern = "kk:mm")
     private LocalTime pushTime;
 
     public static OnboardingReceiveResponseDto of(Parentchild parentchild, User user, List<User> parentChildUsers) {
