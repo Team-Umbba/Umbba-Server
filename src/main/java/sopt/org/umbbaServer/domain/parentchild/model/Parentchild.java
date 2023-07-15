@@ -56,6 +56,10 @@ public class Parentchild extends AuditingTimeEntity {
     @Column(nullable = false)
     private LocalTime pushTime;  // default: 오후 11시(클라이언트)
 
+    public void initQnA() {
+        qnaList = new ArrayList<>();
+    }
+
     public void addQnA(QnA qnA) {
         qnaList.add(qnA);
     }

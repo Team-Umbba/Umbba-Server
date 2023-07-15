@@ -128,6 +128,7 @@ public class QnAService {
                 .build();
         qnARepository.save(newQnA);
 
+        parentchild.initQnA();
         parentchild.addQnA(newQnA);
     }
 
@@ -182,8 +183,10 @@ public class QnAService {
     }
 
     private Parentchild getParentchildByUserId(Long userId) {
-        return parentchildDao.findByUserId(userId)
-                .orElseThrow(() -> new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD));
+
+        return parentchildDao.findByUserId(userId).orElseThrow(
+                () -> new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD)
+        );
     }
 
     private List<QnA> getQnAListByParentchild(Parentchild parentchild) {
