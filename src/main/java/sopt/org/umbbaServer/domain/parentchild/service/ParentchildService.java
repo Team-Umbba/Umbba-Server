@@ -29,10 +29,9 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class ParentchildService {
 
-    private final ParentchildDao parentchildDao;
     private final ParentchildRepository parentchildRepository;
     private final UserRepository userRepository;
-    private final QnADao qnADao;
+    private final ParentchildDao parentchildDao;
 
     // [발신] 초대하는 측의 온보딩 정보 입력
     @Transactional
@@ -72,9 +71,7 @@ public class ParentchildService {
                 request.getUserInfo().getBornYear()
         );
 
-        // TODO 추가 질문 답변 저장
-        Parentchild parentchild = getParentchildById(request.getParentChildId());
-
+        Parentchild parentchild = getParentchildByUserId(userId);
 //        parentchild.updateInfo();
         List<User> parentChildUsers = getParentChildUsers(parentchild);
 
@@ -153,7 +150,7 @@ public class ParentchildService {
         log.info("성립된 부모자식: {} X {}, 관계: {}", parentChildUsers.get(0).getUsername(), parentChildUsers.get(1).getUsername(), newMatchRelation.getRelation());
 
         // 부모자식 관계에 대한 예외처리
-        if (parentChildUsers.isEmpty() || parentChildUsers == null) {
+        if (parentChildUsers.isEmpty()) {
             throw new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_USER);
         }
 
@@ -167,18 +164,18 @@ public class ParentchildService {
 
     }
 
+    private Parentchild getParentchildByUserId(Long userId) {
 
-    private Parentchild getParentchildById(Long parentchildId) {
-        return parentchildRepository.findById(parentchildId).orElseThrow(
-                () -> new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_RELATION)
+        return parentchildDao.findByUserId(userId).orElseThrow(
+                () -> new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD)
         );
     }
 
     private User getUserById(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(
+
+        return userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ErrorType.INVALID_USER)
         );
-        return user;
     }
 
 }

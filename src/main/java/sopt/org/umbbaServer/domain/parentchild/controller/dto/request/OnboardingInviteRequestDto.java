@@ -8,10 +8,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import sopt.org.umbbaServer.domain.qna.model.OnboardingAnswer;
 import sopt.org.umbbaServer.domain.user.controller.dto.request.UserInfoDto;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 import java.util.List;
@@ -34,5 +34,6 @@ public class OnboardingInviteRequestDto {
     @JsonFormat(pattern = "kk:mm")
     private LocalTime pushTime;
 
-    private List<OnboardingAnswer> onboardingAnswerList;
+    @NotEmpty // TODO 여기서 걸러지게 만들어야함
+    private List<String> onboardingAnswerList;
 }
