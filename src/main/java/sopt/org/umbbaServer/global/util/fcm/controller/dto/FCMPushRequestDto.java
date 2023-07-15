@@ -1,12 +1,16 @@
-package sopt.org.umbbaServer.global.util.fcm;
+package sopt.org.umbbaServer.global.util.fcm.controller.dto;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
+@Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class PushRequest {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class FCMPushRequestDto {
+
+    private String targetToken;
+    private String title;
+    private String body;
 
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)

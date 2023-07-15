@@ -20,7 +20,7 @@ import sopt.org.umbbaServer.domain.user.repository.UserRepository;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMMessage;
-import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMNotificationRequestDto;
+import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
 
 import java.io.IOException;
 import java.util.List;
@@ -53,7 +53,7 @@ public class FCMService {
 
     // FCM Service에 메시지를 수신하는 함수 (헤더와 바디 직접 만들기)
     @Transactional
-    public String sendMessageTo(FCMNotificationRequestDto request, Long userId) throws IOException {
+    public String sendMessageTo(FCMPushRequestDto request, Long userId) throws IOException {
 
         // TODO 같은 Parentchild ID를 가진 User를 찾은 후, 이들에 대한 토큰 리스트로 동일한 알림 메시지 전송하도록
         User user = userRepository.findById(userId).orElseThrow(
@@ -79,7 +79,7 @@ public class FCMService {
     }
 
     // 요청 파라미터를 FCM의 body 형태로 만들어주는 메서드
-    private String makeMessage(FCMNotificationRequestDto request) throws JsonProcessingException {
+    private String makeMessage(FCMPushRequestDto request) throws JsonProcessingException {
 
         FCMMessage fcmMessage = FCMMessage.builder()
                 .message(FCMMessage.Message.builder()
@@ -99,7 +99,7 @@ public class FCMService {
 
 
     // 단일 기기에 알림 메시지 전송
-    public String sendNotificationByToken(FCMNotificationRequestDto request) {
+    public String sendNotificationByToken(FCMPushRequestDto request) {
 
         // TODO 같은 Parentchild ID를 가진 User를 찾은 후, 이들에 대한 토큰 리스트로 동일한 알림 메시지 전송하도록
         User user = userRepository.findByFirebaseToken(request.getTargetToken()).orElseThrow(

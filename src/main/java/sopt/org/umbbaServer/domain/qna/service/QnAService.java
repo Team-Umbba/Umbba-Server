@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
-import sopt.org.umbbaServer.domain.qna.model.*;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.GetMainViewResponseDto;
@@ -13,6 +12,7 @@ import sopt.org.umbbaServer.domain.qna.controller.dto.response.QnAListResponseDt
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.SingleQnAResponseDto;
 import sopt.org.umbbaServer.domain.qna.controller.dto.response.TodayQnAResponseDto;
 import sopt.org.umbbaServer.domain.qna.dao.QnADao;
+import sopt.org.umbbaServer.domain.qna.model.*;
 import sopt.org.umbbaServer.domain.qna.repository.QnARepository;
 import sopt.org.umbbaServer.domain.qna.repository.QuestionRepository;
 import sopt.org.umbbaServer.domain.user.model.User;
@@ -20,6 +20,7 @@ import sopt.org.umbbaServer.domain.user.repository.UserRepository;
 import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
+import sopt.org.umbbaServer.global.util.fcm.FCMScheduler;
 
 import java.util.List;
 import java.util.Objects;
@@ -28,7 +29,6 @@ import java.util.stream.Collectors;
 
 import static sopt.org.umbbaServer.domain.qna.model.OnboardingAnswer.YES;
 import static sopt.org.umbbaServer.domain.qna.model.QuestionGroup.*;
-import static sopt.org.umbbaServer.domain.qna.model.QuestionSection.SCHOOL;
 import static sopt.org.umbbaServer.domain.qna.model.QuestionSection.YOUNG;
 
 @Slf4j
@@ -42,6 +42,7 @@ public class QnAService {
     private final UserRepository userRepository;
     private final QnADao qnADao;
     private final ParentchildDao parentchildDao;
+    private final FCMScheduler fcmScheduler;  //TODO Service에서 Service를 주입받는 부분 수정
 
     public TodayQnAResponseDto getTodayQnA(Long userId) {
 
@@ -75,9 +76,12 @@ public class QnAService {
 
         if (myUser.isMeChild()) {
             todayQnA.saveChildAnswer(request.getAnswer());
+            fcmScheduler.pushOpponentReply(todayQnA.getQuestion().getChildQuestion());
         } else {
             todayQnA.saveParentAnswer(request.getAnswer());
+            fcmScheduler.pushOpponentReply(todayQnA.getQuestion().getParentQuestion());
         }
+
     }
 
     public List<QnAListResponseDto> getQnaList(Long userId, Long sectionId) {
