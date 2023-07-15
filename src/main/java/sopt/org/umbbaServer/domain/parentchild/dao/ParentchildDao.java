@@ -8,6 +8,7 @@ import sopt.org.umbbaServer.domain.user.model.User;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -48,6 +49,17 @@ public class ParentchildDao {
         } catch (NoResultException e) {
             return Optional.empty();
         }
+    }
+
+    public List<String> findFcmTokensById(Long parentchildId) {
+
+        String jpql = "SELECT u.fcmToken FROM User u " +
+                "JOIN Parentchild pc ON pc.id = u.parentChild.id " +
+                "WHERE pc.id = :id";
+
+        return em.createQuery(jpql, String.class)
+                .setParameter("id", parentchildId)
+                .getResultList();
     }
 
 }

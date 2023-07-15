@@ -20,14 +20,13 @@ public class FCMPushRequestDto {
 
 
     // Spring Scheduler를 이용해 Parentchild 테이블의 모든 값을 주기적으로 검사한 후 보낼 때 호출 -> 다수기기 or 주제구독 방식으로 다수의 사용자에 전송
-    public static FCMPushRequestDto sendTodayQna(String targetToken, String section, String question) {
+    public static FCMPushRequestDto sendTodayQna(String section, String question) {
 
         PushMessage result = PushMessage.TODAY_QNA;
         result.setTitle(section);
         result.setBody(question);
 
         return FCMPushRequestDto.builder()
-                .targetToken(targetToken)
                 .title(result.getTitle())
                 .body(result.getBody())
                 .build();

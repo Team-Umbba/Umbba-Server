@@ -3,10 +3,7 @@ package sopt.org.umbbaServer.global.util.fcm;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
+import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
@@ -16,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
 import sopt.org.umbbaServer.global.exception.CustomException;
@@ -24,6 +22,7 @@ import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMMessage;
 import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +39,7 @@ public class FCMService {
     private String topic;
 
     private final UserRepository userRepository;
+    private final ParentchildDao parentchildDao;
     private final ObjectMapper objectMapper;
 
 
@@ -86,12 +86,12 @@ public class FCMService {
         log.info("알림 전송: {}", response.body().string());
     }
 
-    // 요청 파라미터를 FCM의 body 형태로 만들어주는 메서드
+    // 요청 파라미터를 FCM의 body 형태로 만들어주는 메서드 [단일 기기]
     private String makeMessage(FCMPushRequestDto request) throws JsonProcessingException {
 
         FCMMessage fcmMessage = FCMMessage.builder()
                 .message(FCMMessage.Message.builder()
-                        .token(request.getTargetToken())
+                        .token(request.getTargetToken())   // 1:1 전송 시 반드시 필요한 대상 토큰 설정
                         .notification(FCMMessage.Notification.builder()
                                 .title(request.getTitle())
                                 .body(request.getBody())
@@ -104,7 +104,7 @@ public class FCMService {
         return objectMapper.writeValueAsString(fcmMessage);
     }
 
-    // 따로 만들어둔 메세지 템플릿 이용해서 전송할 때 사용하는 알람
+    // 따로 만들어둔 메세지 템플릿 이용해서 전송할 때 사용하는 알람 [Topic 구독]
     private String makeMessage(FCMPushRequestDto request, Long userId) throws FirebaseMessagingException, JsonProcessingException {
 
         Optional<User> user = userRepository.findByFcmToken(request.getTargetToken());
@@ -119,8 +119,8 @@ public class FCMService {
 
         FCMMessage fcmMessage = FCMMessage.builder()
                 .message(FCMMessage.Message.builder()
-                        .token(user.get().getFcmToken())
-                        .topic(topic)
+//                        .token(user.get().getFcmToken())
+                        .topic(topic)   // 토픽 구동에서 반드시 필요한 설정 (token 지정 x)
                         .notification(FCMMessage.Notification.builder()
                                 .title(request.getTitle())
                                 .body(request.getBody())
@@ -134,8 +134,45 @@ public class FCMService {
     }
 
 
+    /**
+     * 단일 요청으로 최대 1000개의 기기를 Topic에 구독 등록 및 취소할 수 있다.
+     */
+    // Topic 구독 설정 - application.yml에서 topic명 관리
+    public void subscribe() throws FirebaseMessagingException {
+        // These registration tokens come from the client FCM SDKs.
+        // TODO Parentchild 테이블 탐색 후 주기적으로 알림 쏴주기
+        List<String> registrationTokens = Arrays.asList(
+                "YOUR_REGISTRATION_TOKEN_1",
+                // ...
+                "YOUR_REGISTRATION_TOKEN_n"
+        );
+
+        // Subscribe the devices corresponding to the registration tokens to the topic.
+        TopicManagementResponse response = FirebaseMessaging.getInstance().subscribeToTopic(
+                registrationTokens, topic);
+
+        System.out.println(response.getSuccessCount() + " tokens were subscribed successfully");
+    }
+
+    // Topic 구독 취소
+    public void unsubscribe() throws FirebaseMessagingException {
+        // These registration tokens come from the client FCM SDKs.
+        List<String> registrationTokens = Arrays.asList(
+                "YOUR_REGISTRATION_TOKEN_1",
+                // ...
+                "YOUR_REGISTRATION_TOKEN_n"
+        );
+
+        // Unsubscribe the devices corresponding to the registration tokens from the topic.
+        TopicManagementResponse response = FirebaseMessaging.getInstance().unsubscribeFromTopic(
+                registrationTokens, topic);
+
+        System.out.println(response.getSuccessCount() + " tokens were unsubscribed successfully");
+    }
+
+
     @Scheduled(cron = "0 0 23 * * ?")
-    public void pushTodayQna() {
+    public String pushTodayQna() {
 
         try {
             log.info("오늘의 질문 알람 - 유저마다 보내는 시간 다름");
@@ -143,8 +180,9 @@ public class FCMService {
                 () -> new CustomException(ErrorType.USER_HAVE_NO_QNALIST)
         );
         QnA lastQna = qnAList.get(qnAList.size()-1);*/
-            String message = makeMessage(FCMPushRequestDto.sendTodayQna("targetToken","section", "question"), 1L);
+            String message = makeMessage(FCMPushRequestDto.sendTodayQna("section", "question"), 1L);
             sendPushMessage(message);
+            return "알림을 성공적으로 전송했습니다. topic = " + topic;
         } catch (IOException e) {
             log.error("푸시메시지 전송 실패 - IOException: {}", e.getMessage());
             throw new CustomException(ErrorType.FAIL_TO_SEND_PUSH_ALARM);
@@ -175,47 +213,32 @@ public class FCMService {
     }
 
 
-    // 단일 기기에 알림 메시지 전송
-    public String sendNotificationByToken(FCMPushRequestDto request) {
+    // 다수의 기기(부모자식 ID에 포함된 유저 2명)에 알림 메시지 전송 -> 주기적 알림 전송에서 사용
+    public String multipleSendByToken(FCMPushRequestDto request, Long parentchildId) {
 
-        // TODO 같은 Parentchild ID를 가진 User를 찾은 후, 이들에 대한 토큰 리스트로 동일한 알림 메시지 전송하도록
-        User user = userRepository.findByFcmToken(request.getTargetToken()).orElseThrow(
-                () -> new CustomException(ErrorType.INVALID_USER)
-        );
+        List<String> tokenList = parentchildDao.findFcmTokensById(parentchildId);
 
-        if (user.getFcmToken() != null) {
+        MulticastMessage message = MulticastMessage.builder()
+                .setNotification(Notification.builder()
+                        .setTitle(request.getTitle())
+                        .setBody(request.getBody())
+                        .setImage(null)
+                        .build())
+                .addAllTokens(tokenList)
+                .build();
 
-            Notification notification = Notification.builder()
-                    .setTitle(request.getTitle())
-                    .setBody(request.getBody())
-                    .build();
+        try {
+            BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
+            log.info("다수 기기 알림 전송 성공 ! successCount: " + response.getSuccessCount() + " messages were sent successfully");
 
-            // 메시지 만들기 TODO List<Message> 로도 구현 가능
-            Message message = Message.builder()
-                    .setToken(user.getFcmToken())
-                    .setNotification(notification)
-//                    .putAllData(request.getData())
-                    .build();
+            log.info("알림 전송: {}", response.getResponses().toString());
 
-            try {
-                FirebaseMessaging.getInstance().send(message);
-                return "알림을 성공적으로 전송했습니다. targetUserId = " + request.getTargetToken();
-            } catch (FirebaseMessagingException e) {
-                log.error("알림 전송 실패 - {}", e);
-                return "알림 전송에 실패했습니다. targetUserId = " + request.getTargetToken();
-            }
+            return "알림을 성공적으로 전송했습니다. targetUserId = 1." + tokenList.get(0) + ", \n\n2." + tokenList.get(1);
+        } catch (FirebaseMessagingException e) {
+            log.error("다수기기 푸시메시지 전송 실패 - FirebaseMessagingException: {}", e.getMessage());
+            throw new CustomException(ErrorType.FAIL_TO_SEND_PUSH_ALARM);
         }
-
-        throw new CustomException(ErrorType.INVALID_FIREBASE_TOKEN);
     }
-
-    // 다수의 기기에 알림 메시지 전송
-    /*public void multipleSendByToken(FCMNotificationRequestDto request) throws FirebaseMessagingException {
-
-        List<String> tokenList = IntStream.rangeClosed(1, 30).mapToObj(
-                index -> request.getFire
-        )
-    }*/
 
 
 }

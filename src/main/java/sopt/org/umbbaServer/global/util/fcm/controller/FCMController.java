@@ -26,11 +26,20 @@ public class FCMController {
         return ApiResponse.success(SuccessType.PUSH_ALARM_SUCCESS, fcmService.pushAlarm(request, JwtProvider.getUserFromPrincial(principal)));
     }
 
+    /**
+     * 주기적 알림 전송 테스트를 위한 API
+     */
     @PostMapping("/qna")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse sendScheduledTest() {
-        fcmService.pushTodayQna();
-        return ApiResponse.success(SuccessType.PUSH_ALARM_SUCCESS);
+    public ApiResponse sendTopicScheduledTest() {
+        return ApiResponse.success(SuccessType.PUSH_ALARM_SUCCESS, fcmService.pushTodayQna());
     }
+
+    @PostMapping("/parentchild")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse sendMultiScheduledTest() {
+        return ApiResponse.success(SuccessType.PUSH_ALARM_SUCCESS, fcmService.multipleSendByToken(FCMPushRequestDto.sendTodayQna("section", "question") ,93L));
+    }
+
 
 }
