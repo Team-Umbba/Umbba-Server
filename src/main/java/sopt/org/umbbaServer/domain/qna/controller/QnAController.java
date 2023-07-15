@@ -66,7 +66,7 @@ public class QnAController {
         return ApiResponse.success(SuccessType.GET_MAIN_HOME_SUCCESS, qnAService.getMainInfo(JwtProvider.getUserFromPrincial(principal)));
     }
 
-    @GetMapping("/home/invite")
+    @GetMapping("/home/case")
     public ApiResponse<GetInvitationResponseDto> invitation(Principal principal) {
 
         return ApiResponse.success(SuccessType.GET_INVITE_CODE_SUCCESS, qnAService.getInvitation(JwtProvider.getUserFromPrincial(principal)));
