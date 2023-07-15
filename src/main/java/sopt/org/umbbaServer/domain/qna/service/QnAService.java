@@ -22,6 +22,7 @@ import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 import sopt.org.umbbaServer.global.util.fcm.FCMService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -93,11 +94,10 @@ public class QnAService {
         return qnaList.stream()
                 .filter(qna -> Objects.equals(qna.getQuestion().getSection().getSectionId(), sectionId))
                 .map(qna -> {
-                    String question = myUser.isMeChild() ? qna.getQuestion().getChildQuestion() : qna.getQuestion().getParentQuestion();
                     return QnAListResponseDto.builder()
                             .qnaId(qna.getId())
                             .index(qnaList.indexOf(qna) + 1)
-                            .question(question)
+                            .topic(qna.getQuestion().getTopic())
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -114,9 +114,14 @@ public class QnAService {
     }
 
     @Transactional
-    public void filterFirstQuestion(Long userId, List<OnboardingAnswer> onboardingAnswerList) {
+    public void filterFirstQuestion(Long userId, List<String> onboardingAnswerStringList) {
 
         Parentchild parentchild = getParentchildByUserId(userId);
+
+        // String을 Enum으로 변경
+        List<OnboardingAnswer> onboardingAnswerList = onboardingAnswerStringList.stream()
+                .map(OnboardingAnswer::of)
+                .collect(Collectors.toList());
 
         if (getUserById(userId).isMeChild()) {
             parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
@@ -132,13 +137,19 @@ public class QnAService {
                 .build();
         qnARepository.save(newQnA);
 
+        parentchild.initQnA();
         parentchild.addQnA(newQnA);
     }
 
     @Transactional
-    public void filterAllQuestion(Long userId, List<OnboardingAnswer> onboardingAnswerList) {
+    public void filterAllQuestion(Long userId, List<String> onboardingAnswerStringList) {
 
         Parentchild parentchild = getParentchildByUserId(userId);
+
+        // String을 Enum으로 변경
+        List<OnboardingAnswer> onboardingAnswerList = onboardingAnswerStringList.stream()
+                .map(OnboardingAnswer::of)
+                .collect(Collectors.toList());
 
         if (getUserById(userId).isMeChild()) {
             parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
@@ -149,7 +160,9 @@ public class QnAService {
         List<OnboardingAnswer> childList = parentchild.getChildOnboardingAnswerList();
         List<OnboardingAnswer> parentList = parentchild.getParentOnboardingAnswerList();
 
+        // 질문 그룹을 선택
         QuestionGroup selectedGroup = selectGroup(childList, parentList);
+        System.out.println("선택된 그룹: " + selectedGroup);
 
         for (QuestionSection section : QuestionSection.values()) {
             if (section == YOUNG) continue;
@@ -186,8 +199,10 @@ public class QnAService {
     }
 
     private Parentchild getParentchildByUserId(Long userId) {
-        return parentchildDao.findByUserId(userId)
-                .orElseThrow(() -> new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD));
+
+        return parentchildDao.findByUserId(userId).orElseThrow(
+                () -> new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD)
+        );
     }
 
     private List<QnA> getQnAListByParentchild(Parentchild parentchild) {

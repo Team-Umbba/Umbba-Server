@@ -15,7 +15,6 @@ import sopt.org.umbbaServer.global.exception.ErrorType;
 import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
 
 import javax.annotation.PostConstruct;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
