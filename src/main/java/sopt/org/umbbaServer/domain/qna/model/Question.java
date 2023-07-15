@@ -24,9 +24,13 @@ public class Question extends AuditingTimeEntity {
     private String childQuestion;
 
     @Column(nullable = false)
+    private String topic;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private QuestionSection section;
 
     @Column(nullable = false)
-    private String topic;
+    @Enumerated(EnumType.STRING)
+    private QuestionGroup group;
 }
