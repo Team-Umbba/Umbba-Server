@@ -90,11 +90,10 @@ public class QnAService {
         return qnaList.stream()
                 .filter(qna -> Objects.equals(qna.getQuestion().getSection().getSectionId(), sectionId))
                 .map(qna -> {
-                    String question = myUser.isMeChild() ? qna.getQuestion().getChildQuestion() : qna.getQuestion().getParentQuestion();
                     return QnAListResponseDto.builder()
                             .qnaId(qna.getId())
                             .index(qnaList.indexOf(qna) + 1)
-                            .question(question)
+                            .topic(qna.getQuestion().getTopic())
                             .build();
                 })
                 .collect(Collectors.toList());
