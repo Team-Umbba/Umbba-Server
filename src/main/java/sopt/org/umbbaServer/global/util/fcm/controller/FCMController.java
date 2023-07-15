@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import sopt.org.umbbaServer.global.common.dto.ApiResponse;
 import sopt.org.umbbaServer.global.config.jwt.JwtProvider;
 import sopt.org.umbbaServer.global.exception.SuccessType;
+import sopt.org.umbbaServer.global.util.fcm.FCMScheduler;
 import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
 import sopt.org.umbbaServer.global.util.fcm.FCMService;
 
@@ -18,6 +19,7 @@ import java.security.Principal;
 public class FCMController {
 
     private final FCMService fcmService;
+    private final FCMScheduler fcmScheduler;
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
@@ -32,7 +34,7 @@ public class FCMController {
     @PostMapping("/qna")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse sendTopicScheduledTest() {
-        return ApiResponse.success(SuccessType.PUSH_ALARM_SUCCESS, fcmService.pushTodayQna());
+        return ApiResponse.success(SuccessType.PUSH_ALARM_SUCCESS, fcmScheduler.pushTodayQna());
     }
 
     @PostMapping("/parentchild")

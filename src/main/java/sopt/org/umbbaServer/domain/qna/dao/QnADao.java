@@ -3,6 +3,7 @@ package sopt.org.umbbaServer.domain.qna.dao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import sopt.org.umbbaServer.domain.qna.model.QnA;
+import sopt.org.umbbaServer.domain.qna.model.Question;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -45,5 +46,29 @@ public class QnADao {
         }
     }
 
-    // 유저 아이디로 최근 QnA 조회하기
+    // 부모자식 관계 아이디로 오늘의 Question 조회하기
+    public Optional<Question> findQuestionByParentchildId(Long parentchildId) {
+
+        String jpql = "SELECT q FROM Parentchild pc " +
+                "JOIN pc.qnaList q " +
+                "WHERE pc.id = :id " +
+                "ORDER BY q.id DESC " +
+                "LIMIT 1";
+
+        try {
+            TypedQuery<Question> query = em.createQuery(jpql, Question.class);
+
+            log.info("query 실행 성공: {}", query);
+            Question question = query
+                    .setParameter("id", parentchildId)
+                    .getSingleResult();
+            log.info("query 실행 결과: {}", question.toString());
+
+            return Optional.ofNullable(question);
+        } catch (NoResultException e) {
+
+            return Optional.empty();
+        }
+    }
+
 }

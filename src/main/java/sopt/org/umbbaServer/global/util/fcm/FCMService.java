@@ -10,10 +10,15 @@ import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
+import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
+import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
+import sopt.org.umbbaServer.domain.qna.model.Question;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
 import sopt.org.umbbaServer.global.exception.CustomException;
@@ -39,8 +44,11 @@ public class FCMService {
     private String topic;
 
     private final UserRepository userRepository;
+    private final ParentchildRepository parentchildRepository;
     private final ParentchildDao parentchildDao;
     private final ObjectMapper objectMapper;
+    private final TaskScheduler taskScheduler;
+
 
 
     // Firebase에서 Access Token 가져오기
@@ -70,7 +78,7 @@ public class FCMService {
         return "알림을 성공적으로 전송했습니다. targetUserId = " + request.getTargetToken();
     }
 
-    private void sendPushMessage(String message) throws IOException {
+    public void sendPushMessage(String message) throws IOException {
 
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
@@ -87,7 +95,7 @@ public class FCMService {
     }
 
     // 요청 파라미터를 FCM의 body 형태로 만들어주는 메서드 [단일 기기]
-    private String makeMessage(FCMPushRequestDto request) throws JsonProcessingException {
+    public String makeMessage(FCMPushRequestDto request) throws JsonProcessingException {
 
         FCMMessage fcmMessage = FCMMessage.builder()
                 .message(FCMMessage.Message.builder()
@@ -105,7 +113,7 @@ public class FCMService {
     }
 
     // 따로 만들어둔 메세지 템플릿 이용해서 전송할 때 사용하는 알람 [Topic 구독]
-    private String makeMessage(FCMPushRequestDto request, Long userId) throws FirebaseMessagingException, JsonProcessingException {
+    String makeMessage(FCMPushRequestDto request, Long userId) throws FirebaseMessagingException, JsonProcessingException {
 
         Optional<User> user = userRepository.findByFcmToken(request.getTargetToken());
 
@@ -171,27 +179,6 @@ public class FCMService {
     }
 
 
-    @Scheduled(cron = "0 0 23 * * ?")
-    public String pushTodayQna() {
-
-        try {
-            log.info("오늘의 질문 알람 - 유저마다 보내는 시간 다름");
-        /*List<QnA> qnAList = qnADao.findQnASByUserId(userId).orElseThrow(
-                () -> new CustomException(ErrorType.USER_HAVE_NO_QNALIST)
-        );
-        QnA lastQna = qnAList.get(qnAList.size()-1);*/
-            String message = makeMessage(FCMPushRequestDto.sendTodayQna("section", "question"), 1L);
-            sendPushMessage(message);
-            return "알림을 성공적으로 전송했습니다. topic = " + topic;
-        } catch (IOException e) {
-            log.error("푸시메시지 전송 실패 - IOException: {}", e.getMessage());
-            throw new CustomException(ErrorType.FAIL_TO_SEND_PUSH_ALARM);
-        } catch (FirebaseMessagingException e) {
-            log.error("푸시메시지 전송 실패 - FirebaseMessagingException: {}", e.getMessage());
-            throw new CustomException(ErrorType.FAIL_TO_SEND_PUSH_ALARM);
-        }
-    }
-
     public void pushOpponentReply(String question, Long userId) {
 
         // 상대 측 유저의 FCM 토큰 찾기
@@ -238,6 +225,12 @@ public class FCMService {
             log.error("다수기기 푸시메시지 전송 실패 - FirebaseMessagingException: {}", e.getMessage());
             throw new CustomException(ErrorType.FAIL_TO_SEND_PUSH_ALARM);
         }
+    }
+
+    public void schedulePushAlarm(String cronExpression, Question todayQuestion, Long parentchildId) {
+        taskScheduler.schedule(() -> {
+            multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQuestion.getSection().getValue(), todayQuestion.getTopic()) ,parentchildId);
+        }, new CronTrigger(cronExpression));
     }
 
 

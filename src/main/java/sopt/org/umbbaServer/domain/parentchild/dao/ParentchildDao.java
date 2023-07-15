@@ -62,4 +62,5 @@ public class ParentchildDao {
                 .getResultList();
     }
 
+
 }

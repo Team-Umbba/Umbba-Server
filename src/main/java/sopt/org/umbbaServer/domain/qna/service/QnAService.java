@@ -76,10 +76,10 @@ public class QnAService {
 
         if (myUser.isMeChild()) {
             todayQnA.saveChildAnswer(request.getAnswer());
-            fcmService.pushOpponentReply(todayQnA.getQuestion().getChildQuestion(), opponentUser.getId());
+            fcmService.pushOpponentReply(todayQnA.getQuestion().getParentQuestion(), opponentUser.getId());
         } else {
             todayQnA.saveParentAnswer(request.getAnswer());
-            fcmService.pushOpponentReply(todayQnA.getQuestion().getParentQuestion(), opponentUser.getId());
+            fcmService.pushOpponentReply(todayQnA.getQuestion().getChildQuestion(), opponentUser.getId());
         }
 
     }
