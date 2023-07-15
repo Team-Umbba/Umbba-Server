@@ -55,7 +55,7 @@ jobs:
         mkdir ./firebase
         cd ./firebase
         
-        aws s3 cp --region ap-northeast-2 s3://${{ secrets.S3_BUCKET_NAME }}/json/umbba-fcm-firebase-adminsdk.json src/main/resources/firebase/umbba-fcm-firebase-adminsdk.json
+        aws s3 cp --region ap-northeast-2 s3://${{ secrets.S3_BUCKET_NAME }}/json/umbba-fcm-firebase-adminsdk.json umbba-fcm-firebase-adminsdk.json
         
         cat src/main/resources/firebase/umbba-fcm-firebase-adminsdk.json
         
@@ -74,8 +74,8 @@ jobs:
       
     # Jar 파일 복사
     - name: Copy Jar
-      # run: cp ./build/libs/*.jar ./deploy
-      run: cp -r src/main/* ./deploy
+      run: cp ./build/libs/*.jar ./deploy
+      # run: cp -r src/main/* ./deploy
     
     # appspec.yml 파일 복사
     - name: Copy appspec.yml
