@@ -17,6 +17,8 @@ public interface UserRepository extends Repository<User, Long> {
     Optional<User> findById(Long id);
     boolean existsBySocialPlatformAndSocialId(SocialPlatform socialPlatform, String socialId);
     Optional<User> findBySocialPlatformAndSocialId(SocialPlatform socialPlatform, String socialId);
+    Optional<User> findByFirebaseToken(String firebaseToken);
+
 
     /*@Query(value = "select user " +
             "from User user " +
