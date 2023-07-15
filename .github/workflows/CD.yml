@@ -48,6 +48,8 @@ jobs:
         mkdir ./firebase
         cd ./firebase
         
+      shell: bash
+        
     - name: create-json
       id: create-json
       uses: jsdaniell/create-json@v1.2.2
@@ -61,8 +63,6 @@ jobs:
         
         # 생성된 파일 확인
       # cat src/main/resources/firebase/umbba-fcm-firebase-adminsdk.json
-        
-      shell: bash
         
     # 이 워크플로우는 gradle build
     - name: Grant execute permission for gradlew
