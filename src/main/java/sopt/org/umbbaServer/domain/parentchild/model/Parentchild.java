@@ -1,11 +1,13 @@
 package sopt.org.umbbaServer.domain.parentchild.model;
 
 import lombok.*;
+import sopt.org.umbbaServer.domain.qna.model.OnboardingAnswer;
 import sopt.org.umbbaServer.domain.qna.model.QnA;
 import sopt.org.umbbaServer.global.util.AuditingTimeEntity;
 
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,13 +32,26 @@ public class Parentchild extends AuditingTimeEntity {
     @Column(nullable = false)
     private boolean isInvitorChild;
 
-    // TODO 기획에 따라 변경사항 있음
-    private boolean liveTogether;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "answer", nullable = false)
+    @ElementCollection
+    private List<OnboardingAnswer> childOnboardingAnswerList = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "answer", nullable = false)
+    @ElementCollection
+    private List<OnboardingAnswer> parentOnboardingAnswerList = new ArrayList<>();
+
+    public void changeChildOnboardingAnswerList(List<OnboardingAnswer> onboardingAnswerList) {
+        this.childOnboardingAnswerList = onboardingAnswerList;
+    }
+    public void changeParentOnboardingAnswerList(List<OnboardingAnswer> onboardingAnswerList) {
+        this.parentOnboardingAnswerList = onboardingAnswerList;
+    }
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ParentchildRelation relation;
-
 
     @Column(nullable = false)
     private LocalTime pushTime;  // default: 오후 11시(클라이언트)
