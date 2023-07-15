@@ -30,7 +30,7 @@ public class FCMConfig {
     @PostConstruct
     public void init() {
         try {
-            Resource resource = new ClassPathResource(SERVICE_ACCOUNT_JSON);
+            ClassPathResource resource = new ClassPathResource(SERVICE_ACCOUNT_JSON);
             InputStream serviceAccount = resource.getInputStream();
 
             FirebaseOptions options = FirebaseOptions.builder()
