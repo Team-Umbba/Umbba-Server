@@ -53,6 +53,14 @@ public class User extends AuditingTimeEntity {
         this.refreshToken = refreshToken;
     }
 
+    // ** FCM 푸시 알림 관련 **
+    private String firebaseToken;  // registration+token
+
+    public void updateFirebaseToken(String firebaseToken) {
+        this.firebaseToken = firebaseToken;
+    }
+
+
     // ** 소셜 로그인 관련 **
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

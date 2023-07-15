@@ -43,6 +43,18 @@ slack:
   webhook:
     url: ${slack-url}
 
+fcm:
+  key:
+    path: ${fcm-json-path}
+    scope: ${fcm-scope}
+  #    firebase-create-scoped: "https://www.googleapis.com/auth/firebase.messaging"
+  api:
+    url: ${fcm-api-url}
+  topic:
+    "qna_notification"
+
+
+
 logging:
   level:
     org:
