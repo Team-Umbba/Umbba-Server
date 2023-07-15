@@ -40,6 +40,9 @@ jobs:
         
         # GitHub-Actions 에서 설정한 값을 application.yml 파일에 쓰기
         echo "${{ secrets.UMBBA_SECRET }}" >> ./application.yml
+       
+        # 생성된 파일 확인
+        cat ./application.yml
         
         # FCM secret key 파일 생성 
         mkdir ./firebase
@@ -51,7 +54,6 @@ jobs:
         echo "${{ secrets.FCM_SECRET }}" >> ./umbba-fcm-firebase-adminsdk.json
         
         # 생성된 파일 확인
-        cat ./application.yml
         cat ./umbba-fcm-firebase-adminsdk.json
         
       shell: bash
