@@ -5,12 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
+import sopt.org.umbbaServer.domain.qna.controller.dto.response.*;
+import sopt.org.umbbaServer.domain.qna.model.*;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
-import sopt.org.umbbaServer.domain.qna.controller.dto.response.GetMainViewResponseDto;
-import sopt.org.umbbaServer.domain.qna.controller.dto.response.QnAListResponseDto;
-import sopt.org.umbbaServer.domain.qna.controller.dto.response.SingleQnAResponseDto;
-import sopt.org.umbbaServer.domain.qna.controller.dto.response.TodayQnAResponseDto;
 import sopt.org.umbbaServer.domain.qna.dao.QnADao;
 import sopt.org.umbbaServer.domain.qna.model.*;
 import sopt.org.umbbaServer.domain.qna.repository.QnARepository;
@@ -47,6 +45,18 @@ public class QnAService {
 
     public TodayQnAResponseDto getTodayQnA(Long userId) {
 
+        User myUser = getUserById(userId);
+        Parentchild parentchild = getParentchildByUser(myUser);
+        QnA todayQnA = getTodayQnAByParentchild(parentchild);
+        Question todayQuestion = todayQnA.getQuestion();
+        User opponentUser = getOpponentByParentchild(parentchild, userId);
+
+
+        return TodayQnAResponseDto.of(myUser, opponentUser, todayQnA, todayQuestion, myUser.isMeChild());
+    }
+
+    public GetInvitationResponseDto getInvitation(Long userId) {
+
         Optional<User> matchUser = parentchildDao.findMatchUserByUserId(userId);
         log.info("matchUser: {} -> parentchildDao.findMatchUserByUserId()의 결과", matchUser);
 
@@ -58,14 +68,7 @@ public class QnAService {
             return withdrawUser();
         }
 
-        User myUser = getUserById(userId);
-        Parentchild parentchild = getParentchildByUser(myUser);
-        QnA todayQnA = getTodayQnAByParentchild(parentchild);
-        Question todayQuestion = todayQnA.getQuestion();
-        User opponentUser = getOpponentByParentchild(parentchild, userId);
-
-
-        return TodayQnAResponseDto.of(myUser, opponentUser, todayQnA, todayQuestion, myUser.isMeChild());
+        return GetInvitationResponseDto.of();
     }
 
     @Transactional
@@ -277,17 +280,17 @@ public class QnAService {
         return GetMainViewResponseDto.of(lastQna, qnAList.size());
     }
 
-    private TodayQnAResponseDto invitation(Long userId) {
+    private GetInvitationResponseDto invitation(Long userId) {
 
         User user = getUserById(userId);
         Parentchild parentchild = parentchildDao.findByUserId(userId).orElseThrow(
                 () -> new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD)
         );
 
-        return TodayQnAResponseDto.of(parentchild.getInviteCode(), user.getUsername(), "url");  // TODO url 설정 필요 (Firebase)
+        return GetInvitationResponseDto.of(parentchild.getInviteCode(), user.getUsername(), "url");  // TODO url 설정 필요 (Firebase)
     }
 
-    private TodayQnAResponseDto withdrawUser() {
-        return TodayQnAResponseDto.of(false);
+    private GetInvitationResponseDto withdrawUser() {
+        return GetInvitationResponseDto.of(false);
     }
 }

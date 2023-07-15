@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
-import sopt.org.umbbaServer.domain.qna.controller.dto.response.QnAListResponseDto;
-import sopt.org.umbbaServer.domain.qna.controller.dto.response.SingleQnAResponseDto;
-import sopt.org.umbbaServer.domain.qna.controller.dto.response.GetMainViewResponseDto;
-import sopt.org.umbbaServer.domain.qna.controller.dto.response.TodayQnAResponseDto;
+import sopt.org.umbbaServer.domain.qna.controller.dto.response.*;
 import sopt.org.umbbaServer.domain.qna.service.QnAService;
 import sopt.org.umbbaServer.global.common.dto.ApiResponse;
 import sopt.org.umbbaServer.global.config.jwt.JwtProvider;
@@ -29,6 +26,7 @@ public class QnAController {
 
         return ApiResponse.success(SuccessType.GET_TODAY_QNA_SUCCESS, qnAService.getTodayQnA(JwtProvider.getUserFromPrincial(principal)));
     }
+
 
     @PostMapping("/qna/answer")
     @ResponseStatus(HttpStatus.CREATED)
@@ -66,6 +64,12 @@ public class QnAController {
     public ApiResponse<GetMainViewResponseDto> home(Principal principal) {
 
         return ApiResponse.success(SuccessType.GET_MAIN_HOME_SUCCESS, qnAService.getMainInfo(JwtProvider.getUserFromPrincial(principal)));
+    }
+
+    @GetMapping("/home/case")
+    public ApiResponse<GetInvitationResponseDto> invitation(Principal principal) {
+
+        return ApiResponse.success(SuccessType.GET_INVITE_CODE_SUCCESS, qnAService.getInvitation(JwtProvider.getUserFromPrincial(principal)));
     }
 
 }
