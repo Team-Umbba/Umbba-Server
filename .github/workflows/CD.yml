@@ -49,19 +49,18 @@ jobs:
         cd ./firebase
         
     - name: create-json
-      run: |
-        id: create-json
-        uses: jsdaniell/create-json@v1.2.2
-        with:
-          name: "umbba-fcm-firebase-adminsdk.json"
-          json: ${{ secrets.FCM_SECRET }}
-          dir: 'src/main/resources/firebase/'
+      id: create-json
+      uses: jsdaniell/create-json@v1.2.2
+      with:
+        name: "umbba-fcm-firebase-adminsdk.json"
+        json: ${{ secrets.FCM_SECRET }}
+        dir: 'src/main/resources/firebase/'
         
-        # GitHub-Actions 에서 설정한 값을 umbba-fcm-firebase-adminsdk.json 파일에 쓰기
-        # echo "${{ secrets.FCM_SECRET }}" | base64 --decode >> ./umbba-fcm-firebase-adminsdk.json
+      # GitHub-Actions 에서 설정한 값을 umbba-fcm-firebase-adminsdk.json 파일에 쓰기
+      # echo "${{ secrets.FCM_SECRET }}" | base64 --decode >> ./umbba-fcm-firebase-adminsdk.json
         
         # 생성된 파일 확인
-        cat src/main/resources/firebase/umbba-fcm-firebase-adminsdk.json
+      # cat src/main/resources/firebase/umbba-fcm-firebase-adminsdk.json
         
       shell: bash
         
