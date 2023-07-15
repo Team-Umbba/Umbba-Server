@@ -54,6 +54,7 @@ public class User extends AuditingTimeEntity {
     }
 
     // ** FCM 푸시 알림 관련 **
+    @Column(nullable = false)
     private String fcmToken;  // registration+token
 
     public void updateFcmToken(String fcmToken) {
