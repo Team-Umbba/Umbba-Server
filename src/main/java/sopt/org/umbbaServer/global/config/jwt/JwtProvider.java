@@ -29,7 +29,7 @@ import static java.util.Objects.isNull;
 public class JwtProvider {
 
 
-    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 60 * 1000L * 60 * 24;  // 액세스 토큰 만료 시간: 24시간으로 지정
+    private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 60 * 1000L * 60 * 24 * 365;  // 액세스 토큰 만료 시간: 1일로 지정
     private static final Long REFRESH_TOKEN_EXPIRATION_TIME = 60 * 1000L * 180 * 10;  // 리프레시 토큰 만료 시간: 30시간으로 지정
 
     @Value("${jwt.secret}")

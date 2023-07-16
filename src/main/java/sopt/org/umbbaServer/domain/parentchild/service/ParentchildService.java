@@ -81,7 +81,7 @@ public class ParentchildService {
     // 부모자식 관계 케이스 분류하기
     private ParentchildRelation getRelation(String gender, String relationInfo, boolean isInvitorChild) {
 
-        // 내가 부모다
+        // 내가 부모다 - 누구와 함께 하겠어? "자식"
         if (!isInvitorChild) {
             if (gender.equals("남자")) {    // 아빠
                 if (relationInfo.equals("아들")) {
@@ -96,7 +96,7 @@ public class ParentchildService {
                     return ParentchildRelation.DAD_DAU;
                 }
             }
-        } else {   // 내가 자식이다
+        } else {   // 내가 자식이다 - 누구와 함께 하겠어? "부모"
             if (gender.equals("남자")) {   // 아들
                 if (relationInfo.equals("아빠")) {
                     return ParentchildRelation.DAD_SON;
