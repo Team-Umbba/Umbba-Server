@@ -13,4 +13,6 @@ import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 public class SocialLoginRequestDto {
 
     private SocialPlatform socialPlatform;
+
+    private String fcmToken;
 }

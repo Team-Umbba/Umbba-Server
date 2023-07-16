@@ -24,6 +24,8 @@ public class UserLoginResponseDto {
 
     private TokenDto tokenDto;
 
+    private String fcmToken;
+
     private SocialPlatform socialPlatform;
 
     private String socialNickname;
@@ -44,6 +46,7 @@ public class UserLoginResponseDto {
                 .gender(loginUser.getGender())
                 .bornYear(loginUser.getBornYear())
                 .tokenDto(tokenDto)
+                .fcmToken(loginUser.getFcmToken())
                 .socialPlatform(loginUser.getSocialPlatform())
                 .socialNickname(loginUser.getSocialNickname())
                 .socialProfileImage(loginUser.getSocialProfileImage())

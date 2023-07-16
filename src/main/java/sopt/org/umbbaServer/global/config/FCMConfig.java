@@ -12,7 +12,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
-import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMNotificationRequestDto;
+import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -76,7 +76,7 @@ public class FCMConfig {
     // TODO 플랫폼마다 별도의 설정이 필요한 경우 사용
 
     // Android
-    public AndroidConfig TokenAndroidConfig(FCMNotificationRequestDto request) {
+    public AndroidConfig TokenAndroidConfig(FCMPushRequestDto request) {
         return AndroidConfig.builder()
 //                .setCollapseKey(request.getCollapseKey())
                 .setNotification(AndroidNotification.builder()
@@ -87,7 +87,7 @@ public class FCMConfig {
     }
 
     // Apple
-    public ApnsConfig TokenApnsConfig(FCMNotificationRequestDto request) {
+    public ApnsConfig TokenApnsConfig(FCMPushRequestDto request) {
         return ApnsConfig.builder()
                 .setAps(Aps.builder()
                         .setAlert(

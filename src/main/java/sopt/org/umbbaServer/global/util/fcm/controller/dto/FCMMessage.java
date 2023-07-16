@@ -60,6 +60,7 @@ public class FCMMessage {
         private Notification notification;   // 모든 모바일 OS에 통합으로 사용할 수 있는 Notification
         private String token;   // 특정 디바이스(클라이언트)에 알림을 보내기 위한 토큰
 //        private Data data;
+        private String topic;
     }
 
     @Builder

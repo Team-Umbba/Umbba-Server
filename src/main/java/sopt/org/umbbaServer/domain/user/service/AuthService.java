@@ -48,6 +48,7 @@ public class AuthService {
                     .socialId(socialId)
                     .hasAlarm(true)
                     .isMeChild(true)
+                    .fcmToken(request.getFcmToken())
                     .build();
 
             userRepository.save(user);
