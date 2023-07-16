@@ -63,8 +63,9 @@ dependencies {
 	// random String
 	implementation 'org.apache.commons:commons-lang3'
 
-	// FCM
+	// Firebase
 	implementation 'com.google.firebase:firebase-admin:9.1.1'
+
 
 }
 
