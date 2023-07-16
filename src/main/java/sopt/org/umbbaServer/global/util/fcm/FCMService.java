@@ -127,8 +127,8 @@ public class FCMService {
 
         FCMMessage fcmMessage = FCMMessage.builder()
                 .message(FCMMessage.Message.builder()
-//                        .token(user.get().getFcmToken())
-                        .topic(topic)   // 토픽 구동에서 반드시 필요한 설정 (token 지정 x)
+                        .token(user.get().getFcmToken())
+//                        .topic(topic)   // 토픽 구동에서 반드시 필요한 설정 (token 지정 x)
                         .notification(FCMMessage.Notification.builder()
                                 .title(request.getTitle())
                                 .body(request.getBody())
@@ -216,7 +216,7 @@ public class FCMService {
 
         try {
             BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
-            log.info("다수 기기 알림 전송 성공 ! successCount: " + response.getSuccessCount() + " messages were sent successfully");
+            log.info("다수 기기 알림 수전송 성공 ! successCount: " + response.getSuccessCount() + " messages were sent successfully");
 
             log.info("알림 전송: {}", response.getResponses().toString());
 

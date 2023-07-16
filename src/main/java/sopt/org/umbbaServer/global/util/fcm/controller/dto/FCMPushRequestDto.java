@@ -39,6 +39,7 @@ public class FCMPushRequestDto {
         result.setBody(question);
 
         return FCMPushRequestDto.builder()
+                .targetToken(targetToken)
                 .title(result.getTitle())
                 .body(result.getBody())
                 .build();
