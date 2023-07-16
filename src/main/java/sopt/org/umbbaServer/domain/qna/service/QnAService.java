@@ -10,7 +10,6 @@ import sopt.org.umbbaServer.domain.qna.model.*;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
 import sopt.org.umbbaServer.domain.qna.dao.QnADao;
-import sopt.org.umbbaServer.domain.qna.model.*;
 import sopt.org.umbbaServer.domain.qna.repository.QnARepository;
 import sopt.org.umbbaServer.domain.qna.repository.QuestionRepository;
 import sopt.org.umbbaServer.domain.user.model.User;
@@ -20,14 +19,13 @@ import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 import sopt.org.umbbaServer.global.util.fcm.FCMService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static sopt.org.umbbaServer.domain.qna.model.OnboardingAnswer.YES;
-import static sopt.org.umbbaServer.domain.qna.model.QuestionGroup.*;
+import static sopt.org.umbbaServer.domain.qna.model.QuestionType.*;
 import static sopt.org.umbbaServer.domain.qna.model.QuestionSection.YOUNG;
 
 @Slf4j
@@ -163,13 +161,13 @@ public class QnAService {
         List<OnboardingAnswer> parentList = parentchild.getParentOnboardingAnswerList();
 
         // 질문 그룹을 선택
-        QuestionGroup selectedGroup = selectGroup(childList, parentList);
-        System.out.println("선택된 그룹: " + selectedGroup);
+        QuestionType selectedType = selectType(childList, parentList);
+        System.out.println("선택된 질문 타입: " + selectedType);
 
         for (QuestionSection section : QuestionSection.values()) {
             if (section == YOUNG) continue;
 
-            List<Question> selectedQuestions = questionRepository.findBySectionAndGroupRandom(section, selectedGroup, section.getQuestionCount());
+            List<Question> selectedQuestions = questionRepository.findBySectionAndTypeRandom(section, selectedType, section.getQuestionCount());
 
             for (Question question : selectedQuestions) {
                 QnA newQnA = QnA.builder()
@@ -243,28 +241,28 @@ public class QnAService {
         return opponentUserList.get(0);
     }
 
-    private QuestionGroup selectGroup(List<OnboardingAnswer> childList, List<OnboardingAnswer> parentList) {
+    private QuestionType selectType(List<OnboardingAnswer> childList, List<OnboardingAnswer> parentList) {
 
         // 그룹 선택 알고리즘
         if (childList.get(0) == YES && parentList.get(0) == YES) {
-            return GROUP1;
+            return TYPE1;
         }
         if (childList.get(1) == YES && parentList.get(1) == YES) {
-            return GROUP2;
+            return TYPE2;
         }
         if (childList.get(2) == YES && parentList.get(2) == YES) {
-            return GROUP3;
+            return TYPE3;
         }
         if (childList.get(3) == YES && parentList.get(3) == YES) {
-            return GROUP4;
+            return TYPE4;
         }
         if (childList.get(4) == YES && parentList.get(4) == YES) {
-            return GROUP5;
+            return TYPE5;
         }
         if (childList.get(5) == YES && parentList.get(5) == YES) {
-            return GROUP6;
+            return TYPE6;
         }
-        return GROUP7;
+        return TYPE7;
     }
 
     // 메인페이지 정보

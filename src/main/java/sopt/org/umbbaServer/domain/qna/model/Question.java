@@ -32,5 +32,5 @@ public class Question extends AuditingTimeEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private QuestionGroup group;
+    private QuestionType type;
 }

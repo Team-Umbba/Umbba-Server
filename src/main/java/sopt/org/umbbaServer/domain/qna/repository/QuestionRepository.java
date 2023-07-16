@@ -2,7 +2,7 @@ package sopt.org.umbbaServer.domain.qna.repository;
 
 import org.springframework.data.repository.Repository;
 import sopt.org.umbbaServer.domain.qna.model.Question;
-import sopt.org.umbbaServer.domain.qna.model.QuestionGroup;
+import sopt.org.umbbaServer.domain.qna.model.QuestionType;
 import sopt.org.umbbaServer.domain.qna.model.QuestionSection;
 
 import java.util.ArrayList;
@@ -15,10 +15,10 @@ public interface QuestionRepository extends Repository<Question, Long> {
 
     Optional<Question> findById(Long id);
 
-    List<Question> findBySectionAndGroup(QuestionSection section, QuestionGroup group);
+    List<Question> findBySectionAndType(QuestionSection section, QuestionType type);
 
-    default List<Question> findBySectionAndGroupRandom(QuestionSection section, QuestionGroup group, int size) {
-        List<Question> matchingQuestions = findBySectionAndGroup(section, group);
+    default List<Question> findBySectionAndTypeRandom(QuestionSection section, QuestionType type, int size) {
+        List<Question> matchingQuestions = findBySectionAndType(section, type);
         List<Question> selectedQuestions = new ArrayList<>();
 
         int totalMatchingQuestions = matchingQuestions.size();
