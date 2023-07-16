@@ -47,24 +47,25 @@ public class QnADao {
     }
 
     // 부모자식 관계 아이디로 오늘의 Question 조회하기
-    public Optional<Question> findQuestionByParentchildId(Long parentchildId) {
+    public Optional<QnA> findQuestionByParentchildId(Long parentchildId) {
 
         String jpql = "SELECT q FROM Parentchild pc " +
                 "JOIN pc.qnaList q " +
                 "WHERE pc.id = :id " +
-                "ORDER BY q.id DESC " +
-                "LIMIT 1";
+                "ORDER BY q.id DESC ";   // TODO 오늘의 질문 인덱스 (카운트) 필드로 조건 달기 변경
 
         try {
-            TypedQuery<Question> query = em.createQuery(jpql, Question.class);
+            TypedQuery<QnA> query = em.createQuery(jpql, QnA.class);
 
             log.info("query 실행 성공: {}", query);
-            Question question = query
+            QnA qnA = query
                     .setParameter("id", parentchildId)
+                    .setFirstResult(0)
+                    .setMaxResults(1)
                     .getSingleResult();
-            log.info("query 실행 결과: {}", question.toString());
+            log.info("query 실행 결과: {}", qnA.toString());
 
-            return Optional.ofNullable(question);
+            return Optional.ofNullable(qnA);
         } catch (NoResultException e) {
 
             return Optional.empty();

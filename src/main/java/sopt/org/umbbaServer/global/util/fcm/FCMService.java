@@ -220,7 +220,7 @@ public class FCMService {
 
             log.info("알림 전송: {}", response.getResponses().toString());
 
-            return "알림을 성공적으로 전송했습니다. targetUserId = 1." + tokenList.get(0) + ", \n\n2." + tokenList.get(1);
+            return "알림을 성공적으로 전송했습니다. \ntargetUserId = 1." + tokenList.get(0) + ", \n\n2." + tokenList.get(1);
         } catch (FirebaseMessagingException e) {
             log.error("다수기기 푸시메시지 전송 실패 - FirebaseMessagingException: {}", e.getMessage());
             throw new CustomException(ErrorType.FAIL_TO_SEND_PUSH_ALARM);

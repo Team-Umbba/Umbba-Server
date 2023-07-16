@@ -61,7 +61,7 @@ logging:
       hibernate:
         type:
           descriptor:
-            sql: trace
+            sql: debug
 
 server:
   port: 9091
