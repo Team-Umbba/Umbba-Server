@@ -42,7 +42,10 @@ then
 else
   echo "> kill -15 $IDLE_PID"
   kill -15 $IDLE_PID
+  echo wait 10 seconds...
   sleep 10
+  echo wait complete!
+  
 fi
 
 echo "> $IDLE_PROFILE 배포"
