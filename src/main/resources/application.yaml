@@ -19,7 +19,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       ejb:
         naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
     properties:
@@ -52,8 +52,6 @@ fcm:
     url: ${fcm-api-url}
   topic:
     "qna_notification"
-
-
 
 logging:
   level:
