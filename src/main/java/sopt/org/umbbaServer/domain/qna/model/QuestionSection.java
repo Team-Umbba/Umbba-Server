@@ -11,7 +11,7 @@ public enum QuestionSection {
     SCHOOL(2L, "학창시절", 2),
     GOLDEN(3L, "청춘시절", 2),
     COUPLE(4L, "연애시절", 1),
-    MARRIAGE(5L, "결혼시절", 1);
+    MARRIAGE(5L, "우리가만나고", 1);
 
     private final Long sectionId;
     private final String value;
