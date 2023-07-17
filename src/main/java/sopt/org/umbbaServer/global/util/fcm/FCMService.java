@@ -231,22 +231,16 @@ public class FCMService {
         }
     }
 
-    @Transactional
     public void schedulePushAlarm(String cronExpression, Parentchild parentchild) {
 
         taskScheduler.schedule(() -> {
 
             log.info("parentchild.getQnaList()가 문제가 맞네,, {}", parentchild.getQnaList());
+            log.info("성립된 부모자식- 초대코드: {}, 인덱스: {}", parentchild.getInviteCode(), parentchild.getCount());
 
             if (!parentchild.getQnaList().isEmpty()) {
+
                 QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
-
-                /*Optional<QnA> todayQnA = qnADao.findQuestionByParentchildId(pc.getId());
-                todayQnA.ifPresent(qna -> {
-                    log.info("todayQnA: {}", qna.getQuestion().getTopic());
-
-                    fcmService.schedulePushAlarm(cronExpression, qna.getQuestion(), pc.getId());  // cron 스케줄을 이용해 작업 예약
-                });*/
 
                 if (todayQnA.isParentAnswer() && todayQnA.isChildAnswer()) {
                     // 다음날 질문으로 넘어감
@@ -256,35 +250,20 @@ public class FCMService {
                     boolean isValid = true;
                     log.info("schedule");
                     List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
-                    for (User user : parentChildUsers) {
-                        if (!user.validateParentchild(parentChildUsers)) {
-                            isValid = false;
-                        }
 
-                        if (!user.getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
-                            isValid = false;
-                        }
-                    }
-
-            /*for (User user : parentChildUsers) {
-                if (user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
-                    log.info("FCMService-schedulePushAlarm() topic : {}", todayQuestion.getTopic());
-                    multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQuestion.getSection().getValue(), todayQuestion.getTopic()), parentchild.getId());
-                }
-            }*/
                     log.info("FCMService - schedulePushAlarm() 실행");
-            /*parentChildUsers.stream()
-                    .filter(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))
-                    .forEach(user -> {
-                        log.info("FCMService-schedulePushAlarm() topic: {}", todayQuestion.getTopic());
-                        multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQuestion.getSection().getValue(), todayQuestion.getTopic()), parentchild.getId());
-                    });*/
+                    parentChildUsers.stream()
+                        .filter(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))
+                        .forEach(user -> {
+                            log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
+                            multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(), todayQnA.getQuestion().getTopic()), parentchild.getId());
+                    });
                     log.info("isValid: {}", isValid);
 
-                    if (isValid) {
+                    /*if (isValid) {
                         log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
                         multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(), todayQnA.getQuestion().getTopic()), parentchild.getId());
-                    }
+                    }*/
                 }
 
                 if (todayQnA == null) {
