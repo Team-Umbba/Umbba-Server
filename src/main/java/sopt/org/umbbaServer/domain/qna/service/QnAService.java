@@ -94,7 +94,6 @@ public class QnAService {
         User myUser = getUserById(userId);
         Parentchild parentchild = getParentchildByUser(myUser);
         List<QnA> qnaList = getQnAListByParentchild(parentchild);
-        User opponentUser = getOpponentByParentchild(parentchild, userId);
 
         return qnaList.stream()
                 .filter(qna -> Objects.equals(qna.getQuestion().getSection().getSectionId(), sectionId))
@@ -111,11 +110,14 @@ public class QnAService {
     public SingleQnAResponseDto getSingleQna(Long userId, Long qnaId) {
         User myUser = getUserById(userId);
         Parentchild parentchild = getParentchildByUser(myUser);
+
+        User opponentUser = getOpponentByParentchild(parentchild, userId);
         QnA targetQnA = getQnAById(qnaId); // 이거 qnA로 할건지 qna로 할건지 통일 필요
         Question todayQuestion = targetQnA.getQuestion();
-        User opponentUser = getOpponentByParentchild(parentchild, userId);
 
-        return SingleQnAResponseDto.of(myUser, opponentUser, targetQnA, todayQuestion, myUser.isMeChild());
+        List<QnA> qnaList = getQnAListByParentchild(parentchild);
+
+        return SingleQnAResponseDto.of(myUser, opponentUser, qnaList.indexOf(targetQnA) + 1, targetQnA, todayQuestion);
     }
 
     @Transactional
