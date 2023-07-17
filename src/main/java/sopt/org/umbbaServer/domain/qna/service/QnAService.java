@@ -83,10 +83,11 @@ public class QnAService {
             fcmService.pushOpponentReply(todayQnA.getQuestion().getChildQuestion(), opponentUser.getId());
         }
 
-        if (todayQnA.isParentAnswer() && todayQnA.isChildAnswer()) {
-            // 다음날 질문으로 넘어감
-            parentchild.addCount();
-        }
+        // TODO 정해진 시간이 되었을 때 이부분을 호출하도록 예준이가 하기
+//        if (todayQnA.isParentAnswer() && todayQnA.isChildAnswer()) {
+//            // 다음날 질문으로 넘어감
+//            parentchild.addCount();
+//        }
 
     }
 
