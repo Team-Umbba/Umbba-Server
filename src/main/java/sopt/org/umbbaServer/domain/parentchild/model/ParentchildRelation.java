@@ -3,8 +3,11 @@ package sopt.org.umbbaServer.domain.parentchild.model;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
+
+import java.util.List;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -20,7 +23,7 @@ public enum ParentchildRelation {
     private final String childGender;
 
 
-    public static ParentchildRelation getRelation(String gender, String relationInfo, boolean isInvitorChild) {
+    public static ParentchildRelation relation(String gender, String relationInfo, boolean isInvitorChild) {
 
         // 내가 부모다 - 누구와 함께 하겠어? "자식"
         if (!isInvitorChild) {
@@ -55,4 +58,28 @@ public enum ParentchildRelation {
 
         throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION_INFO);
     }
+
+
+    // 자식 유저와 부모 유저의 gender와 isMeChild 필드를 통해 ParentchildRelation을 구분하는 로직
+    public static boolean validate(List<User> parentChildUsers, ParentchildRelation relation) {
+
+        User childUser = null;
+        User parentUser = null;
+
+        for (User user : parentChildUsers) {
+            if (user.isMeChild()) {
+                childUser = user;
+            } else {
+                parentUser = user;
+            }
+        }
+
+        if (relation.getParentGender().equals(parentUser.getGender())
+                && relation.getChildGender().equals(childUser.getGender())) {
+            return true;
+        }
+
+        return false;
+    }
+
 }

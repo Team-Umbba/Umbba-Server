@@ -51,7 +51,7 @@ public class ParentchildService {
         Parentchild parentchild = Parentchild.builder()
                 .inviteCode(generateInviteCode())
                 .isInvitorChild(request.getIsInvitorChild())
-                .relation(ParentchildRelation.getRelation(request.getUserInfo().getGender(), request.getRelationInfo(), request.getIsInvitorChild()))
+                .relation(ParentchildRelation.relation(request.getUserInfo().getGender(), request.getRelationInfo(), request.getIsInvitorChild()))
                 .pushTime(request.getPushTime())  // TODO 케이스에 따라 없을 수도 있음
                 .build();
         parentchildRepository.save(parentchild);
@@ -75,6 +75,10 @@ public class ParentchildService {
         Parentchild parentchild = getParentchildByUserId(userId);
 //        parentchild.updateInfo();
         List<User> parentChildUsers = getParentChildUsers(parentchild);
+
+        if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
+            throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
+        }
 
         return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
     }
@@ -129,32 +133,6 @@ public class ParentchildService {
 
     }
 
-    // 자식 유저와 부모 유저의 gender와 isMeChild 필드를 통해 ParentchildRelation을 구분하는 로직
-    /*private boolean validateParentchild(Parentchild parentchild) {
-        List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
-
-        User childUser = parentChildUsers.stream()
-                .filter(User::isMeChild)
-                .findFirst().orElseThrow(
-                        () -> new CustomException(ErrorType.NOT_EXIST_CHILD_USER)
-                );
-
-
-        parentChildUsers.stream().forEach(
-                u -> u.isMeChild()
-        );
-
-        for (User user : parentChildUsers) {
-            if (user.isMeChild() && parentchild.isInvitorChild()) {
-
-            }
-        }
-
-        User childUser = parentChildUsers.stream().filter(u -> {
-            u.isMeChild();
-        });
-
-    }*/
 
     private Parentchild getParentchildByUserId(Long userId) {
 
