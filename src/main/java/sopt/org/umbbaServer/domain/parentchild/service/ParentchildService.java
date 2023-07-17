@@ -22,6 +22,7 @@ import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -50,7 +51,7 @@ public class ParentchildService {
         Parentchild parentchild = Parentchild.builder()
                 .inviteCode(generateInviteCode())
                 .isInvitorChild(request.getIsInvitorChild())
-                .relation(getRelation(request.getUserInfo().getGender(), request.getRelationInfo(), request.getIsInvitorChild()))
+                .relation(ParentchildRelation.getRelation(request.getUserInfo().getGender(), request.getRelationInfo(), request.getIsInvitorChild()))
                 .pushTime(request.getPushTime())  // TODO 케이스에 따라 없을 수도 있음
                 .build();
         parentchildRepository.save(parentchild);
@@ -78,42 +79,6 @@ public class ParentchildService {
         return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
     }
 
-    // 부모자식 관계 케이스 분류하기
-    private ParentchildRelation getRelation(String gender, String relationInfo, boolean isInvitorChild) {
-
-        // 내가 부모다 - 누구와 함께 하겠어? "자식"
-        if (!isInvitorChild) {
-            if (gender.equals("남자")) {    // 아빠
-                if (relationInfo.equals("아들")) {
-                    return ParentchildRelation.DAD_SON;
-                } else if (relationInfo.equals("딸")) {
-                    return ParentchildRelation.DAD_DAU;   // TODO 클라에서 둘 중 하나의 값만 받도록 처리하니까 else if 구문 빼도 무관
-                }
-            } else if(gender.equals("여자")) {   // 엄마
-                if (relationInfo.equals("아들")) {
-                    return ParentchildRelation.MOM_SON;
-                } else if (relationInfo.equals("딸")) {
-                    return ParentchildRelation.DAD_DAU;
-                }
-            }
-        } else {   // 내가 자식이다 - 누구와 함께 하겠어? "부모"
-            if (gender.equals("남자")) {   // 아들
-                if (relationInfo.equals("아빠")) {
-                    return ParentchildRelation.DAD_SON;
-                } else if (relationInfo.equals("엄마")) {
-                    return ParentchildRelation.MOM_SON;
-                }
-            } else if(gender.equals("여자")) {   // 딸
-                if (relationInfo.equals("아빠")) {
-                    return ParentchildRelation.DAD_DAU;
-                } else if (relationInfo.equals("엄마")) {
-                    return ParentchildRelation.MOM_DAU;
-                }
-            }
-        }
-
-        throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION_INFO);
-    }
 
     // 초대코드 생성 (형식예시: WUHZ-iGbPX9X)
     private String generateInviteCode() {
@@ -163,6 +128,33 @@ public class ParentchildService {
         return parentChildUsers;
 
     }
+
+    // 자식 유저와 부모 유저의 gender와 isMeChild 필드를 통해 ParentchildRelation을 구분하는 로직
+    /*private boolean validateParentchild(Parentchild parentchild) {
+        List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
+
+        User childUser = parentChildUsers.stream()
+                .filter(User::isMeChild)
+                .findFirst().orElseThrow(
+                        () -> new CustomException(ErrorType.NOT_EXIST_CHILD_USER)
+                );
+
+
+        parentChildUsers.stream().forEach(
+                u -> u.isMeChild()
+        );
+
+        for (User user : parentChildUsers) {
+            if (user.isMeChild() && parentchild.isInvitorChild()) {
+
+            }
+        }
+
+        User childUser = parentChildUsers.stream().filter(u -> {
+            u.isMeChild();
+        });
+
+    }*/
 
     private Parentchild getParentchildByUserId(Long userId) {
 

@@ -41,6 +41,7 @@ public enum ErrorType {
      */
     INVALID_USER(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
     NOT_EXIST_PARENT_CHILD_USER(HttpStatus.NOT_FOUND, "해당 부모자식 관계에 해당하는 유저가 존재하지 않습니다."),
+    NOT_EXIST_CHILD_USER(HttpStatus.NOT_FOUND, "해당 관계에 속하는 자식 유저가 존재하지 않습니다."),
     NOT_FOUND_QNA(HttpStatus.NOT_FOUND, "해당 아이디와 일치하는 QnA 데이터가 없습니다."),
     USER_HAVE_NO_PARENTCHILD(HttpStatus.NOT_FOUND, "회원이 속한 부모자식 관계가 없습니다."),
     NOT_EXIST_PARENT_CHILD_RELATION(HttpStatus.NOT_FOUND, "존재하지 않는 부모자식 관계입니다."),
