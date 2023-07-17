@@ -76,9 +76,9 @@ public class ParentchildService {
 //        parentchild.updateInfo();
         List<User> parentChildUsers = getParentChildUsers(parentchild);
 
-        if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
+        /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
             throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
-        }
+        }*/
 
         return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
     }

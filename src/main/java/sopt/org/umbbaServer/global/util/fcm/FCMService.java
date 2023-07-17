@@ -214,6 +214,8 @@ public class FCMService {
                 .addAllTokens(tokenList)
                 .build();
 
+        log.info("message: {}", request.getTitle() +" "+ request.getBody());
+
         try {
             BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
             log.info("다수 기기 알림 전송 성공 ! successCount: " + response.getSuccessCount() + " messages were sent successfully");

@@ -39,8 +39,8 @@ public class FCMScheduler {
         parentchildList.stream()
                 .forEach(pc -> {
                     log.info(pc.getId() + "번째 Parentchild");
-                    String cronExpression = String.format("0 %s %s * * ?", pc.getPushTime().getMinute(), pc.getPushTime().getHour());
-//                    String cronExpression = String.format("*/10 * * * * *");
+//                    String cronExpression = String.format("0 %s %s * * ?", pc.getPushTime().getMinute(), pc.getPushTime().getHour());
+                    String cronExpression = String.format("*/10 * * * * *");
                     log.info("cron: {}", cronExpression);
                     /*QnA todayQnA = qnADao.findQuestionByParentchildId(pc.getId()).orElseThrow(
                             () -> new CustomException(ErrorType.PARENTCHILD_HAVE_NO_QNALIST)

@@ -3,7 +3,11 @@ package sopt.org.umbbaServer.global.util.fcm.controller.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.logging.Logger;
+
+@Slf4j
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -25,6 +29,8 @@ public class FCMPushRequestDto {
         PushMessage result = PushMessage.TODAY_QNA;
         result.setTitle(section);
         result.setBody(topic);
+
+        log.info("FCMPushRequestDto: {}", result.getTitle() + " " + result.getBody());
 
         return FCMPushRequestDto.builder()
                 .title(result.getTitle())
