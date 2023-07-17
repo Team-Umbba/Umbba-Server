@@ -37,7 +37,6 @@ public class QnAService {
     private final QnARepository qnARepository;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
-    private final QnADao qnADao;
     private final ParentchildDao parentchildDao;
     private final FCMService fcmService;  //TODO Service에서 Service를 주입받는 부분 수정
 
@@ -49,7 +48,7 @@ public class QnAService {
         Question todayQuestion = todayQnA.getQuestion();
         User opponentUser = getOpponentByParentchild(parentchild, userId);
 
-        return TodayQnAResponseDto.of(myUser, opponentUser, todayQnA, todayQuestion, myUser.isMeChild());
+        return TodayQnAResponseDto.of(myUser, opponentUser, parentchild.getCount(), todayQnA, todayQuestion);
     }
 
     public GetInvitationResponseDto getInvitation(Long userId) {
