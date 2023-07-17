@@ -20,12 +20,5 @@ public enum PushMessage {
     private String title;
     private String body;
 
-    public void setTitle(String section) {
-        this.title = "📞 " + section + this.title;
-    }
-
-    public void setBody(String question) {
-        this.body = question + this.body;
-    }
 
 }
