@@ -22,7 +22,7 @@ public class Parentchild extends AuditingTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "parentchild_id")
     private List<QnA> qnaList;
 

@@ -18,9 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
+import sopt.org.umbbaServer.domain.qna.model.QnA;
 import sopt.org.umbbaServer.domain.qna.model.Question;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
+import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMMessage;
@@ -30,6 +32,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -228,20 +231,68 @@ public class FCMService {
         }
     }
 
-    public void schedulePushAlarm(String cronExpression, Question todayQuestion, Long parentchildId) {
+    @Transactional
+    public void schedulePushAlarm(String cronExpression, Parentchild parentchild) {
+
         taskScheduler.schedule(() -> {
-            log.info("FCMService-schedulePushAlarm() topic : {}", todayQuestion.getTopic());
-            multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQuestion.getSection().getValue(), todayQuestion.getTopic()) ,parentchildId);
-        }, new CronTrigger(cronExpression));
 
-        /*taskScheduler.schedule(new Runnable() {
-            @Override
-            public void run() {
-                log.info("FCMService-schedulePushAlarm() topic : {}", todayQuestion.getTopic());
-                multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQuestion.getSection().getValue(), todayQuestion.getTopic()), parentchildId);
+            log.info("parentchild.getQnaList()가 문제가 맞네,, {}", parentchild.getQnaList());
+
+            if (!parentchild.getQnaList().isEmpty()) {
+                QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
+
+                /*Optional<QnA> todayQnA = qnADao.findQuestionByParentchildId(pc.getId());
+                todayQnA.ifPresent(qna -> {
+                    log.info("todayQnA: {}", qna.getQuestion().getTopic());
+
+                    fcmService.schedulePushAlarm(cronExpression, qna.getQuestion(), pc.getId());  // cron 스케줄을 이용해 작업 예약
+                });*/
+
+                if (todayQnA.isParentAnswer() && todayQnA.isChildAnswer()) {
+                    // 다음날 질문으로 넘어감
+                    log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
+                    parentchild.addCount();
+
+                    boolean isValid = true;
+                    log.info("schedule");
+                    List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
+                    for (User user : parentChildUsers) {
+                        if (!user.validateParentchild(parentChildUsers)) {
+                            isValid = false;
+                        }
+
+                        if (!user.getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
+                            isValid = false;
+                        }
+                    }
+
+            /*for (User user : parentChildUsers) {
+                if (user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
+                    log.info("FCMService-schedulePushAlarm() topic : {}", todayQuestion.getTopic());
+                    multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQuestion.getSection().getValue(), todayQuestion.getTopic()), parentchild.getId());
+                }
+            }*/
+                    log.info("FCMService - schedulePushAlarm() 실행");
+            /*parentChildUsers.stream()
+                    .filter(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))
+                    .forEach(user -> {
+                        log.info("FCMService-schedulePushAlarm() topic: {}", todayQuestion.getTopic());
+                        multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQuestion.getSection().getValue(), todayQuestion.getTopic()), parentchild.getId());
+                    });*/
+                    log.info("isValid: {}", isValid);
+
+                    if (isValid) {
+                        log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
+                        multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(), todayQnA.getQuestion().getTopic()), parentchild.getId());
+                    }
+                }
+
+                if (todayQnA == null) {
+                    log.error("{}번째 Parentchild의 QnAList가 존재하지 않음!", parentchild.getId());
+                }
             }
-        }, new CronTrigger(cronExpression));*/
-    }
 
+        }, new CronTrigger(cronExpression));
+    }
 
 }

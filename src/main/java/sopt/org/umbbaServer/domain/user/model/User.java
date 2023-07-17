@@ -115,7 +115,7 @@ public class User extends AuditingTimeEntity {
         // 부모자식 관계에 대한 예외처리
         if (parentChildUsers.isEmpty()) {
             return false;
-            throw new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_USER);
+//            throw new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_USER);
         }
 
         if (parentChildUsers.size() == 1) {
