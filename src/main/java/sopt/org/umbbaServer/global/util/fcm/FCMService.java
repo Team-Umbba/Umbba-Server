@@ -127,8 +127,8 @@ public class FCMService {
 
         FCMMessage fcmMessage = FCMMessage.builder()
                 .message(FCMMessage.Message.builder()
-//                        .token(user.get().getFcmToken())
-                        .topic(topic)   // 토픽 구동에서 반드시 필요한 설정 (token 지정 x)
+                        .token(user.get().getFcmToken())
+//                        .topic(topic)   // 토픽 구동에서 반드시 필요한 설정 (token 지정 x)
                         .notification(FCMMessage.Notification.builder()
                                 .title(request.getTitle())
                                 .body(request.getBody())

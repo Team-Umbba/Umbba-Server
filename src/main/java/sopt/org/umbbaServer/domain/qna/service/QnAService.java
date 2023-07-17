@@ -284,7 +284,7 @@ public class QnAService {
                 () -> new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD)
         );
 
-        return GetInvitationResponseDto.of(parentchild.getInviteCode(), user.getUsername(), "url");  // TODO url 설정 필요 (Firebase)
+        return GetInvitationResponseDto.of(parentchild.getInviteCode(), user.getUsername(), "http://umbba.site/");  // TODO url 설정 필요 (Firebase)
     }
 
     private GetInvitationResponseDto withdrawUser() {
