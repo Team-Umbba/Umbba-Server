@@ -231,23 +231,23 @@ public class FCMService {
         }
     }
 
+//    @Transactional
     public void schedulePushAlarm(String cronExpression, Parentchild parentchild) {
 
         taskScheduler.schedule(() -> {
 
-            log.info("parentchild.getQnaList()가 문제가 맞네,, {}", parentchild.getQnaList());
             log.info("성립된 부모자식- 초대코드: {}, 인덱스: {}", parentchild.getInviteCode(), parentchild.getCount());
 
             if (!parentchild.getQnaList().isEmpty()) {
 
                 QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
 
+                parentchild.addCount();
                 if (todayQnA.isParentAnswer() && todayQnA.isChildAnswer()) {
                     // 다음날 질문으로 넘어감
                     log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
                     parentchild.addCount();
 
-                    boolean isValid = true;
                     log.info("schedule");
                     List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
 
@@ -258,12 +258,6 @@ public class FCMService {
                             log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
                             multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(), todayQnA.getQuestion().getTopic()), parentchild.getId());
                     });
-                    log.info("isValid: {}", isValid);
-
-                    /*if (isValid) {
-                        log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
-                        multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(), todayQnA.getQuestion().getTopic()), parentchild.getId());
-                    }*/
                 }
 
                 if (todayQnA == null) {

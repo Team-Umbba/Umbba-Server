@@ -30,7 +30,9 @@ public class Parentchild extends AuditingTimeEntity {
     private int count;
 
     public void addCount() {
-        this.count += 1;
+        if (qnaList.size() < 7) {
+            this.count += 1;
+        }
     }
 
     @Column(nullable = false)

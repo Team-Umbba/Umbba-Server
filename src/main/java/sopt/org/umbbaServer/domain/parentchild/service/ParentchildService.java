@@ -18,8 +18,11 @@ import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbbaServer.domain.qna.dao.QnADao;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
+import sopt.org.umbbaServer.global.common.dto.ApiResponse;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
+import sopt.org.umbbaServer.global.exception.SuccessType;
+import sopt.org.umbbaServer.global.util.fcm.FCMScheduler;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +36,7 @@ public class ParentchildService {
     private final ParentchildRepository parentchildRepository;
     private final UserRepository userRepository;
     private final ParentchildDao parentchildDao;
+    private final FCMScheduler fcmScheduler;
 
     // [발신] 초대하는 측의 온보딩 정보 입력
     @Transactional
@@ -80,6 +84,8 @@ public class ParentchildService {
         /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
             throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
         }*/
+        fcmScheduler.pushTodayQna();
+
 
         return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
     }

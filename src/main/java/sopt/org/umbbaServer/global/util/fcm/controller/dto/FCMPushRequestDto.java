@@ -28,7 +28,7 @@ public class FCMPushRequestDto {
 
         return FCMPushRequestDto.builder()
                 .title("📞" + section + PushMessage.TODAY_QNA.getTitle())
-                .body(topic + PushMessage.TODAY_QNA.getBody())
+                .body("'" + topic + PushMessage.TODAY_QNA.getBody())
                 .build();
     }
 
@@ -38,7 +38,7 @@ public class FCMPushRequestDto {
         return FCMPushRequestDto.builder()
                 .targetToken(targetToken)
                 .title(PushMessage.OPPONENT_REPLY.getTitle())
-                .body(question + PushMessage.OPPONENT_REPLY.getBody())
+                .body("'" + question + PushMessage.OPPONENT_REPLY.getBody())
                 .build();
     }
 
