@@ -14,6 +14,8 @@ import sopt.org.umbbaServer.domain.user.model.User;
 public class SingleQnAResponseDto {
 
     private Long qnaId;
+    private Integer index;
+
     private String section;
     private String topic;
 
@@ -26,13 +28,13 @@ public class SingleQnAResponseDto {
     private String opponentUsername;
     private String myUsername;
 
-    public static SingleQnAResponseDto of(User myUser, User opponentUser, QnA todayQnA, Question todayQuestion, boolean isMeChild) {
+    public static SingleQnAResponseDto of(User myUser, User opponentUser, int index, QnA todayQnA, Question todayQuestion) {
         String opponentQuestion;
         String myQuestion;
         String opponentAnswer;
         String myAnswer;
 
-        if (isMeChild) {
+        if (myUser.isMeChild()) {
             opponentQuestion = todayQuestion.getParentQuestion();
             myQuestion = todayQuestion.getChildQuestion();
             opponentAnswer = todayQnA.getParentAnswer();
@@ -46,6 +48,7 @@ public class SingleQnAResponseDto {
 
         return SingleQnAResponseDto.builder()
                 .qnaId(todayQnA.getId())
+                .index(index)
                 .section(todayQuestion.getSection().getValue())
                 .topic(todayQuestion.getTopic())
                 .opponentQuestion(opponentQuestion)

@@ -37,7 +37,6 @@ public class QnAService {
     private final QnARepository qnARepository;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
-    private final QnADao qnADao;
     private final ParentchildDao parentchildDao;
     private final FCMService fcmService;  //TODO Service에서 Service를 주입받는 부분 수정
 
@@ -49,7 +48,7 @@ public class QnAService {
         Question todayQuestion = todayQnA.getQuestion();
         User opponentUser = getOpponentByParentchild(parentchild, userId);
 
-        return TodayQnAResponseDto.of(myUser, opponentUser, todayQnA, todayQuestion, myUser.isMeChild());
+        return TodayQnAResponseDto.of(myUser, opponentUser, parentchild.getCount(), todayQnA, todayQuestion);
     }
 
     public GetInvitationResponseDto getInvitation(Long userId) {
@@ -83,13 +82,18 @@ public class QnAService {
             fcmService.pushOpponentReply(todayQnA.getQuestion().getChildQuestion(), opponentUser.getId());
         }
 
+        // TODO 정해진 시간이 되었을 때 이부분을 호출하도록 예준이가 하기
+//        if (todayQnA.isParentAnswer() && todayQnA.isChildAnswer()) {
+//            // 다음날 질문으로 넘어감
+//            parentchild.addCount();
+//        }
+
     }
 
     public List<QnAListResponseDto> getQnaList(Long userId, Long sectionId) {
         User myUser = getUserById(userId);
         Parentchild parentchild = getParentchildByUser(myUser);
         List<QnA> qnaList = getQnAListByParentchild(parentchild);
-        User opponentUser = getOpponentByParentchild(parentchild, userId);
 
         return qnaList.stream()
                 .filter(qna -> Objects.equals(qna.getQuestion().getSection().getSectionId(), sectionId))
@@ -106,11 +110,14 @@ public class QnAService {
     public SingleQnAResponseDto getSingleQna(Long userId, Long qnaId) {
         User myUser = getUserById(userId);
         Parentchild parentchild = getParentchildByUser(myUser);
+
+        User opponentUser = getOpponentByParentchild(parentchild, userId);
         QnA targetQnA = getQnAById(qnaId); // 이거 qnA로 할건지 qna로 할건지 통일 필요
         Question todayQuestion = targetQnA.getQuestion();
-        User opponentUser = getOpponentByParentchild(parentchild, userId);
 
-        return SingleQnAResponseDto.of(myUser, opponentUser, targetQnA, todayQuestion, myUser.isMeChild());
+        List<QnA> qnaList = getQnAListByParentchild(parentchild);
+
+        return SingleQnAResponseDto.of(myUser, opponentUser, qnaList.indexOf(targetQnA) + 1, targetQnA, todayQuestion);
     }
 
     @Transactional
@@ -220,7 +227,7 @@ public class QnAService {
             throw new CustomException(ErrorType.PARENTCHILD_HAVE_NO_QNALIST);
         }
 
-        return qnAList.get(qnAList.size() - 1); // 가장 최근의 QnA를 가져옴
+        return qnAList.get(parentchild.getCount() - 1); // 가장 최근의 QnA를 가져옴
     }
 
     private QnA getQnAById(Long qnaId) {
@@ -265,16 +272,19 @@ public class QnAService {
         return TYPE7;
     }
 
+    /*
+    리팩토링을 위해 아래로 뺀 메서드들 끝
+     */
+
     // 메인페이지 정보
     public GetMainViewResponseDto getMainInfo(Long userId) {
 
+        Parentchild parentchild = getParentchildByUserId(userId);
+        List<QnA> qnAList = getQnAListByParentchild(parentchild);
 
-        List<QnA> qnAList = qnADao.findQnASByUserId(userId).orElseThrow(
-                () -> new CustomException(ErrorType.USER_HAVE_NO_QNALIST)
-        );
-        QnA lastQna = qnAList.get(qnAList.size()-1);
+        QnA lastQna = qnAList.get(parentchild.getCount() - 1);
 
-        return GetMainViewResponseDto.of(lastQna, qnAList.size());
+        return GetMainViewResponseDto.of(lastQna, parentchild.getCount());
     }
 
     private GetInvitationResponseDto invitation(Long userId) {
