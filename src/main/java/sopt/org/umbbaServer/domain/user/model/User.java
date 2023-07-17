@@ -114,13 +114,16 @@ public class User extends AuditingTimeEntity {
 
         // 부모자식 관계에 대한 예외처리
         if (parentChildUsers.isEmpty()) {
+            return false;
             throw new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_USER);
         }
 
         if (parentChildUsers.size() == 1) {
-            throw new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION);
+            return false;
+//            throw new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION);
         } else if (parentChildUsers.size() != 2) {
-            throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
+            return false;
+//            throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
         }
 
         log.info("성립된 부모자식: {} X {}, 관계: {}", parentChildUsers.get(0).getUsername(), parentChildUsers.get(1).getUsername(), this.parentChild.getRelation());
