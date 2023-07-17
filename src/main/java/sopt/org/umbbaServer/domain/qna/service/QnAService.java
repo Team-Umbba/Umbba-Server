@@ -83,6 +83,11 @@ public class QnAService {
             fcmService.pushOpponentReply(todayQnA.getQuestion().getChildQuestion(), opponentUser.getId());
         }
 
+        if (todayQnA.isParentAnswer() && todayQnA.isChildAnswer()) {
+            // 다음날 질문으로 넘어감
+            parentchild.addCount();
+        }
+
     }
 
     public List<QnAListResponseDto> getQnaList(Long userId, Long sectionId) {
@@ -220,7 +225,7 @@ public class QnAService {
             throw new CustomException(ErrorType.PARENTCHILD_HAVE_NO_QNALIST);
         }
 
-        return qnAList.get(qnAList.size() - 1); // 가장 최근의 QnA를 가져옴
+        return qnAList.get(parentchild.getCount() - 1); // 가장 최근의 QnA를 가져옴
     }
 
     private QnA getQnAById(Long qnaId) {
@@ -265,16 +270,19 @@ public class QnAService {
         return TYPE7;
     }
 
+    /*
+    리팩토링을 위해 아래로 뺀 메서드들 끝
+     */
+
     // 메인페이지 정보
     public GetMainViewResponseDto getMainInfo(Long userId) {
 
+        Parentchild parentchild = getParentchildByUserId(userId);
+        List<QnA> qnAList = getQnAListByParentchild(parentchild);
 
-        List<QnA> qnAList = qnADao.findQnASByUserId(userId).orElseThrow(
-                () -> new CustomException(ErrorType.USER_HAVE_NO_QNALIST)
-        );
-        QnA lastQna = qnAList.get(qnAList.size()-1);
+        QnA lastQna = qnAList.get(parentchild.getCount() - 1);
 
-        return GetMainViewResponseDto.of(lastQna, qnAList.size());
+        return GetMainViewResponseDto.of(lastQna, parentchild.getCount());
     }
 
     private GetInvitationResponseDto invitation(Long userId) {

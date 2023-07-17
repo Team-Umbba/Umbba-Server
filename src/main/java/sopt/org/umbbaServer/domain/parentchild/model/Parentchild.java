@@ -27,6 +27,13 @@ public class Parentchild extends AuditingTimeEntity {
     private List<QnA> qnaList;
 
     @Column(nullable = false)
+    private int count;
+
+    public void addCount() {
+        this.count += 1;
+    }
+
+    @Column(nullable = false)
     private String inviteCode;
 
     @Column(nullable = false)
