@@ -52,6 +52,7 @@ public class ParentchildService {
                 .isInvitorChild(request.getIsInvitorChild())
                 .relation(getRelation(request.getUserInfo().getGender(), request.getRelationInfo(), request.getIsInvitorChild()))
                 .pushTime(request.getPushTime())  // TODO 케이스에 따라 없을 수도 있음
+                .count(1)
                 .build();
         parentchildRepository.save(parentchild);
         user.updateParentchild(parentchild);
