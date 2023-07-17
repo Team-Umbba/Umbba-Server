@@ -36,6 +36,9 @@ public class FCMScheduler {
 
         log.info("오늘의 질문 알람 - 유저마다 보내는 시간 다름");
         List<Parentchild> parentchildList = parentchildRepository.findAll();
+        for (Parentchild pc : parentchildList) {
+            if ()
+        }
         parentchildList.stream()
                 .forEach(pc -> {
                     log.info(pc.getId() + "번째 Parentchild");
@@ -45,14 +48,19 @@ public class FCMScheduler {
                     /*QnA todayQnA = qnADao.findQuestionByParentchildId(pc.getId()).orElseThrow(
                             () -> new CustomException(ErrorType.PARENTCHILD_HAVE_NO_QNALIST)
                     );*/
-                    Optional<QnA> todayQnA = qnADao.findQuestionByParentchildId(pc.getId());
+                    Parentchild parentchild = parentchildRepository.findById(pc.getId()).get();
+                    QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount()-1);
+                    fcmService.schedulePushAlarm(cronExpression, todayQnA.getQuestion(), pc.getId());;
+
+                    /*Optional<QnA> todayQnA = qnADao.findQuestionByParentchildId(pc.getId());
                     todayQnA.ifPresent(qna -> {
                         log.info("todayQnA: {}", qna.getQuestion().getTopic());
 
                         fcmService.schedulePushAlarm(cronExpression, qna.getQuestion(), pc.getId());  // cron 스케줄을 이용해 작업 예약
-                    });
-
-                    log.error("{}번째 Parentchild의 QnAList가 존재하지 않음!", pc.getId());
+                    });*/
+                    if (todayQnA == null) {
+                        log.error("{}번째 Parentchild의 QnAList가 존재하지 않음!", pc.getId());
+                    }
                 });
         return "다수 기기 알림 전송 성공 ! messages were sent successfully";
     }

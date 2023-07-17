@@ -219,7 +219,6 @@ public class FCMService {
         try {
             BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
             log.info("다수 기기 알림 전송 성공 ! successCount: " + response.getSuccessCount() + " messages were sent successfully");
-
             log.info("알림 전송: {}", response.getResponses().toString());
 
             return "알림을 성공적으로 전송했습니다. \ntargetUserId = 1." + tokenList.get(0) + ", \n\n2." + tokenList.get(1);
@@ -231,8 +230,17 @@ public class FCMService {
 
     public void schedulePushAlarm(String cronExpression, Question todayQuestion, Long parentchildId) {
         taskScheduler.schedule(() -> {
+            log.info("FCMService-schedulePushAlarm() topic : {}", todayQuestion.getTopic());
             multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQuestion.getSection().getValue(), todayQuestion.getTopic()) ,parentchildId);
         }, new CronTrigger(cronExpression));
+
+        /*taskScheduler.schedule(new Runnable() {
+            @Override
+            public void run() {
+                log.info("FCMService-schedulePushAlarm() topic : {}", todayQuestion.getTopic());
+                multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQuestion.getSection().getValue(), todayQuestion.getTopic()), parentchildId);
+            }
+        }, new CronTrigger(cronExpression));*/
     }
 
 
