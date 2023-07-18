@@ -47,6 +47,8 @@ public class AuthService {
                     .socialPlatform(socialPlatform)
                     .socialId(socialId)
                     .isMeChild(true)
+                    .isMatchFinish(false)
+                    .hasAlarm(false)
                     .fcmToken(request.getFcmToken())
                     .build();
 
@@ -66,7 +68,7 @@ public class AuthService {
         // 클라이언트 요청에 따라 FCM 토큰을 로그인할 때마다 업데이트 하도록 변경
         loginUser.updateFcmToken(request.getFcmToken());
 
-        return UserLoginResponseDto.of(isRegistered, loginUser, tokenDto.getAccessToken());
+        return UserLoginResponseDto.of(loginUser, tokenDto.getAccessToken());
     }
 
     @Transactional

@@ -33,15 +33,22 @@ public class User extends AuditingTimeEntity {
     @JoinColumn(name = "parentchild_id")
     private Parentchild parentChild;
 
-    @Column(nullable = false)
-    private boolean isMeChild;
-
     public void updateParentchild(Parentchild parentchild) {
         this.parentChild = parentchild;
     }
-    
+
+    @Column(nullable = false)
+    private boolean isMeChild;
+
     public void updateIsMeChild(boolean isMeChild) {
         this.isMeChild = isMeChild;
+    }
+
+    @Column(nullable = false)
+    private boolean isMatchFinish;
+
+    public void updateIsMatchFinish(boolean isMatchFinish) {
+        this.isMatchFinish = isMatchFinish;
     }
 
     private String refreshToken;
@@ -54,10 +61,12 @@ public class User extends AuditingTimeEntity {
     @Column(nullable = false)
     private String fcmToken;  // registration+token
 
+    @Column(nullable = false)
+    private boolean hasAlarm;
+
     public void updateFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
     }
-
 
     // ** 소셜 로그인 관련 **
     @Enumerated(EnumType.STRING)
