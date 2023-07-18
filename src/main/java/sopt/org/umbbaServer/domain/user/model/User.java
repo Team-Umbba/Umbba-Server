@@ -61,6 +61,9 @@ public class User extends AuditingTimeEntity {
     @Column(nullable = false)
     private String fcmToken;  // registration+token
 
+    @Column(nullable = false)
+    private boolean hasAlarm;
+
     public void updateFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
     }

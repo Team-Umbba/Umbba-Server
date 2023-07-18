@@ -48,6 +48,7 @@ public class AuthService {
                     .socialId(socialId)
                     .isMeChild(true)
                     .isMatchFinish(false)
+                    .hasAlarm(false)
                     .fcmToken(request.getFcmToken())
                     .build();
 
