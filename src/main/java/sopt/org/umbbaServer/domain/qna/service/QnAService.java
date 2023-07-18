@@ -5,11 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
-import sopt.org.umbbaServer.domain.qna.controller.dto.response.*;
-import sopt.org.umbbaServer.domain.qna.model.*;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.qna.controller.dto.request.TodayAnswerRequestDto;
-import sopt.org.umbbaServer.domain.qna.dao.QnADao;
+import sopt.org.umbbaServer.domain.qna.controller.dto.response.*;
+import sopt.org.umbbaServer.domain.qna.model.*;
 import sopt.org.umbbaServer.domain.qna.repository.QnARepository;
 import sopt.org.umbbaServer.domain.qna.repository.QuestionRepository;
 import sopt.org.umbbaServer.domain.user.model.User;
@@ -25,8 +24,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static sopt.org.umbbaServer.domain.qna.model.OnboardingAnswer.YES;
-import static sopt.org.umbbaServer.domain.qna.model.QuestionType.*;
 import static sopt.org.umbbaServer.domain.qna.model.QuestionSection.YOUNG;
+import static sopt.org.umbbaServer.domain.qna.model.QuestionType.*;
 
 @Slf4j
 @Service

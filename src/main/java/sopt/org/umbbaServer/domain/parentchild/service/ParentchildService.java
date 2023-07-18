@@ -57,7 +57,7 @@ public class ParentchildService {
                 .build();
         parentchildRepository.save(parentchild);
         user.updateParentchild(parentchild);
-
+        user.updateIsMatchFinish(true);
         log.info("userInfo: {}", request.getUserInfo().getBornYear());
         return OnboardingInviteResponseDto.of(parentchild, user);
     }
@@ -115,6 +115,7 @@ public class ParentchildService {
         // TODO ParentChild에 연관된 User 수에 따른 예외처리
         // TODO 하나의 유저는 하나의 관계만 가지도록 예외처리
         user.updateParentchild(newMatchRelation);
+        user.updateIsMatchFinish(true);
         log.info("로그인한 유저가 성립된 Parentchild Id: {}", user.getParentChild().getId());
 
         List<User> parentChildUsers = getParentChildUsers(newMatchRelation);
