@@ -3,7 +3,6 @@ package sopt.org.umbbaServer.domain.qna.dao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import sopt.org.umbbaServer.domain.qna.model.QnA;
-import sopt.org.umbbaServer.domain.qna.model.Question;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;

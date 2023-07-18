@@ -27,8 +27,6 @@ public class UserInfoDto {
 
     private Boolean isMeChild;
 
-    private Boolean hasAlarm;
-
     public static UserInfoDto of(User user) {
         return UserInfoDto.builder()
                 .userId(user.getId())
@@ -36,7 +34,6 @@ public class UserInfoDto {
                 .gender(user.getGender())
                 .bornYear(user.getBornYear())
                 .isMeChild(user.isMeChild())
-                .hasAlarm(user.isHasAlarm())
                 .build();
     }
 }

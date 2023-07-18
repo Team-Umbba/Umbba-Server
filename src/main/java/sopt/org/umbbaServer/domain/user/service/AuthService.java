@@ -36,8 +36,8 @@ public class AuthService {
     @Transactional
     public UserLoginResponseDto login(String socialAccessToken, SocialLoginRequestDto request) throws NoSuchAlgorithmException, InvalidKeySpecException {
 
-        SocialPlatform socialPlatform = request.getSocialPlatform();
-        String socialId = login(request.getSocialPlatform(), socialAccessToken);
+        SocialPlatform socialPlatform = SocialPlatform.of(request.getSocialPlatform());
+        String socialId = login(socialPlatform, socialAccessToken);
 
         boolean isRegistered = isUserBySocialAndSocialId(socialPlatform, socialId);
 
@@ -46,8 +46,9 @@ public class AuthService {
             User user = User.builder()
                     .socialPlatform(socialPlatform)
                     .socialId(socialId)
-                    .hasAlarm(true)
                     .isMeChild(true)
+                    .isMatchFinish(false)
+                    .hasAlarm(false)
                     .fcmToken(request.getFcmToken())
                     .build();
 
@@ -64,7 +65,10 @@ public class AuthService {
         TokenDto tokenDto = jwtProvider.issueToken(new UserAuthentication(loginUser.getId(), null, null));
         loginUser.updateRefreshToken(tokenDto.getRefreshToken());
 
-        return UserLoginResponseDto.of(isRegistered, loginUser, tokenDto.getAccessToken());
+        // 클라이언트 요청에 따라 FCM 토큰을 로그인할 때마다 업데이트 하도록 변경
+        loginUser.updateFcmToken(request.getFcmToken());
+
+        return UserLoginResponseDto.of(loginUser, tokenDto.getAccessToken());
     }
 
     @Transactional
@@ -93,7 +97,8 @@ public class AuthService {
     public void signout(Long userId) {
         User user = getUserById(userId);
         user.updateRefreshToken(null);
-        jwtProvider.deleteRefreshToken(userId);
+        jwtProvider.deleteRefreshToken(userId); // 일치하는 ID가 없는 경우에는 아무 동작도 수행하지 않음 (CrudRepository 기본 동작)
+        user.updateFcmToken("withdrawuserfcmtoken"); // 나중에 null로 변경해줘야함
         user.deleteSocialInfo();
     }
 

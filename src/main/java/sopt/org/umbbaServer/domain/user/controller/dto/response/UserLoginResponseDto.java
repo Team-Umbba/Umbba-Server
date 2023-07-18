@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
-import sopt.org.umbbaServer.global.config.jwt.TokenDto;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
+import sopt.org.umbbaServer.global.config.jwt.TokenDto;
 
 @Getter
 @Builder
@@ -14,7 +14,7 @@ import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 public class UserLoginResponseDto {
     private Long userId;
 
-    private Boolean isNewUser;
+    private Boolean isMatchFinish;
 
     private String username;
 
@@ -36,12 +36,12 @@ public class UserLoginResponseDto {
 
 //    private String socialRefreshToken;
 
-    public static UserLoginResponseDto of(boolean isRegistered, User loginUser, String accessToken) {
+    public static UserLoginResponseDto of(User loginUser, String accessToken) {
         TokenDto tokenDto = TokenDto.of(accessToken, loginUser.getRefreshToken());
 
         return UserLoginResponseDto.builder()
                 .userId(loginUser.getId())
-                .isNewUser(!isRegistered) // 만약 등록이 안되어있던 회원이면 isNewUser을 true로 설정
+                .isMatchFinish(loginUser.isMatchFinish())
                 .username(loginUser.getUsername())
                 .gender(loginUser.getGender())
                 .bornYear(loginUser.getBornYear())
