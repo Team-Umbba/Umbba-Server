@@ -35,6 +35,8 @@ public enum ErrorType {
     INVALID_FIREBASE_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 파이어베이스 토큰입니다."),
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다, 다시 로그인을 해주세요."),
     NOT_MATCH_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "일치하지 않는 리프레시 토큰입니다."),
+    RECEIVE_AFTER_MATCH(HttpStatus.BAD_REQUEST, "초대코드로 매칭 후에 온보딩 수신이 가능합니다."),
+
 
     /**
      * 404 NOT FOUND

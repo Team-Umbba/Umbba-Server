@@ -66,24 +66,29 @@ public class ParentchildService {
     @Transactional
     public OnboardingReceiveResponseDto onboardReceive(Long userId, OnboardingReceiveRequestDto request) throws InterruptedException {
 
-        User user = getUserById(userId);
-        user.updateOnboardingInfo(
-                request.getUserInfo().getName(),
-                request.getUserInfo().getGender(),
-                request.getUserInfo().getBornYear()
-        );
+        if (getParentchildByUserId(userId) != null) {
 
-        Parentchild parentchild = getParentchildByUserId(userId);
+            User user = getUserById(userId);
+            user.updateOnboardingInfo(
+                    request.getUserInfo().getName(),
+                    request.getUserInfo().getGender(),
+                    request.getUserInfo().getBornYear()
+            );
+
+            Parentchild parentchild = getParentchildByUserId(userId);
 //        parentchild.updateInfo();  TODO 온보딩 송수신 측의 관계 정보가 불일치한 경우에 대한 처리
-        List<User> parentChildUsers = getParentChildUsers(parentchild);
+            List<User> parentChildUsers = getParentChildUsers(parentchild);
 
         /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
             throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
         }*/
-        fcmScheduler.pushTodayQna();
+            fcmScheduler.pushTodayQna();
 
 
-        return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
+            return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
+        }
+
+        throw new CustomException(ErrorType.RECEIVE_AFTER_MATCH);
     }
 
 
