@@ -32,6 +32,9 @@ import sopt.org.umbbaServer.global.exception.ErrorType;
 import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMMessage;
 import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -57,6 +60,23 @@ public class FCMService {
     private final TaskScheduler taskScheduler;
     private final PlatformTransactionManager transactionManager;
 
+
+    @PersistenceContext
+    private EntityManager em;
+//    private EntityTransaction tx;
+
+
+    /*public FCMService(UserRepository userRepository, ParentchildRepository parentchildRepository, ParentchildDao parentchildDao, ObjectMapper objectMapper, TaskScheduler taskScheduler, PlatformTransactionManager transactionManager, EntityManager em) {
+        this.userRepository = userRepository;
+        this.parentchildRepository = parentchildRepository;
+        this.parentchildDao = parentchildDao;
+        this.objectMapper = objectMapper;
+        this.taskScheduler = taskScheduler;
+        this.transactionManager = transactionManager;
+        this.em = em;
+
+        tx  = em.getTransaction();
+    }*/
 
 
     // Firebase에서 Access Token 가져오기
@@ -237,40 +257,59 @@ public class FCMService {
     }
 
 //    @Transactional
-public void schedulePushAlarm(String cronExpression, Parentchild parentchild) {
+    public void schedulePushAlarm(String cronExpression, Long parentchildId) {
 
-    taskScheduler.schedule(() -> {
 
-        log.info("성립된 부모자식- 초대코드: {}, 인덱스: {}", parentchild.getInviteCode(), parentchild.getCount());
 
-        if (!parentchild.getQnaList().isEmpty()) {
+        taskScheduler.schedule(() -> {
 
-            QnA currentQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
-            if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer()) {
+            Parentchild parentchild = parentchildRepository.findById(parentchildId).get();
 
-                log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
-                parentchild.addCount();
-                log.info("스케줄링 작업 예약 내 addCount 후 count: {}", parentchild.getCount());
+            TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+            TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
 
-                QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
 
-                List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
+            log.info("성립된 부모자식- 초대코드: {}, 인덱스: {}", parentchild.getInviteCode(), parentchild.getCount());
 
-                log.info("FCMService - schedulePushAlarm() 실행");
-                parentChildUsers.stream()
-                        .filter(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))
-                        .forEach(user -> {
-                            log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
-                            multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(), todayQnA.getQuestion().getTopic()), parentchild.getId());
-                        });
+//                em.persist(parentchild);
+//                tx.begin();
+            log.info("parentchild.getQnaList().isEmpty() : {}", parentchild.getQnaList().isEmpty());
+                if (!parentchild.getQnaList().isEmpty()) {
 
-                if (todayQnA == null) {
-                    log.error("{}번째 Parentchild의 QnAList가 존재하지 않음!", parentchild.getId());
+
+                    QnA currentQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
+//                    if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer()) {
+
+//                        tx.begin();
+
+                        log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
+                        parentchild.addCount();
+                        Parentchild pc = em.merge(parentchild);
+//                        pc.addCount();
+//                        em.flush();
+//                        em.remove(parentchild);
+
+                        transactionManager.commit(transactionStatus);
+                        log.info("스케줄링 작업 예약 내 addCount 후 count: {}", pc.getCount());
+
+                        QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
+                        List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
+
+                        log.info("FCMService - schedulePushAlarm() 실행");
+                        parentChildUsers.stream()
+                                .filter(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))
+                                .forEach(user -> {
+                                    log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
+                                    multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(), todayQnA.getQuestion().getTopic()), parentchild.getId());
+                                });
+
+                        if (todayQnA == null) {
+                            log.error("{}번째 Parentchild의 QnAList가 존재하지 않음!", parentchild.getId());
+                        }
+//                    }
                 }
-            }
-        }
 
-    }, new CronTrigger(cronExpression));
-}
+        }, new CronTrigger(cronExpression));
+    }
 
 }

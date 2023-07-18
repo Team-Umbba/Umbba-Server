@@ -1,6 +1,7 @@
 package sopt.org.umbbaServer.domain.parentchild.model;
 
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.qna.model.OnboardingAnswer;
 import sopt.org.umbbaServer.domain.qna.model.QnA;
@@ -11,6 +12,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,6 +33,10 @@ public class Parentchild extends AuditingTimeEntity {
     private int count;
 
     public void addCount() {
+        this.count += 1;
+        log.info("Parentchild - addCount() 호출: {}", this.count);
+
+
         if (qnaList.size() < 7) {
             this.count += 1;
         }

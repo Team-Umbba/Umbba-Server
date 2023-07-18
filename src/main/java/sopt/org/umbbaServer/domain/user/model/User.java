@@ -38,7 +38,7 @@ public class User extends AuditingTimeEntity {
     private boolean hasAlarm;
 
     @ManyToOne
-    @JoinColumn(name = "parentchild_id")
+    @JoinColumn(name = "parentchild_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))  // 외래 키 제약조건 제거
     private Parentchild parentChild;
 
     @Column(nullable = false)

@@ -25,7 +25,7 @@ public class FCMController {
 
     @PostMapping("/qna")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse sendTopicScheduledTest() throws InterruptedException {
+    public ApiResponse sendTopicScheduledTest() {
         return ApiResponse.success(SuccessType.PUSH_ALARM_PERIODIC_SUCCESS, fcmScheduler.pushTodayQna());
     }
 
