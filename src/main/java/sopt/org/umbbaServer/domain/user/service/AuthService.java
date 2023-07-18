@@ -36,8 +36,8 @@ public class AuthService {
     @Transactional
     public UserLoginResponseDto login(String socialAccessToken, SocialLoginRequestDto request) throws NoSuchAlgorithmException, InvalidKeySpecException {
 
-        SocialPlatform socialPlatform = request.getSocialPlatform();
-        String socialId = login(request.getSocialPlatform(), socialAccessToken);
+        SocialPlatform socialPlatform = SocialPlatform.of(request.getSocialPlatform());
+        String socialId = login(socialPlatform, socialAccessToken);
 
         boolean isRegistered = isUserBySocialAndSocialId(socialPlatform, socialId);
 

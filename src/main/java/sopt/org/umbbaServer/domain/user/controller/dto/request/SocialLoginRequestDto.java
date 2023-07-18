@@ -12,7 +12,7 @@ import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class SocialLoginRequestDto {
 
-    private SocialPlatform socialPlatform;
+    private String socialPlatform;
 
     private String fcmToken;
 }
