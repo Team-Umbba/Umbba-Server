@@ -43,6 +43,7 @@ public enum ErrorType {
      * 404 NOT FOUND
      */
     INVALID_USER(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
+    WITHDRAW_USER(HttpStatus.NOT_FOUND, "탈퇴한 회원입니다."),
     NOT_EXIST_PARENT_CHILD_USER(HttpStatus.NOT_FOUND, "해당 부모자식 관계에 해당하는 유저가 존재하지 않습니다."),
     NOT_EXIST_CHILD_USER(HttpStatus.NOT_FOUND, "해당 관계에 속하는 자식 유저가 존재하지 않습니다."),
     NOT_FOUND_QNA(HttpStatus.NOT_FOUND, "해당 아이디와 일치하는 QnA 데이터가 없습니다."),

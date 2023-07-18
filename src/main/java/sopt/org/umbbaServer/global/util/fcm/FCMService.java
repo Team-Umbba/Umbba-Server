@@ -134,6 +134,10 @@ public class FCMService {
                     () -> new CustomException(ErrorType.INVALID_USER)
             );
             user.get().updateFcmToken(request.getTargetToken());
+
+            if (user.get().getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
+                throw new CustomException(ErrorType.WITHDRAW_USER);
+            }
         }
 
         FCMMessage fcmMessage = FCMMessage.builder()
