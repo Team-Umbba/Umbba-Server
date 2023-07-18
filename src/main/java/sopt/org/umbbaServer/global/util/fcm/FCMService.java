@@ -126,23 +126,14 @@ public class FCMService {
     // 따로 만들어둔 메세지 템플릿 이용해서 전송할 때 사용하는 알람 [Topic 구독]
     String makeMessage(FCMPushRequestDto request, Long userId) throws FirebaseMessagingException, JsonProcessingException {
 
-        Optional<User> user = userRepository.findByFcmToken(request.getTargetToken());
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ErrorType.INVALID_USER)
+        );
 
-        if (user.isEmpty()) {
-            user = userRepository.findById(userId);
-            user.orElseThrow(
-                    () -> new CustomException(ErrorType.INVALID_USER)
-            );
-            user.get().updateFcmToken(request.getTargetToken());
-
-            if (user.get().getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
-                throw new CustomException(ErrorType.WITHDRAW_USER);
-            }
-        }
 
         FCMMessage fcmMessage = FCMMessage.builder()
                 .message(FCMMessage.Message.builder()
-                        .token(user.get().getFcmToken())
+                        .token(user.getFcmToken())
 //                        .topic(topic)   // 토픽 구동에서 반드시 필요한 설정 (token 지정 x)
                         .notification(FCMMessage.Notification.builder()
                                 .title(request.getTitle())
