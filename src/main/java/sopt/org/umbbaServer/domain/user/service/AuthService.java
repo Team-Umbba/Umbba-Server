@@ -63,6 +63,9 @@ public class AuthService {
         TokenDto tokenDto = jwtProvider.issueToken(new UserAuthentication(loginUser.getId(), null, null));
         loginUser.updateRefreshToken(tokenDto.getRefreshToken());
 
+        // 클라이언트 요청에 따라 FCM 토큰을 로그인할 때마다 업데이트 하도록 변경
+        loginUser.updateFcmToken(request.getFcmToken());
+
         return UserLoginResponseDto.of(isRegistered, loginUser, tokenDto.getAccessToken());
     }
 
@@ -92,6 +95,7 @@ public class AuthService {
     public void signout(Long userId) {
         User user = getUserById(userId);
         user.updateRefreshToken(null);
+        user.updateFcmToken(null);
         jwtProvider.deleteRefreshToken(userId);
         user.deleteSocialInfo();
     }
