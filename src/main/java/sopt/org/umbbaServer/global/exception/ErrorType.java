@@ -18,6 +18,7 @@ public enum ErrorType {
     VALIDATION_WRONG_ENUM_EXCEPTION(HttpStatus.BAD_REQUEST, "허용되지 않는 문자열이 입력되었습니다."),
     INVALID_SOCIAL_PLATFORM(HttpStatus.BAD_REQUEST, "유효하지 않은 소셜 플랫폼입니다."),
     INVALID_ONBOARDING_ANSWER(HttpStatus.BAD_REQUEST, "유효하지 않은 선택질문 응답값입니다."),
+    INVALID_SOCIALPLATFORM(HttpStatus.BAD_REQUEST, "유효하지 않은 소셜 플랫폼 문자열"),
 
     // ParentChild - Onboarding
     INVALID_PARENT_CHILD_RELATION_INFO(HttpStatus.BAD_REQUEST, "부모자식 관계를 정의할 수 없는 요청값입니다."),

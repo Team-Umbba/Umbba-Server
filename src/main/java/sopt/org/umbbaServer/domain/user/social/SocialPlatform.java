@@ -19,10 +19,10 @@ public enum SocialPlatform {
 
     public static SocialPlatform of(String value) {
         for (SocialPlatform platform : SocialPlatform.values()) {
-            if (platform.getValue().equals(value)) {
+            if (platform.toString().equals(value)) {
                 return platform;
             }
         }
-        throw new CustomException(ErrorType.INVALID_ONBOARDING_ANSWER);
+        throw new CustomException(ErrorType.INVALID_SOCIALPLATFORM);
     }
 }
