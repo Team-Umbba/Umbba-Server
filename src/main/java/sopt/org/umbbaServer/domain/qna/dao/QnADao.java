@@ -51,6 +51,7 @@ public class QnADao {
         String jpql = "SELECT q FROM Parentchild pc " +
                 "JOIN pc.qnaList q " +
                 "WHERE pc.id = :id " +
+                "AND pc.count = q.id" +
                 "ORDER BY q.id DESC ";   // TODO 오늘의 질문 인덱스 (카운트) 필드로 조건 달기 변경
 
         try {

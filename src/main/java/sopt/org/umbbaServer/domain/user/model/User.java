@@ -1,12 +1,17 @@
 package sopt.org.umbbaServer.domain.user.model;
 
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
+import sopt.org.umbbaServer.global.exception.CustomException;
+import sopt.org.umbbaServer.global.exception.ErrorType;
 import sopt.org.umbbaServer.global.util.AuditingTimeEntity;
 
 import javax.persistence.*;
+import java.util.List;
 
+@Slf4j
 @Entity
 @Table(name = "`User`")
 @Getter
@@ -30,7 +35,7 @@ public class User extends AuditingTimeEntity {
     private Integer bornYear;
 
     @ManyToOne
-    @JoinColumn(name = "parentchild_id")
+    @JoinColumn(name = "parentchild_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))  // 외래 키 제약조건 제거
     private Parentchild parentChild;
 
     public void updateParentchild(Parentchild parentchild) {
@@ -58,7 +63,7 @@ public class User extends AuditingTimeEntity {
     }
 
     // ** FCM 푸시 알림 관련 **
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String fcmToken;  // registration+token
 
     @Column(nullable = false)
@@ -109,5 +114,26 @@ public class User extends AuditingTimeEntity {
     public User(SocialPlatform socialPlatform, String socialId) {
         this.socialPlatform = socialPlatform;
         this.socialId = socialId;
+    }
+
+    public boolean validateParentchild(List<User> parentChildUsers) {
+
+        // 부모자식 관계에 대한 예외처리
+        if (parentChildUsers.isEmpty()) {
+            return false;
+//            throw new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_USER);
+        }
+
+        if (parentChildUsers.size() == 1) {
+            return false;
+//            throw new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION);
+        } else if (parentChildUsers.size() != 2) {
+            return false;
+//            throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
+        }
+
+        log.info("성립된 부모자식: {} X {}, 관계: {}", parentChildUsers.get(0).getUsername(), parentChildUsers.get(1).getUsername(), this.parentChild.getRelation());
+
+        return true;
     }
 }

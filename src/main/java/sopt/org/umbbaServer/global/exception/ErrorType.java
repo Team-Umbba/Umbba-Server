@@ -36,12 +36,16 @@ public enum ErrorType {
     INVALID_FIREBASE_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 파이어베이스 토큰입니다."),
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다, 다시 로그인을 해주세요."),
     NOT_MATCH_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "일치하지 않는 리프레시 토큰입니다."),
+    RECEIVE_AFTER_MATCH(HttpStatus.BAD_REQUEST, "초대코드로 매칭 후에 온보딩 수신이 가능합니다."),
+
 
     /**
      * 404 NOT FOUND
      */
     INVALID_USER(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
+    WITHDRAW_USER(HttpStatus.NOT_FOUND, "탈퇴한 회원입니다."),
     NOT_EXIST_PARENT_CHILD_USER(HttpStatus.NOT_FOUND, "해당 부모자식 관계에 해당하는 유저가 존재하지 않습니다."),
+    NOT_EXIST_CHILD_USER(HttpStatus.NOT_FOUND, "해당 관계에 속하는 자식 유저가 존재하지 않습니다."),
     NOT_FOUND_QNA(HttpStatus.NOT_FOUND, "해당 아이디와 일치하는 QnA 데이터가 없습니다."),
     USER_HAVE_NO_PARENTCHILD(HttpStatus.NOT_FOUND, "회원이 속한 부모자식 관계가 없습니다."),
     NOT_EXIST_PARENT_CHILD_RELATION(HttpStatus.NOT_FOUND, "존재하지 않는 부모자식 관계입니다."),

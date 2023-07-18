@@ -19,6 +19,7 @@ import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
+import sopt.org.umbbaServer.global.util.fcm.FCMScheduler;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class ParentchildService {
     private final ParentchildRepository parentchildRepository;
     private final UserRepository userRepository;
     private final ParentchildDao parentchildDao;
+    private final FCMScheduler fcmScheduler;
 
     // [발신] 초대하는 측의 온보딩 정보 입력
     @Transactional
@@ -49,7 +51,7 @@ public class ParentchildService {
         Parentchild parentchild = Parentchild.builder()
                 .inviteCode(generateInviteCode())
                 .isInvitorChild(request.getIsInvitorChild())
-                .relation(getRelation(request.getUserInfo().getGender(), request.getRelationInfo(), request.getIsInvitorChild()))
+                .relation(ParentchildRelation.relation(request.getUserInfo().getGender(), request.getRelationInfo(), request.getIsInvitorChild()))
                 .pushTime(request.getPushTime())  // TODO 케이스에 따라 없을 수도 있음
                 .count(1)
                 .build();
@@ -62,58 +64,33 @@ public class ParentchildService {
 
     // [수신] 초대받는 측의 온보딩 정보 입력
     @Transactional
-    public OnboardingReceiveResponseDto onboardReceive(Long userId, OnboardingReceiveRequestDto request) {
+    public OnboardingReceiveResponseDto onboardReceive(Long userId, OnboardingReceiveRequestDto request) throws InterruptedException {
 
-        User user = getUserById(userId);
-        user.updateOnboardingInfo(
-                request.getUserInfo().getName(),
-                request.getUserInfo().getGender(),
-                request.getUserInfo().getBornYear()
-        );
+        if (getParentchildByUserId(userId) != null) {
 
-        Parentchild parentchild = getParentchildByUserId(userId);
-//        parentchild.updateInfo();
-        List<User> parentChildUsers = getParentChildUsers(parentchild);
+            User user = getUserById(userId);
+            user.updateOnboardingInfo(
+                    request.getUserInfo().getName(),
+                    request.getUserInfo().getGender(),
+                    request.getUserInfo().getBornYear()
+            );
 
-        return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
-    }
+            Parentchild parentchild = getParentchildByUserId(userId);
+//        parentchild.updateInfo();  TODO 온보딩 송수신 측의 관계 정보가 불일치한 경우에 대한 처리
+            List<User> parentChildUsers = getParentChildUsers(parentchild);
 
-    // 부모자식 관계 케이스 분류하기
-    private ParentchildRelation getRelation(String gender, String relationInfo, boolean isInvitorChild) {
+        /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
+            throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
+        }*/
+            fcmScheduler.pushTodayQna();
 
-        // 내가 부모다 - 누구와 함께 하겠어? "자식"
-        if (!isInvitorChild) {
-            if (gender.equals("남자")) {    // 아빠
-                if (relationInfo.equals("아들")) {
-                    return ParentchildRelation.DAD_SON;
-                } else if (relationInfo.equals("딸")) {
-                    return ParentchildRelation.DAD_DAU;   // TODO 클라에서 둘 중 하나의 값만 받도록 처리하니까 else if 구문 빼도 무관
-                }
-            } else if(gender.equals("여자")) {   // 엄마
-                if (relationInfo.equals("아들")) {
-                    return ParentchildRelation.MOM_SON;
-                } else if (relationInfo.equals("딸")) {
-                    return ParentchildRelation.DAD_DAU;
-                }
-            }
-        } else {   // 내가 자식이다 - 누구와 함께 하겠어? "부모"
-            if (gender.equals("남자")) {   // 아들
-                if (relationInfo.equals("아빠")) {
-                    return ParentchildRelation.DAD_SON;
-                } else if (relationInfo.equals("엄마")) {
-                    return ParentchildRelation.MOM_SON;
-                }
-            } else if(gender.equals("여자")) {   // 딸
-                if (relationInfo.equals("아빠")) {
-                    return ParentchildRelation.DAD_DAU;
-                } else if (relationInfo.equals("엄마")) {
-                    return ParentchildRelation.MOM_DAU;
-                }
-            }
+
+            return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
         }
 
-        throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION_INFO);
+        throw new CustomException(ErrorType.RECEIVE_AFTER_MATCH);
     }
+
 
     // 초대코드 생성 (형식예시: WUHZ-iGbPX9X)
     private String generateInviteCode() {
@@ -142,28 +119,17 @@ public class ParentchildService {
         log.info("로그인한 유저가 성립된 Parentchild Id: {}", user.getParentChild().getId());
 
         List<User> parentChildUsers = getParentChildUsers(newMatchRelation);
+        if (!user.validateParentchild(parentChildUsers)) {
+            throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
+        }
 
         return InviteResultResponseDto.of(newMatchRelation, parentChildUsers);
     }
 
-    private List<User> getParentChildUsers(Parentchild newMatchRelation) {
-        List<User> parentChildUsers = userRepository.findUserByParentChild(newMatchRelation);
-        log.info("성립된 부모자식: {} X {}, 관계: {}", parentChildUsers.get(0).getUsername(), parentChildUsers.get(1).getUsername(), newMatchRelation.getRelation());
-
-        // 부모자식 관계에 대한 예외처리
-        if (parentChildUsers.isEmpty()) {
-            throw new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_USER);
-        }
-
-        if (parentChildUsers.size() == 1) {
-            throw new CustomException(ErrorType.NOT_MATCH_PARENT_CHILD_RELATION);
-        } else if (parentChildUsers.size() != 2) {
-            throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
-        }
-
-        return parentChildUsers;
-
+    public List<User> getParentChildUsers(Parentchild newMatchRelation) {
+        return userRepository.findUserByParentChild(newMatchRelation);
     }
+
 
     private Parentchild getParentchildByUserId(Long userId) {
 

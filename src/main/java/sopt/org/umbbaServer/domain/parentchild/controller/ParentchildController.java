@@ -46,7 +46,7 @@ public class ParentchildController {
 
     @PatchMapping("/onboard/receive")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<OnboardingReceiveResponseDto> onboardReceive(@RequestBody @Valid final OnboardingReceiveRequestDto request, Principal principal) {
+    public ApiResponse<OnboardingReceiveResponseDto> onboardReceive(@RequestBody @Valid final OnboardingReceiveRequestDto request, Principal principal) throws InterruptedException {
 
         Long userId = JwtProvider.getUserFromPrincial(principal);
         OnboardingReceiveResponseDto response = parentchildService.onboardReceive(userId, request);

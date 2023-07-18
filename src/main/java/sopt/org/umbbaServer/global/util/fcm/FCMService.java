@@ -11,21 +11,27 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
-import sopt.org.umbbaServer.domain.qna.model.Question;
+import sopt.org.umbbaServer.domain.qna.model.QnA;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
+import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMMessage;
 import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +54,11 @@ public class FCMService {
     private final ParentchildDao parentchildDao;
     private final ObjectMapper objectMapper;
     private final TaskScheduler taskScheduler;
+    private final PlatformTransactionManager transactionManager;
+
+
+    @PersistenceContext
+    private EntityManager em;
 
 
 
@@ -123,6 +134,10 @@ public class FCMService {
                     () -> new CustomException(ErrorType.INVALID_USER)
             );
             user.get().updateFcmToken(request.getTargetToken());
+
+            if (user.get().getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
+                throw new CustomException(ErrorType.WITHDRAW_USER);
+            }
         }
 
         FCMMessage fcmMessage = FCMMessage.builder()
@@ -214,10 +229,11 @@ public class FCMService {
                 .addAllTokens(tokenList)
                 .build();
 
+        log.info("message: {}", request.getTitle() +" "+ request.getBody());
+
         try {
             BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
             log.info("다수 기기 알림 전송 성공 ! successCount: " + response.getSuccessCount() + " messages were sent successfully");
-
             log.info("알림 전송: {}", response.getResponses().toString());
 
             return "알림을 성공적으로 전송했습니다. \ntargetUserId = 1." + tokenList.get(0) + ", \n\n2." + tokenList.get(1);
@@ -227,11 +243,58 @@ public class FCMService {
         }
     }
 
-    public void schedulePushAlarm(String cronExpression, Question todayQuestion, Long parentchildId) {
+//    @Transactional
+    public void schedulePushAlarm(String cronExpression, Long parentchildId) {
+
         taskScheduler.schedule(() -> {
-            multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQuestion.getSection().getValue(), todayQuestion.getTopic()) ,parentchildId);
+
+            Parentchild parentchild = parentchildRepository.findById(parentchildId).get();
+
+            TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+            TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
+
+
+            log.info("성립된 부모자식- 초대코드: {}, 인덱스: {}", parentchild.getInviteCode(), parentchild.getCount());
+
+//                em.persist(parentchild);
+//                tx.begin();
+            log.info("parentchild.getQnaList().isEmpty() : {}", parentchild.getQnaList().isEmpty());
+                if (!parentchild.getQnaList().isEmpty()) {
+
+                    QnA currentQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
+                    if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer()) {
+
+//                        tx.begin();
+
+                        log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
+                        parentchild.addCount();
+                        Parentchild pc = em.merge(parentchild);
+//                        pc.addCount();
+//                        em.flush();
+//                        em.remove(parentchild);
+
+                        transactionManager.commit(transactionStatus);
+                        log.info("스케줄링 작업 예약 내 addCount 후 count: {}", pc.getCount());
+
+                        QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
+                        List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
+
+                        log.info("FCMService - schedulePushAlarm() 실행");
+                        parentChildUsers.stream()
+                                .filter(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))
+                                .forEach(user -> {
+                                    log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
+                                    multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(), todayQnA.getQuestion().getTopic()), parentchild.getId());
+                                    multipleSendByToken(FCMPushRequestDto.sendTodayQna("술이슈", "새벽4시 술 먹을시간"), 3L);
+                                });
+
+                        if (todayQnA == null) {
+                            log.error("{}번째 Parentchild의 QnAList가 존재하지 않음!", parentchild.getId());
+                        }
+                    }
+                }
+
         }, new CronTrigger(cronExpression));
     }
-
 
 }
