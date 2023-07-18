@@ -95,8 +95,8 @@ public class AuthService {
     public void signout(Long userId) {
         User user = getUserById(userId);
         user.updateRefreshToken(null);
-        user.updateFcmToken(null);
-        jwtProvider.deleteRefreshToken(userId);
+        jwtProvider.deleteRefreshToken(userId); // 일치하는 ID가 없는 경우에는 아무 동작도 수행하지 않음 (CrudRepository 기본 동작)
+        user.updateFcmToken("withdrawuserfcmtoken"); // 나중에 null로 변경해줘야함
         user.deleteSocialInfo();
     }
 
