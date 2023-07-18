@@ -14,7 +14,11 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
@@ -51,6 +55,7 @@ public class FCMService {
     private final ParentchildDao parentchildDao;
     private final ObjectMapper objectMapper;
     private final TaskScheduler taskScheduler;
+    private final PlatformTransactionManager transactionManager;
 
 
 
@@ -238,30 +243,42 @@ public class FCMService {
 
             log.info("성립된 부모자식- 초대코드: {}, 인덱스: {}", parentchild.getInviteCode(), parentchild.getCount());
 
+            TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+            TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
+
             if (!parentchild.getQnaList().isEmpty()) {
 
-                QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
+                QnA currentQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
+                if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer()) {
 
-                parentchild.addCount();
-                if (todayQnA.isParentAnswer() && todayQnA.isChildAnswer()) {
-                    // 다음날 질문으로 넘어감
                     log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
-                    parentchild.addCount();
 
-                    log.info("schedule");
+                    try {
+                        log.info("스케줄링 작업 예약 내 addCount 전 count: {}", parentchild.getCount());
+
+                        parentchild.addCount();
+                        transactionManager.commit(transactionStatus);
+                        log.info("스케줄링 작업 예약 내 addCount 후 count: {}", parentchild.getCount());
+
+                    } catch (IndexOutOfBoundsException e) {
+//                        transactionManager.rollback(transactionStatus);
+                    }
+
+                    QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
+
                     List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
 
                     log.info("FCMService - schedulePushAlarm() 실행");
                     parentChildUsers.stream()
-                        .filter(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))
-                        .forEach(user -> {
-                            log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
-                            multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(), todayQnA.getQuestion().getTopic()), parentchild.getId());
-                    });
-                }
+                            .filter(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))
+                            .forEach(user -> {
+                                log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
+                                multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(), todayQnA.getQuestion().getTopic()), parentchild.getId());
+                            });
 
-                if (todayQnA == null) {
-                    log.error("{}번째 Parentchild의 QnAList가 존재하지 않음!", parentchild.getId());
+                    if (todayQnA == null) {
+                        log.error("{}번째 Parentchild의 QnAList가 존재하지 않음!", parentchild.getId());
+                    }
                 }
             }
 

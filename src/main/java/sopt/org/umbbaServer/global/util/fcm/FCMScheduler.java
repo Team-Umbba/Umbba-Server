@@ -4,6 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbbaServer.domain.qna.dao.QnADao;
@@ -19,6 +24,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@Transactional
 @RequiredArgsConstructor
 public class FCMScheduler {
 
@@ -39,7 +45,7 @@ public class FCMScheduler {
             .forEach(pc -> {
                 log.info(pc.getId() + "번째 Parentchild");
 //                String cronExpression = String.format("0 %s %s * * ?", pc.getPushTime().getMinute(), pc.getPushTime().getHour());
-                String cronExpression = String.format("*/60 * * * * *");
+                String cronExpression = String.format("*/30 * * * * *");
                 log.info("cron: {}", cronExpression);
                 fcmService.schedulePushAlarm(cronExpression, pc);
             });

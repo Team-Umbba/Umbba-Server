@@ -8,24 +8,20 @@ import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.InviteCodeRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingInviteRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingReceiveRequestDto;
-import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponseDto;
-import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingReceiveResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingInviteResponseDto;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingReceiveResponseDto;
+import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.model.ParentchildRelation;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
-import sopt.org.umbbaServer.domain.qna.dao.QnADao;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
-import sopt.org.umbbaServer.global.common.dto.ApiResponse;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
-import sopt.org.umbbaServer.global.exception.SuccessType;
 import sopt.org.umbbaServer.global.util.fcm.FCMScheduler;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
