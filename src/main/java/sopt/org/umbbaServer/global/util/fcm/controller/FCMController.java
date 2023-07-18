@@ -29,6 +29,12 @@ public class FCMController {
         return ApiResponse.success(SuccessType.PUSH_ALARM_PERIODIC_SUCCESS, fcmScheduler.pushTodayQna());
     }
 
+    @PostMapping("/drink")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse drinkAlarm() {
+        return ApiResponse.success(SuccessType.PUSH_ALARM_PERIODIC_SUCCESS, fcmScheduler.drink());
+    }
+
 
     /**
      * 주기적 알림 전송 테스트를 위한 API

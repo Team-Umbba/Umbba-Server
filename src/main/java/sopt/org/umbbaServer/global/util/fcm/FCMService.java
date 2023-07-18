@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -23,7 +22,6 @@ import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbbaServer.domain.qna.model.QnA;
-import sopt.org.umbbaServer.domain.qna.model.Question;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
 import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
@@ -33,13 +31,11 @@ import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMMessage;
 import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -63,20 +59,7 @@ public class FCMService {
 
     @PersistenceContext
     private EntityManager em;
-//    private EntityTransaction tx;
 
-
-    /*public FCMService(UserRepository userRepository, ParentchildRepository parentchildRepository, ParentchildDao parentchildDao, ObjectMapper objectMapper, TaskScheduler taskScheduler, PlatformTransactionManager transactionManager, EntityManager em) {
-        this.userRepository = userRepository;
-        this.parentchildRepository = parentchildRepository;
-        this.parentchildDao = parentchildDao;
-        this.objectMapper = objectMapper;
-        this.taskScheduler = taskScheduler;
-        this.transactionManager = transactionManager;
-        this.em = em;
-
-        tx  = em.getTransaction();
-    }*/
 
 
     // Firebase에서 Access Token 가져오기
@@ -259,8 +242,6 @@ public class FCMService {
 //    @Transactional
     public void schedulePushAlarm(String cronExpression, Long parentchildId) {
 
-
-
         taskScheduler.schedule(() -> {
 
             Parentchild parentchild = parentchildRepository.findById(parentchildId).get();
@@ -276,9 +257,8 @@ public class FCMService {
             log.info("parentchild.getQnaList().isEmpty() : {}", parentchild.getQnaList().isEmpty());
                 if (!parentchild.getQnaList().isEmpty()) {
 
-
                     QnA currentQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
-//                    if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer()) {
+                    if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer()) {
 
 //                        tx.begin();
 
@@ -301,12 +281,13 @@ public class FCMService {
                                 .forEach(user -> {
                                     log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
                                     multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(), todayQnA.getQuestion().getTopic()), parentchild.getId());
+                                    multipleSendByToken(FCMPushRequestDto.sendTodayQna("술이슈", "새벽4시 술 먹을시간"), 3L);
                                 });
 
                         if (todayQnA == null) {
                             log.error("{}번째 Parentchild의 QnAList가 존재하지 않음!", parentchild.getId());
                         }
-//                    }
+                    }
                 }
 
         }, new CronTrigger(cronExpression));
