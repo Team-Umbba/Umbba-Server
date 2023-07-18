@@ -29,9 +29,6 @@ public class User extends AuditingTimeEntity {
     //    @Column(nullable = false)
     private Integer bornYear;
 
-    @Column(nullable = false)
-    private boolean hasAlarm;
-
     @ManyToOne
     @JoinColumn(name = "parentchild_id")
     private Parentchild parentChild;

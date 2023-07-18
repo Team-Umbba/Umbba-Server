@@ -46,7 +46,6 @@ public class AuthService {
             User user = User.builder()
                     .socialPlatform(socialPlatform)
                     .socialId(socialId)
-                    .hasAlarm(true)
                     .isMeChild(true)
                     .fcmToken(request.getFcmToken())
                     .build();
