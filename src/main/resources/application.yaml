@@ -34,7 +34,7 @@ kakao:
 apple:
   iss: ${apple-iss}
   client-id: ${apple-id}
-  nonce: ${apple-nonce}
+#  nonce: ${apple-nonce}
 
 jwt:
   secret: ${jwt-secret}

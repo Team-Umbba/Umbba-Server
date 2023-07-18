@@ -7,20 +7,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class AppleClaimsValidator {
 
-    private static final String NONCE_KEY = "nonce";
-
     private final String iss;
     private final String clientId;
-    private final String nonce; // iOS 멘토링에서 질문 후 사용 여부 결정
+//    private final String nonce; // iOS 멘토링에서 질문 후 사용 여부 결정
 
     public AppleClaimsValidator(
             @Value("${apple.iss}") String iss,
-            @Value("${apple.client-id}") String clientId,
-            @Value("${apple.nonce}") String nonce
+            @Value("${apple.client-id}") String clientId
+//            @Value("${apple.nonce}") String nonce
     ) {
         this.iss = iss;
         this.clientId = clientId;
-        this.nonce = EncryptUtils.encrypt(nonce);
+//        this.nonce = EncryptUtils.encrypt(nonce);
     }
 
     public boolean isValid(Claims claims) {
