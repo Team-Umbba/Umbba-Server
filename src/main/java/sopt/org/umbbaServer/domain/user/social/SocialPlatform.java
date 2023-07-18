@@ -3,7 +3,6 @@ package sopt.org.umbbaServer.domain.user.social;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import sopt.org.umbbaServer.domain.qna.model.OnboardingAnswer;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 

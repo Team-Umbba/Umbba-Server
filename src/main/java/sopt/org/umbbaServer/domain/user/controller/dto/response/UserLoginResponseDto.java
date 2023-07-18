@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
-import sopt.org.umbbaServer.global.config.jwt.TokenDto;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
+import sopt.org.umbbaServer.global.config.jwt.TokenDto;
 
 @Getter
 @Builder
