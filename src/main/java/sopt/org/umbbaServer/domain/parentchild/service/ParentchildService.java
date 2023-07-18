@@ -64,7 +64,7 @@ public class ParentchildService {
 
     // [수신] 초대받는 측의 온보딩 정보 입력
     @Transactional
-    public OnboardingReceiveResponseDto onboardReceive(Long userId, OnboardingReceiveRequestDto request) {
+    public OnboardingReceiveResponseDto onboardReceive(Long userId, OnboardingReceiveRequestDto request) throws InterruptedException {
 
         User user = getUserById(userId);
         user.updateOnboardingInfo(
@@ -74,7 +74,7 @@ public class ParentchildService {
         );
 
         Parentchild parentchild = getParentchildByUserId(userId);
-//        parentchild.updateInfo();
+//        parentchild.updateInfo();  TODO 온보딩 송수신 측의 관계 정보가 불일치한 경우에 대한 처리
         List<User> parentChildUsers = getParentChildUsers(parentchild);
 
         /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {

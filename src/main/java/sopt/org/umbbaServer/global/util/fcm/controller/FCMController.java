@@ -2,6 +2,7 @@ package sopt.org.umbbaServer.global.util.fcm.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.*;
 import sopt.org.umbbaServer.global.common.dto.ApiResponse;
 import sopt.org.umbbaServer.global.config.jwt.JwtProvider;
@@ -13,9 +14,9 @@ import sopt.org.umbbaServer.global.util.fcm.FCMService;
 import java.io.IOException;
 import java.security.Principal;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/alarm")
+@RequiredArgsConstructor
 public class FCMController {
 
     private final FCMService fcmService;
@@ -24,7 +25,7 @@ public class FCMController {
 
     @PostMapping("/qna")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse sendTopicScheduledTest() {
+    public ApiResponse sendTopicScheduledTest() throws InterruptedException {
         return ApiResponse.success(SuccessType.PUSH_ALARM_PERIODIC_SUCCESS, fcmScheduler.pushTodayQna());
     }
 

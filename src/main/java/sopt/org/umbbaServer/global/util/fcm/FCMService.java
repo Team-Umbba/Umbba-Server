@@ -237,52 +237,40 @@ public class FCMService {
     }
 
 //    @Transactional
-    public void schedulePushAlarm(String cronExpression, Parentchild parentchild) {
+public void schedulePushAlarm(String cronExpression, Parentchild parentchild) {
 
-        taskScheduler.schedule(() -> {
+    taskScheduler.schedule(() -> {
 
-            log.info("성립된 부모자식- 초대코드: {}, 인덱스: {}", parentchild.getInviteCode(), parentchild.getCount());
+        log.info("성립된 부모자식- 초대코드: {}, 인덱스: {}", parentchild.getInviteCode(), parentchild.getCount());
 
-            TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
-            TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
+        if (!parentchild.getQnaList().isEmpty()) {
 
-            if (!parentchild.getQnaList().isEmpty()) {
+            QnA currentQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
+            if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer()) {
 
-                QnA currentQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
-                if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer()) {
+                log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
+                parentchild.addCount();
+                log.info("스케줄링 작업 예약 내 addCount 후 count: {}", parentchild.getCount());
 
-                    log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
+                QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
 
-                    try {
-                        log.info("스케줄링 작업 예약 내 addCount 전 count: {}", parentchild.getCount());
+                List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
 
-                        parentchild.addCount();
-                        transactionManager.commit(transactionStatus);
-                        log.info("스케줄링 작업 예약 내 addCount 후 count: {}", parentchild.getCount());
+                log.info("FCMService - schedulePushAlarm() 실행");
+                parentChildUsers.stream()
+                        .filter(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))
+                        .forEach(user -> {
+                            log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
+                            multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(), todayQnA.getQuestion().getTopic()), parentchild.getId());
+                        });
 
-                    } catch (IndexOutOfBoundsException e) {
-//                        transactionManager.rollback(transactionStatus);
-                    }
-
-                    QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
-
-                    List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
-
-                    log.info("FCMService - schedulePushAlarm() 실행");
-                    parentChildUsers.stream()
-                            .filter(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))
-                            .forEach(user -> {
-                                log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
-                                multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(), todayQnA.getQuestion().getTopic()), parentchild.getId());
-                            });
-
-                    if (todayQnA == null) {
-                        log.error("{}번째 Parentchild의 QnAList가 존재하지 않음!", parentchild.getId());
-                    }
+                if (todayQnA == null) {
+                    log.error("{}번째 Parentchild의 QnAList가 존재하지 않음!", parentchild.getId());
                 }
             }
+        }
 
-        }, new CronTrigger(cronExpression));
-    }
+    }, new CronTrigger(cronExpression));
+}
 
 }
