@@ -2,8 +2,8 @@ package sopt.org.umbbaServer.domain.qna.repository;
 
 import org.springframework.data.repository.Repository;
 import sopt.org.umbbaServer.domain.qna.model.Question;
-import sopt.org.umbbaServer.domain.qna.model.QuestionType;
 import sopt.org.umbbaServer.domain.qna.model.QuestionSection;
+import sopt.org.umbbaServer.domain.qna.model.QuestionType;
 
 import java.util.ArrayList;
 import java.util.List;

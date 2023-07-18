@@ -8,8 +8,8 @@ import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.InviteCode
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingInviteRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.OnboardingReceiveRequestDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.InviteResultResponseDto;
-import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingReceiveResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingInviteResponseDto;
+import sopt.org.umbbaServer.domain.parentchild.controller.dto.response.OnboardingReceiveResponseDto;
 import sopt.org.umbbaServer.domain.parentchild.service.ParentchildService;
 import sopt.org.umbbaServer.domain.qna.service.QnAService;
 import sopt.org.umbbaServer.global.common.dto.ApiResponse;
