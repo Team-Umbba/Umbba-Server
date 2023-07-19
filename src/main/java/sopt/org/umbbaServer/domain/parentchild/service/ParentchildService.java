@@ -3,7 +3,6 @@ package sopt.org.umbbaServer.domain.parentchild.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.InviteCodeRequestDto;
@@ -18,7 +17,6 @@ import sopt.org.umbbaServer.domain.parentchild.model.ParentchildRelation;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
-import sopt.org.umbbaServer.global.config.FCMConfig;
 import sopt.org.umbbaServer.global.config.ScheduleConfig;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
@@ -84,9 +82,9 @@ public class ParentchildService {
 //        parentchild.updateInfo();  TODO 온보딩 송수신 측의 관계 정보가 불일치한 경우에 대한 처리
             List<User> parentChildUsers = getParentChildUsers(parentchild);
 
-        /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
-            throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
-        }*/
+            /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
+                throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
+            }*/
             ScheduleConfig.resetScheduler();
             fcmScheduler.pushTodayQna();
 

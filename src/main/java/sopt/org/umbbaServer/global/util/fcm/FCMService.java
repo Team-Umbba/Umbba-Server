@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.messaging.*;
-import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
@@ -212,7 +211,6 @@ public class FCMService {
         }
     }
 
-//    @Transactional
     public void schedulePushAlarm(String cronExpression, Long parentchildId) {
 
         scheduledFuture = taskScheduler.schedule(() -> {
@@ -245,7 +243,7 @@ public class FCMService {
 
                         QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
 
-                        log.info("Current QnA: {}  \n  Today QnA: {}", currentQnA.getId(), todayQnA.getId());
+                        log.info("\n  Current QnA: {}  \n  Today QnA: {}", currentQnA.getId(), todayQnA.getId());
                         if (todayQnA == null) {
                             log.error("{}번째 Parentchild의 QnAList가 존재하지 않음!", parentchild.getId());
                         }
@@ -270,7 +268,6 @@ public class FCMService {
                 // 현재 실행중인 쓰레드 확인
                 log.info("Current Thread : {}", Thread.currentThread().getName());
 
-
         }, new CronTrigger(cronExpression));
     }
 
@@ -282,6 +279,7 @@ public class FCMService {
         }
         log.info("ScheduledFuture: {}", scheduledFuture);
     }
+
 
 
     /**
