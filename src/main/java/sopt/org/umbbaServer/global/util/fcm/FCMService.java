@@ -35,7 +35,6 @@ import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -56,11 +55,8 @@ public class FCMService {
     private final TaskScheduler taskScheduler;
     private final PlatformTransactionManager transactionManager;
 
-
     @PersistenceContext
     private EntityManager em;
-
-
 
     // Firebase에서 Access Token 가져오기
     private String getAccessToken() throws IOException {
@@ -72,37 +68,6 @@ public class FCMService {
         log.info("getAccessToken() - googleCredentials: {} ", googleCredentials.getAccessToken().getTokenValue());
 
         return googleCredentials.getAccessToken().getTokenValue();
-    }
-
-    // FCM Service에 메시지를 수신하는 함수 (헤더와 바디 직접 만들기)
-    @Transactional
-    public String pushAlarm(FCMPushRequestDto request, Long userId) throws IOException {
-
-        // TODO 같은 Parentchild ID를 가진 User를 찾은 후, 이들에 대한 토큰 리스트로 동일한 알림 메시지 전송하도록
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ErrorType.INVALID_USER)
-        );
-        user.updateFcmToken(request.getTargetToken());
-
-        String message = makeMessage(request);
-        sendPushMessage(message);
-        return "알림을 성공적으로 전송했습니다. targetUserId = " + request.getTargetToken();
-    }
-
-    public void sendPushMessage(String message) throws IOException {
-
-        OkHttpClient client = new OkHttpClient();
-        RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
-        Request httpRequest = new Request.Builder()
-                .url(FCM_API_URL)
-                .post(requestBody)
-                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
-                .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
-                .build();
-
-        Response response = client.newCall(httpRequest).execute();
-
-        log.info("알림 전송: {}", response.body().string());
     }
 
     // 요청 파라미터를 FCM의 body 형태로 만들어주는 메서드 [단일 기기]
@@ -133,57 +98,50 @@ public class FCMService {
 
         FCMMessage fcmMessage = FCMMessage.builder()
                 .message(FCMMessage.Message.builder()
-                        .token(user.getFcmToken())
+                                .token(user.getFcmToken())
 //                        .topic(topic)   // 토픽 구동에서 반드시 필요한 설정 (token 지정 x)
-                        .notification(FCMMessage.Notification.builder()
-                                .title(request.getTitle())
-                                .body(request.getBody())
-                                .image(null)
-                                .build())
-                        .build()
+                                .notification(FCMMessage.Notification.builder()
+                                        .title(request.getTitle())
+                                        .body(request.getBody())
+                                        .image(null)
+                                        .build())
+                                .build()
                 ).validateOnly(false)
                 .build();
 
         return objectMapper.writeValueAsString(fcmMessage);
     }
 
+    // FCM Service에 메시지를 수신하는 함수 (헤더와 바디 직접 만들기) -> 상대 답변 알람 전송에 사용
+    @Transactional
+    public String pushAlarm(FCMPushRequestDto request, Long userId) throws IOException {
 
-    /**
-     * 단일 요청으로 최대 1000개의 기기를 Topic에 구독 등록 및 취소할 수 있다.
-     */
-    // Topic 구독 설정 - application.yml에서 topic명 관리
-    public void subscribe() throws FirebaseMessagingException {
-        // These registration tokens come from the client FCM SDKs.
-        // TODO Parentchild 테이블 탐색 후 주기적으로 알림 쏴주기
-        List<String> registrationTokens = Arrays.asList(
-                "YOUR_REGISTRATION_TOKEN_1",
-                // ...
-                "YOUR_REGISTRATION_TOKEN_n"
+        // TODO 같은 Parentchild ID를 가진 User를 찾은 후, 이들에 대한 토큰 리스트로 동일한 알림 메시지 전송하도록
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ErrorType.INVALID_USER)
         );
+        user.updateFcmToken(request.getTargetToken());
 
-        // Subscribe the devices corresponding to the registration tokens to the topic.
-        TopicManagementResponse response = FirebaseMessaging.getInstance().subscribeToTopic(
-                registrationTokens, topic);
-
-        System.out.println(response.getSuccessCount() + " tokens were subscribed successfully");
+        String message = makeMessage(request);
+        sendPushMessage(message);
+        return "알림을 성공적으로 전송했습니다. targetUserId = " + request.getTargetToken();
     }
 
-    // Topic 구독 취소
-    public void unsubscribe() throws FirebaseMessagingException {
-        // These registration tokens come from the client FCM SDKs.
-        List<String> registrationTokens = Arrays.asList(
-                "YOUR_REGISTRATION_TOKEN_1",
-                // ...
-                "YOUR_REGISTRATION_TOKEN_n"
-        );
+    public void sendPushMessage(String message) throws IOException {
 
-        // Unsubscribe the devices corresponding to the registration tokens from the topic.
-        TopicManagementResponse response = FirebaseMessaging.getInstance().unsubscribeFromTopic(
-                registrationTokens, topic);
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
+        Request httpRequest = new Request.Builder()
+                .url(FCM_API_URL)
+                .post(requestBody)
+                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
+                .build();
 
-        System.out.println(response.getSuccessCount() + " tokens were unsubscribed successfully");
+        Response response = client.newCall(httpRequest).execute();
+
+        log.info("알림 전송: {}", response.body().string());
     }
-
 
     public void pushOpponentReply(String question, Long userId) {
 
@@ -204,7 +162,6 @@ public class FCMService {
             throw new CustomException(ErrorType.FAIL_TO_SEND_PUSH_ALARM);
         }
     }
-
 
     // 다수의 기기(부모자식 ID에 포함된 유저 2명)에 알림 메시지 전송 -> 주기적 알림 전송에서 사용
     public String multipleSendByToken(FCMPushRequestDto request, Long parentchildId) {
@@ -244,7 +201,6 @@ public class FCMService {
             TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
             TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
 
-
             log.info("성립된 부모자식- 초대코드: {}, 인덱스: {}", parentchild.getInviteCode(), parentchild.getCount());
 
 //                em.persist(parentchild);
@@ -254,33 +210,30 @@ public class FCMService {
 
                     QnA currentQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
                     if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer()) {
-
 //                        tx.begin();
-
                         log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
                         parentchild.addCount();
                         Parentchild pc = em.merge(parentchild);
 //                        pc.addCount();
 //                        em.flush();
 //                        em.remove(parentchild);
-
                         transactionManager.commit(transactionStatus);
                         log.info("스케줄링 작업 예약 내 addCount 후 count: {}", pc.getCount());
 
                         QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
-                        List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
-
-                        log.info("FCMService - schedulePushAlarm() 실행");
-                        parentChildUsers.stream()
-                                .filter(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))
-                                .forEach(user -> {
-                                    log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
-                                    multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(), todayQnA.getQuestion().getTopic()), parentchild.getId());
-                                    multipleSendByToken(FCMPushRequestDto.sendTodayQna("술이슈", "새벽4시 술 먹을시간"), 3L);
-                                });
-
                         if (todayQnA == null) {
                             log.error("{}번째 Parentchild의 QnAList가 존재하지 않음!", parentchild.getId());
+                        }
+
+                        List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
+                        if (parentChildUsers.stream().
+                                allMatch(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))) {
+
+                            log.info("FCMService - schedulePushAlarm() 실행");
+                            log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
+                            multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(),
+                                                                               todayQnA.getQuestion().getTopic()), parentchild.getId());
+                            multipleSendByToken(FCMPushRequestDto.sendTodayQna("술이슈", "새벽4시 술 먹을시간"), 3L);
                         }
                     }
                 }
@@ -288,4 +241,41 @@ public class FCMService {
         }, new CronTrigger(cronExpression));
     }
 
+    /**
+     * 사용 안하는 함수들
+     */
+
+    // Topic 구독 설정 - application.yml에서 topic명 관리
+    // 단일 요청으로 최대 1000개의 기기를 Topic에 구독 등록 및 취소할 수 있다.
+    public void subscribe() throws FirebaseMessagingException {
+        // These registration tokens come from the client FCM SDKs.
+        // TODO Parentchild 테이블 탐색 후 주기적으로 알림 쏴주기
+        List<String> registrationTokens = Arrays.asList(
+                "YOUR_REGISTRATION_TOKEN_1",
+                // ...
+                "YOUR_REGISTRATION_TOKEN_n"
+        );
+
+        // Subscribe the devices corresponding to the registration tokens to the topic.
+        TopicManagementResponse response = FirebaseMessaging.getInstance().subscribeToTopic(
+                registrationTokens, topic);
+
+        System.out.println(response.getSuccessCount() + " tokens were subscribed successfully");
+    }
+
+    // Topic 구독 취소
+    public void unsubscribe() throws FirebaseMessagingException {
+        // These registration tokens come from the client FCM SDKs.
+        List<String> registrationTokens = Arrays.asList(
+                "YOUR_REGISTRATION_TOKEN_1",
+                // ...
+                "YOUR_REGISTRATION_TOKEN_n"
+        );
+
+        // Unsubscribe the devices corresponding to the registration tokens from the topic.
+        TopicManagementResponse response = FirebaseMessaging.getInstance().unsubscribeFromTopic(
+                registrationTokens, topic);
+
+        System.out.println(response.getSuccessCount() + " tokens were unsubscribed successfully");
+    }
 }
