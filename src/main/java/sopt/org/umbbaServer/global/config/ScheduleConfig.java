@@ -17,14 +17,14 @@ public class ScheduleConfig implements SchedulingConfigurer {
 
     private final int POOL_SIZE = 10;
 
-    /*@Bean
+    @Bean
     public TaskScheduler scheduler() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         scheduler.setPoolSize(POOL_SIZE);
         scheduler.setThreadNamePrefix("my-scheduled-task-pool-");
         scheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
         return scheduler;
-    }*/
+    }
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {

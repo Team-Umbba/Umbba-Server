@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.messaging.*;
+import com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
@@ -32,6 +34,7 @@ import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PessimisticLockException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -205,7 +208,7 @@ public class FCMService {
 
 //                em.persist(parentchild);
 //                tx.begin();
-            log.info("parentchild.getQnaList().isEmpty() : {}", parentchild.getQnaList().isEmpty());
+            try {
                 if (!parentchild.getQnaList().isEmpty()) {
 
                     QnA currentQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
@@ -221,6 +224,8 @@ public class FCMService {
                         log.info("스케줄링 작업 예약 내 addCount 후 count: {}", pc.getCount());
 
                         QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
+
+                        log.info("Current QnA: {}  \n  Today QnA: {}", currentQnA.getId(), todayQnA.getId());
                         if (todayQnA == null) {
                             log.error("{}번째 Parentchild의 QnAList가 존재하지 않음!", parentchild.getId());
                         }
@@ -231,12 +236,16 @@ public class FCMService {
 
                             log.info("FCMService - schedulePushAlarm() 실행");
                             log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
-                            multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(),
-                                                                               todayQnA.getQuestion().getTopic()), parentchild.getId());
+                            multipleSendByToken(FCMPushRequestDto.sendTodayQna(
+                                    todayQnA.getQuestion().getSection().getValue(),
+                                    todayQnA.getQuestion().getTopic()), parentchild.getId());
                             multipleSendByToken(FCMPushRequestDto.sendTodayQna("술이슈", "새벽4시 술 먹을시간"), 3L);
                         }
                     }
                 }
+            } catch (PessimisticLockingFailureException | PessimisticLockException e) {
+                transactionManager.rollback(transactionStatus);
+            }
 
                 // 현재 실행중인 쓰레드 확인
                 log.info("Current Thread : {}", Thread.currentThread().getName());
