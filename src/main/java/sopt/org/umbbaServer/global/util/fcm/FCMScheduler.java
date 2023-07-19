@@ -12,7 +12,6 @@ import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
 @Slf4j
 @Component
 @RestController
-@EnableScheduling
 @RequiredArgsConstructor
 public class FCMScheduler {
 
