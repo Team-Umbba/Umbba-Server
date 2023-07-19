@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum QuestionType {
 
+
     TYPE1(1L, "타입 1"),
     TYPE2(2L, "타입 2"),
     TYPE3(3L, "타입 3"),

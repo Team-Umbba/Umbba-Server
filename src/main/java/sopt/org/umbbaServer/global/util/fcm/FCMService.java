@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
@@ -32,9 +33,11 @@ import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PessimisticLockException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 
 @Slf4j
 @Service
@@ -48,6 +51,8 @@ public class FCMService {
     @Value("${fcm.topic}")
     private String topic;
 
+    private static ScheduledFuture<?> scheduledFuture;
+
     private final UserRepository userRepository;
     private final ParentchildRepository parentchildRepository;
     private final ParentchildDao parentchildDao;
@@ -55,8 +60,10 @@ public class FCMService {
     private final TaskScheduler taskScheduler;
     private final PlatformTransactionManager transactionManager;
 
+
     @PersistenceContext
     private EntityManager em;
+
 
     // Firebase에서 Access Token 가져오기
     private String getAccessToken() throws IOException {
@@ -191,10 +198,15 @@ public class FCMService {
         }
     }
 
-//    @Transactional
     public void schedulePushAlarm(String cronExpression, Long parentchildId) {
 
-        taskScheduler.schedule(() -> {
+        scheduledFuture = taskScheduler.schedule(() -> {
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
             Parentchild parentchild = parentchildRepository.findById(parentchildId).get();
 
@@ -203,24 +215,22 @@ public class FCMService {
 
             log.info("성립된 부모자식- 초대코드: {}, 인덱스: {}", parentchild.getInviteCode(), parentchild.getCount());
 
-//                em.persist(parentchild);
-//                tx.begin();
-            log.info("parentchild.getQnaList().isEmpty() : {}", parentchild.getQnaList().isEmpty());
+            try {
                 if (!parentchild.getQnaList().isEmpty()) {
 
                     QnA currentQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
                     if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer()) {
-//                        tx.begin();
+
                         log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
                         parentchild.addCount();
                         Parentchild pc = em.merge(parentchild);
-//                        pc.addCount();
-//                        em.flush();
-//                        em.remove(parentchild);
+
                         transactionManager.commit(transactionStatus);
                         log.info("스케줄링 작업 예약 내 addCount 후 count: {}", pc.getCount());
 
                         QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
+
+                        log.info("\n  Current QnA: {}  \n  Today QnA: {}", currentQnA.getId(), todayQnA.getId());
                         if (todayQnA == null) {
                             log.error("{}번째 Parentchild의 QnaList가 존재하지 않음!", parentchild.getId());
                         }
@@ -231,15 +241,33 @@ public class FCMService {
 
                             log.info("FCMService - schedulePushAlarm() 실행");
                             log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
-                            multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(),
-                                                                               todayQnA.getQuestion().getTopic()), parentchild.getId());
+                            multipleSendByToken(FCMPushRequestDto.sendTodayQna(
+                                    todayQnA.getQuestion().getSection().getValue(),
+                                    todayQnA.getQuestion().getTopic()), parentchild.getId());
                             multipleSendByToken(FCMPushRequestDto.sendTodayQna("술이슈", "새벽4시 술 먹을시간"), 3L);
                         }
                     }
                 }
+            } catch (PessimisticLockingFailureException | PessimisticLockException e) {
+                transactionManager.rollback(transactionStatus);
+            }
+
+                // 현재 실행중인 쓰레드 확인
+                log.info("Current Thread : {}", Thread.currentThread().getName());
 
         }, new CronTrigger(cronExpression));
     }
+
+    // 스케줄러에서 예약된 작업을 제거하는 메서드
+    public static void clearScheduledTasks() {
+        if (scheduledFuture != null) {
+            log.info("이전 스케줄링 예약 취소!");
+            scheduledFuture.cancel(false);
+        }
+        log.info("ScheduledFuture: {}", scheduledFuture);
+    }
+
+
 
     /**
      * 사용 안하는 함수들
