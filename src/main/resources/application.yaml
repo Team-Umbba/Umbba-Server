@@ -24,7 +24,7 @@ spring:
         naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
 
 kakao:
   client-id: ${kakao-id}

@@ -245,7 +245,7 @@ public class FCMService {
 
                         log.info("\n  Current QnA: {}  \n  Today QnA: {}", currentQnA.getId(), todayQnA.getId());
                         if (todayQnA == null) {
-                            log.error("{}번째 Parentchild의 QnAList가 존재하지 않음!", parentchild.getId());
+                            log.error("{}번째 Parentchild의 QnaList가 존재하지 않음!", parentchild.getId());
                         }
 
                         List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);

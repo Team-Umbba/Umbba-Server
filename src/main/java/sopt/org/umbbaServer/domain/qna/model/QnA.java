@@ -49,4 +49,8 @@ public class QnA extends AuditingTimeEntity {
         this.childAnswer = answer;
         this.isChildAnswer = true;
     }
+
+    public void changeQuestion(Question question) {
+        this.question = question;
+    }
 }
