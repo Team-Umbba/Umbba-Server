@@ -38,6 +38,7 @@ import javax.persistence.PessimisticLockException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 
 @Slf4j
 @Service
@@ -50,6 +51,8 @@ public class FCMService {
     private String FCM_API_URL;
     @Value("${fcm.topic}")
     private String topic;
+
+    private static ScheduledFuture<?> scheduledFuture;
 
     private final UserRepository userRepository;
     private final ParentchildRepository parentchildRepository;
@@ -197,7 +200,13 @@ public class FCMService {
 //    @Transactional
     public void schedulePushAlarm(String cronExpression, Long parentchildId) {
 
-        taskScheduler.schedule(() -> {
+        scheduledFuture = taskScheduler.schedule(() -> {
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
             Parentchild parentchild = parentchildRepository.findById(parentchildId).get();
 
@@ -206,20 +215,16 @@ public class FCMService {
 
             log.info("성립된 부모자식- 초대코드: {}, 인덱스: {}", parentchild.getInviteCode(), parentchild.getCount());
 
-//                em.persist(parentchild);
-//                tx.begin();
             try {
                 if (!parentchild.getQnaList().isEmpty()) {
 
                     QnA currentQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
                     if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer()) {
-//                        tx.begin();
+
                         log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
                         parentchild.addCount();
                         Parentchild pc = em.merge(parentchild);
-//                        pc.addCount();
-//                        em.flush();
-//                        em.remove(parentchild);
+
                         transactionManager.commit(transactionStatus);
                         log.info("스케줄링 작업 예약 내 addCount 후 count: {}", pc.getCount());
 
@@ -253,6 +258,14 @@ public class FCMService {
 
         }, new CronTrigger(cronExpression));
     }
+
+    // 스케줄러에서 예약된 작업을 제거하는 메서드
+    public static void clearScheduledTasks() {
+        if (scheduledFuture != null) {
+            scheduledFuture.cancel(false);
+        }
+    }
+
 
     /**
      * 사용 안하는 함수들

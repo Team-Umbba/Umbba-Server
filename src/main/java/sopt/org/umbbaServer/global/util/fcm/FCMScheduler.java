@@ -25,15 +25,15 @@ public class FCMScheduler {
         parentchildRepository.findAll().stream()
             .forEach(pc -> {
                 log.info(pc.getId() + "번째 Parentchild");
-//                String cronExpression = String.format("0 %s %s * * ?", pc.getPushTime().getMinute(), pc.getPushTime().getHour());
-                String cronExpression = String.format("*/10 * * * * *");
+                String cronExpression = String.format("0 %s %s * * ?", pc.getPushTime().getMinute(), pc.getPushTime().getHour());
+//                String cronExpression = String.format("*/10 * * * * *");
                 log.info("cron: {}", cronExpression);
                 fcmService.schedulePushAlarm(cronExpression, pc.getId());
             });
         return "Today QnA messages were sent successfully";
     }
 
-    @Scheduled(cron = "0 3 19 * * ?", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 4 * * ?", zone = "Asia/Seoul")
     public String drink() {
         fcmService.multipleSendByToken(FCMPushRequestDto.sendTodayQna("술이슈", "새벽4시 술 먹을시간"), 3L);
 
