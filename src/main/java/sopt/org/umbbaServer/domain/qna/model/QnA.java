@@ -4,7 +4,6 @@ import lombok.*;
 import sopt.org.umbbaServer.global.util.AuditingTimeEntity;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Getter
@@ -49,5 +48,9 @@ public class QnA extends AuditingTimeEntity {
     public void saveChildAnswer(String answer) {
         this.childAnswer = answer;
         this.isChildAnswer = true;
+    }
+
+    public void changeQuestion(Question question) {
+        this.question = question;
     }
 }

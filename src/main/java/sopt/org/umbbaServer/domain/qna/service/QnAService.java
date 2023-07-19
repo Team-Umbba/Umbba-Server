@@ -23,8 +23,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static sopt.org.umbbaServer.domain.qna.model.OnboardingAnswer.YES;
-import static sopt.org.umbbaServer.domain.qna.model.QuestionSection.YOUNG;
+import static sopt.org.umbbaServer.domain.qna.model.OnboardingAnswer.*;
+import static sopt.org.umbbaServer.domain.qna.model.QuestionSection.*;
 import static sopt.org.umbbaServer.domain.qna.model.QuestionType.*;
 
 @Slf4j
@@ -160,24 +160,27 @@ public class QnAService {
         List<OnboardingAnswer> childList = parentchild.getChildOnboardingAnswerList();
         List<OnboardingAnswer> parentList = parentchild.getParentOnboardingAnswerList();
 
-        // 질문 그룹을 선택
-        QuestionType selectedType = selectType(childList, parentList);
-        System.out.println("선택된 질문 타입: " + selectedType);
-
-        for (QuestionSection section : QuestionSection.values()) {
-            if (section == YOUNG) continue;
-
-            List<Question> selectedQuestions = questionRepository.findBySectionAndTypeRandom(section, selectedType, section.getQuestionCount());
-
-            for (Question question : selectedQuestions) {
+        // 커스텀되기 전의 메인 질문 리스트를 가져옴
+        if (parentchild.getQnaList().size() == 1) {
+            List<Question> mainQuestions = questionRepository.findByTypeOrderBySectionId(MAIN);
+            for (Question mainQuestion : mainQuestions) {
                 QnA newQnA = QnA.builder()
-                        .question(question)
+                        .question(mainQuestion)
                         .isParentAnswer(false)
                         .isChildAnswer(false)
                         .build();
                 qnARepository.save(newQnA);
                 parentchild.addQnA(newQnA);
             }
+        }
+
+        // 선택 질문에 따라 질문 리스트가 커스텀됨
+        customQuestion(childList, parentList, parentchild.getQnaList());
+
+        log.info("선택된 질문 리스트");
+        List<QnA> forLogging= parentchild.getQnaList();
+        for (QnA qnA : forLogging) {
+            log.info(qnA.getQuestion().getParentQuestion());
         }
     }
 
@@ -241,22 +244,54 @@ public class QnAService {
         return opponentUserList.get(0);
     }
 
-    private QuestionType selectType(List<OnboardingAnswer> childList, List<OnboardingAnswer> parentList) {
+    @Transactional
+    private void customQuestion(List<OnboardingAnswer> childList, List<OnboardingAnswer> parentList, List<QnA> qnAList) {
 
-        // 그룹 선택 알고리즘
-        if (childList.get(0) == YES && parentList.get(0) == YES) {
-            return TYPE1;
+        // Type 1 : 1번째 선택 질문인 거주 현황에 대해 한명이라도 아니/애매해라고 답한 경우
+        if (childList.get(0) != YES || parentList.get(0) !=YES) {
+            log.info("Type1의 질문 세트가 적용됨");
+            Question selectedQuestion = questionRepository.findBySectionAndTypeRandom(SCHOOL, TYPE1, 1).get(0);
+            log.debug("이거 들어감: " + selectedQuestion.getParentQuestion());
+            qnAList.get(1).changeQuestion(selectedQuestion);
         }
-        if (childList.get(1) == YES && parentList.get(1) == YES) {
-            return TYPE2;
+        // Type 2 : 2번째 선택 질문인 학력 현황에 대해 한명이라도 아니/애매해라고 답한 경우
+        else if (childList.get(1) != YES || parentList.get(1) != YES) {
+            log.info("Type2의 질문 세트가 적용됨");
+            Question selectedQuestion = questionRepository.findBySectionAndTypeRandom(SCHOOL, TYPE2, 1).get(0);
+            log.debug("이거 들어감: " + selectedQuestion.getParentQuestion());
+            qnAList.get(1).changeQuestion(selectedQuestion);
         }
-        if (childList.get(2) == YES && parentList.get(2) == YES) {
-            return TYPE3;
+
+        // Type 3 : 3번째 선택 질문인 결혼 가치관에 대해 한명이라도 아니라고 답한 경우
+        if (childList.get(2) == NO || parentList.get(2) == NO) {
+            log.info("Type3의 질문 세트가 적용됨");
+            Question selectedQuestion = questionRepository.findBySectionAndTypeRandom(COUPLE, TYPE3, 1).get(0);
+            log.debug("이거 들어감: " + selectedQuestion.getParentQuestion());
+            qnAList.get(4).changeQuestion(selectedQuestion);
         }
-        if (childList.get(3) == YES && parentList.get(3) == YES) {
-            return TYPE4;
+
+        // Type 5 : 5번째 선택 질문인 후회 여부에 대해 한명이라도 아니라고 답한 경우
+        if (childList.get(4) == NO || parentList.get(4) == NO) {
+            log.info("Type5의 질문 세트가 적용됨");
+            Question selectedQuestion = questionRepository.findBySectionAndTypeRandom(GOLDEN, TYPE5, 1).get(0);
+            log.debug("이거 들어감: " + selectedQuestion.getParentQuestion());
+            qnAList.get(3).changeQuestion(selectedQuestion);
         }
-        return TYPE5;
+        // Type 4 : 4번째 선택 질문인 포기 여부에 대해 한명이라도 아니/애매해라고 답한 경우
+        else if (childList.get(3) != YES || parentList.get(3) != YES) {
+            log.info("Type4의 질문 세트가 적용됨");
+            Question selectedQuestion = questionRepository.findBySectionAndTypeRandom(GOLDEN, TYPE4, 1).get(0);
+            log.debug("이거 들어감: " + selectedQuestion.getParentQuestion());
+            qnAList.get(3).changeQuestion(selectedQuestion);
+
+            selectedQuestion = questionRepository.findBySectionAndTypeRandom(MARRIAGE, TYPE4, 1).get(0);
+            log.debug("이거 들어감: " + selectedQuestion.getParentQuestion());
+            qnAList.get(5).changeQuestion(selectedQuestion);
+
+            selectedQuestion = questionRepository.findBySectionAndTypeRandom(MARRIAGE2, TYPE4, 1).get(0);
+            log.debug("이거 들어감: " + selectedQuestion.getParentQuestion());
+            qnAList.get(6).changeQuestion(selectedQuestion);
+        }
     }
 
     /*

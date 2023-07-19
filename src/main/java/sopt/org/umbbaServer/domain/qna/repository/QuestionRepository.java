@@ -5,10 +5,8 @@ import sopt.org.umbbaServer.domain.qna.model.Question;
 import sopt.org.umbbaServer.domain.qna.model.QuestionSection;
 import sopt.org.umbbaServer.domain.qna.model.QuestionType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public interface QuestionRepository extends Repository<Question, Long> {
@@ -16,6 +14,8 @@ public interface QuestionRepository extends Repository<Question, Long> {
     Optional<Question> findById(Long id);
 
     List<Question> findBySectionAndType(QuestionSection section, QuestionType type);
+
+    List<Question> findByType(QuestionType type);
 
     default List<Question> findBySectionAndTypeRandom(QuestionSection section, QuestionType type, int size) {
         List<Question> matchingQuestions = findBySectionAndType(section, type);
@@ -34,5 +34,12 @@ public interface QuestionRepository extends Repository<Question, Long> {
         }
 
         return selectedQuestions;
+    }
+
+    default List<Question> findByTypeOrderBySectionId(QuestionType type) {
+        return findByType(type)
+                .stream()
+                .sorted(Comparator.comparing(question -> question.getSection().getSectionId()))
+                .collect(Collectors.toList());
     }
 }

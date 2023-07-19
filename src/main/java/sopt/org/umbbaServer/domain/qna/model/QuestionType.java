@@ -14,7 +14,8 @@ public enum QuestionType {
     TYPE4(4L, "타입 4"),
     TYPE5(5L, "타입 5"),
     MAIN(10L, "메인 타입"),
-    YET(11L, "아직 사용하지 않는 질문");
+    FIX(11L, "고정된 질문"),
+    YET(12L, "아직 사용하지 않는 질문");
 
     private final Long typeId;
     private final String description;
