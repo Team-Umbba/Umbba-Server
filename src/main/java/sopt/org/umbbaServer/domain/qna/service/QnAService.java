@@ -88,6 +88,7 @@ public class QnAService {
         List<QnA> qnaList = getQnAListByParentchild(parentchild);
 
         return qnaList.stream()
+                .limit(parentchild.getCount() - 1)  // index까지만 요소를 처리
                 .filter(qna -> Objects.equals(qna.getQuestion().getSection().getSectionId(), sectionId))
                 .map(qna -> {
                     return QnAListResponseDto.builder()
