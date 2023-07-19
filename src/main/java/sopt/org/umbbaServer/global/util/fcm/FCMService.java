@@ -238,6 +238,10 @@ public class FCMService {
                     }
                 }
 
+                // 현재 실행중인 쓰레드 확인
+                log.info("Current Thread : {}", Thread.currentThread().getName());
+
+
         }, new CronTrigger(cronExpression));
     }
 
