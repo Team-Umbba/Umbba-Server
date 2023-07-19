@@ -244,7 +244,6 @@ public class FCMService {
             TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
             TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
 
-
             log.info("성립된 부모자식- 초대코드: {}, 인덱스: {}", parentchild.getInviteCode(), parentchild.getCount());
 
 //                em.persist(parentchild);
@@ -254,33 +253,30 @@ public class FCMService {
 
                     QnA currentQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
                     if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer()) {
-
 //                        tx.begin();
-
                         log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
                         parentchild.addCount();
                         Parentchild pc = em.merge(parentchild);
 //                        pc.addCount();
 //                        em.flush();
 //                        em.remove(parentchild);
-
                         transactionManager.commit(transactionStatus);
                         log.info("스케줄링 작업 예약 내 addCount 후 count: {}", pc.getCount());
 
                         QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
-                        List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
-
-                        log.info("FCMService - schedulePushAlarm() 실행");
-                        parentChildUsers.stream()
-                                .filter(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))
-                                .forEach(user -> {
-                                    log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
-                                    multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(), todayQnA.getQuestion().getTopic()), parentchild.getId());
-                                    multipleSendByToken(FCMPushRequestDto.sendTodayQna("술이슈", "새벽4시 술 먹을시간"), 3L);
-                                });
-
                         if (todayQnA == null) {
                             log.error("{}번째 Parentchild의 QnAList가 존재하지 않음!", parentchild.getId());
+                        }
+
+                        List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
+                        if (parentChildUsers.stream().
+                                allMatch(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))) {
+
+                            log.info("FCMService - schedulePushAlarm() 실행");
+                            log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
+                            multipleSendByToken(FCMPushRequestDto.sendTodayQna(todayQnA.getQuestion().getSection().getValue(),
+                                                                               todayQnA.getQuestion().getTopic()), parentchild.getId());
+                            multipleSendByToken(FCMPushRequestDto.sendTodayQna("술이슈", "새벽4시 술 먹을시간"), 3L);
                         }
                     }
                 }
