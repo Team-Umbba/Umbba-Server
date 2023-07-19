@@ -59,7 +59,10 @@ public class QnAService {
         if (matchUser.isEmpty()) {
             return invitation(userId);
         }
-        if (matchUser.get().getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
+        else if (matchUser.get().getUsername() == null) {
+            return invitation(userId);
+        }
+        else if (matchUser.get().getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
             return withdrawUser();
         }
 
