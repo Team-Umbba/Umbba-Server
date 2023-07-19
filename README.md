@@ -42,7 +42,7 @@
 
 ## 🔧 시스템 아키텍처
 
-<img width="950" src="https://github.com/Team-Umbba/Umbba-Server/assets/67463603/bef5f0c3-fc9a-45dc-a50d-da3c68c7833f">
+<img width="950" src="https://user-images.githubusercontent.com/80024278/254716740-eaf5b1e6-b16d-4fc9-88e3-7e7c14dd56dd.png">
 
 <hr>
 
