@@ -8,13 +8,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum QuestionType {
 
-    TYPE1(1L, "타입1"),
-    TYPE2(2L, "타입2"),
-    TYPE3(3L, "타입3"),
-    TYPE4(4L, "타입4"),
-    TYPE5(5L, "타입5"),
-    TYPE6(6L, "타입6"),
-    TYPE7(7L, "타입7");
+    TYPE1(1L, "타입 1"),
+    TYPE2(2L, "타입 2"),
+    TYPE3(3L, "타입 3"),
+    TYPE4(4L, "타입 4"),
+    TYPE5(5L, "타입 5"),
+    MAIN(10L, "메인 타입"),
+    YET(11L, "아직 사용하지 않는 질문");
 
     private final Long typeId;
     private final String description;

@@ -4,6 +4,7 @@ import lombok.*;
 import sopt.org.umbbaServer.global.util.AuditingTimeEntity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter

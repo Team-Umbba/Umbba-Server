@@ -105,7 +105,7 @@ public class QnAService {
         Parentchild parentchild = getParentchildByUser(myUser);
 
         User opponentUser = getOpponentByParentchild(parentchild, userId);
-        QnA targetQnA = getQnAById(qnaId); // 이거 qnA로 할건지 qna로 할건지 통일 필요
+        QnA targetQnA = getQnAById(qnaId);
         Question todayQuestion = targetQnA.getQuestion();
 
         List<QnA> qnaList = getQnAListByParentchild(parentchild);
@@ -206,21 +206,21 @@ public class QnAService {
     }
 
     private List<QnA> getQnAListByParentchild(Parentchild parentchild) {
-        List<QnA> qnAList = parentchild.getQnaList();
-        if (qnAList == null || qnAList.isEmpty()) {
+        List<QnA> qnaList = parentchild.getQnaList();
+        if (qnaList == null || qnaList.isEmpty()) {
             throw new CustomException(ErrorType.PARENTCHILD_HAVE_NO_QNALIST);
         }
 
-        return qnAList;
+        return qnaList;
     }
 
     private QnA getTodayQnAByParentchild(Parentchild parentchild) {
-        List<QnA> qnAList = parentchild.getQnaList();
-        if (qnAList == null || qnAList.isEmpty()) {
+        List<QnA> qnaList = parentchild.getQnaList();
+        if (qnaList == null || qnaList.isEmpty()) {
             throw new CustomException(ErrorType.PARENTCHILD_HAVE_NO_QNALIST);
         }
 
-        return qnAList.get(parentchild.getCount() - 1); // 가장 최근의 QnA를 가져옴
+        return qnaList.get(parentchild.getCount() - 1); // 가장 최근의 QnA를 가져옴
     }
 
     private QnA getQnAById(Long qnaId) {
@@ -256,13 +256,7 @@ public class QnAService {
         if (childList.get(3) == YES && parentList.get(3) == YES) {
             return TYPE4;
         }
-        if (childList.get(4) == YES && parentList.get(4) == YES) {
-            return TYPE5;
-        }
-        if (childList.get(5) == YES && parentList.get(5) == YES) {
-            return TYPE6;
-        }
-        return TYPE7;
+        return TYPE5;
     }
 
     /*
@@ -273,9 +267,9 @@ public class QnAService {
     public GetMainViewResponseDto getMainInfo(Long userId) {
 
         Parentchild parentchild = getParentchildByUserId(userId);
-        List<QnA> qnAList = getQnAListByParentchild(parentchild);
+        List<QnA> qnaList = getQnAListByParentchild(parentchild);
 
-        QnA lastQna = qnAList.get(parentchild.getCount() - 1);
+        QnA lastQna = qnaList.get(parentchild.getCount() - 1);
 
         return GetMainViewResponseDto.of(lastQna, parentchild.getCount());
     }

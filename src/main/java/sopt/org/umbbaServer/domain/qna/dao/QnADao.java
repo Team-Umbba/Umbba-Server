@@ -33,12 +33,12 @@ public class QnADao {
             TypedQuery<QnA> query = em.createQuery(jpql, QnA.class);
 
             log.info("query 실행 성공: {}", query);
-            List<QnA> qnAList = query
+            List<QnA> qnaList = query
                     .setParameter("id", userId)
                     .getResultList();
-            log.info("query 실행 결과: {}", qnAList.toString());
+            log.info("query 실행 결과: {}", qnaList.toString());
 
-            return Optional.ofNullable(qnAList);
+            return Optional.of(qnaList);
         } catch (NoResultException e) {
 
             return Optional.empty();
