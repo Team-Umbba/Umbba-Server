@@ -82,7 +82,7 @@ public class ParentchildService {
         /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
             throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
         }*/
-            fcmScheduler.pushTodayQna();
+             fcmScheduler.pushTodayQna();
 
 
             return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
