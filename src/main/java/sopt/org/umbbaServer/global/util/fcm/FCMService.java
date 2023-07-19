@@ -13,6 +13,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -32,6 +33,7 @@ import sopt.org.umbbaServer.global.exception.ErrorType;
 import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMMessage;
 import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PessimisticLockException;
@@ -39,6 +41,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Slf4j
 @Service
@@ -61,8 +64,20 @@ public class FCMService {
     private final TaskScheduler taskScheduler;
     private final PlatformTransactionManager transactionManager;
 
+    private ThreadPoolTaskScheduler threadPoolTaskScheduler;
+
+
     @PersistenceContext
     private EntityManager em;
+
+    @PostConstruct
+    public void initScheduler() {
+        threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
+        threadPoolTaskScheduler.setPoolSize(10);
+        threadPoolTaskScheduler.setThreadNamePrefix("현재 쓰레드 풀-");
+        threadPoolTaskScheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
+        threadPoolTaskScheduler.initialize();
+    }
 
     // Firebase에서 Access Token 가져오기
     private String getAccessToken() throws IOException {
@@ -262,8 +277,10 @@ public class FCMService {
     // 스케줄러에서 예약된 작업을 제거하는 메서드
     public static void clearScheduledTasks() {
         if (scheduledFuture != null) {
+            log.info("이전 스케줄링 예약 취소!");
             scheduledFuture.cancel(false);
         }
+        log.info("ScheduledFuture: {}", scheduledFuture);
     }
 
 

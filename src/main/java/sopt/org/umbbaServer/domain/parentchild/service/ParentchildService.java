@@ -3,6 +3,7 @@ package sopt.org.umbbaServer.domain.parentchild.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.controller.dto.request.InviteCodeRequestDto;
@@ -22,6 +23,7 @@ import sopt.org.umbbaServer.global.config.ScheduleConfig;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 import sopt.org.umbbaServer.global.util.fcm.FCMScheduler;
+import sopt.org.umbbaServer.global.util.fcm.FCMService;
 
 import java.util.List;
 
@@ -35,8 +37,7 @@ public class ParentchildService {
     private final UserRepository userRepository;
     private final ParentchildDao parentchildDao;
     private final FCMScheduler fcmScheduler;
-
-    private final ScheduleConfig scheduleConfig;
+    private final FCMService fcmService;
 
     // [발신] 초대하는 측의 온보딩 정보 입력
     @Transactional
@@ -86,7 +87,7 @@ public class ParentchildService {
         /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
             throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
         }*/
-            scheduleConfig.resetScheduler();
+            ScheduleConfig.resetScheduler();
             fcmScheduler.pushTodayQna();
 
 

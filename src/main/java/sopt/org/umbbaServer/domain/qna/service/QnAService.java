@@ -259,9 +259,9 @@ public class QnAService {
             return TYPE5;
         }
         if (childList.get(5) == YES && parentList.get(5) == YES) {
-            return TYPE6;
+            return MAIN;
         }
-        return TYPE7;
+        return TYPE1;
     }
 
     /*

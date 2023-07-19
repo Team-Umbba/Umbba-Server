@@ -19,21 +19,24 @@ import java.util.concurrent.ThreadPoolExecutor;
  * 특정 시간대에 알림을 보내주기 위해 Spring이 제공하는 TaskScheduler를 빈으로 등록
  */
 @Configuration
-public class ScheduleConfig implements SchedulingConfigurer {
+public class ScheduleConfig {
 
     private final int POOL_SIZE = 10;
+    private static ThreadPoolTaskScheduler scheduler;
 
 
     @Bean
     public TaskScheduler scheduler() {
-        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        scheduler = new ThreadPoolTaskScheduler();
         scheduler.setPoolSize(POOL_SIZE);
         scheduler.setThreadNamePrefix("my-scheduled-task-pool-");
         scheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
+        scheduler.initialize();
         return scheduler;
     }
 
-    @Override
+
+    /*@Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         scheduler.setPoolSize(POOL_SIZE);
@@ -41,7 +44,7 @@ public class ScheduleConfig implements SchedulingConfigurer {
         scheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
         scheduler.initialize();
 
-        taskRegistrar.setTaskScheduler(scheduler);
+        taskRegistrar.setTaskScheduler((TaskScheduler) taskExecutor());
     }
 
     public ScheduledExecutorService taskExecutor() {
@@ -53,16 +56,18 @@ public class ScheduleConfig implements SchedulingConfigurer {
                 return thread;
             }
         });
-    }
+    }*/
 
     // 스케줄러 중지 후 재시작 (초기화)
-    public void resetScheduler() {
-        taskExecutor().shutdown();
+    public static void resetScheduler() {
+        scheduler.shutdown();
         FCMService.clearScheduledTasks();
-        taskExecutor();
+        scheduler.initialize();
     }
 
 
+
+    // 단일 스레드로 예약된 작업을 처리하고자 할 때 사용
     /*@Bean
     public TaskScheduler scheduler() {
         return new ConcurrentTaskScheduler();
