@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
@@ -28,8 +27,8 @@ public class FCMScheduler {
         parentchildRepository.findAll().stream()
             .forEach(pc -> {
                 log.info(pc.getId() + "번째 Parentchild");
-//                String cronExpression = String.format("0 %s %s * * ?", pc.getPushTime().getMinute(), pc.getPushTime().getHour());
-                String cronExpression = String.format("*/10 * * * * *");
+                String cronExpression = String.format("0 %s %s * * ?", pc.getPushTime().getMinute(), pc.getPushTime().getHour());
+//                String cronExpression = String.format("*/10 * * * * *");
                 log.info("cron: {}", cronExpression);
                 fcmService.schedulePushAlarm(cronExpression, pc.getId());
             });

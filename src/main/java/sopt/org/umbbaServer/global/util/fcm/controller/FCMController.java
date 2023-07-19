@@ -23,12 +23,19 @@ public class FCMController {
     private final FCMScheduler fcmScheduler;
 
 
+    /**
+     * 새로운 질문이 도착했음을 알리는 푸시 알림 활성화 API
+     * 실제로는 초대 받는측의 온보딩이 완료되었을 때 호출됨
+     */
     @PostMapping("/qna")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse sendTopicScheduledTest() {
         return ApiResponse.success(SuccessType.PUSH_ALARM_PERIODIC_SUCCESS, fcmScheduler.pushTodayQna());
     }
 
+    /**
+     * 장난용 푸시 알림 활성화 API
+     */
     @PostMapping("/drink")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse drinkAlarm() {
@@ -37,7 +44,7 @@ public class FCMController {
 
 
     /**
-     * 주기적 알림 전송 테스트를 위한 API
+     * 헤더와 바디를 직접 만들어 알림을 전송하는 테스트용 API (상대 답변 알람 전송에 사용)
      */
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
@@ -46,6 +53,9 @@ public class FCMController {
         return ApiResponse.success(SuccessType.PUSH_ALARM_SUCCESS, fcmService.pushAlarm(request, JwtProvider.getUserFromPrincial(principal)));
     }
 
+    /**
+     * 동시에 여러 사람에게 푸시 알림을 보내보는 테스트용 API (주기적 알람 전송에 사용)
+     */
     @PostMapping("/parentchild")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse sendMultiScheduledTest() {
