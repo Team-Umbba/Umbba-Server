@@ -59,7 +59,10 @@ public class QnAService {
         if (matchUser.isEmpty()) {
             return invitation(userId);
         }
-        if (matchUser.get().getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
+        else if (matchUser.get().getUsername() == null) {
+            return invitation(userId);
+        }
+        else if (matchUser.get().getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
             return withdrawUser();
         }
 
@@ -131,7 +134,7 @@ public class QnAService {
 
         // 첫번째 질문은 MVP 단에서는 고정
         QnA newQnA = QnA.builder()
-                .question(questionRepository.findById(1L/* 수정 필요 */).get()) // TODO 예외처리 필요
+                .question(questionRepository.findByType(FIX).get(0))
                 .isParentAnswer(false)
                 .isChildAnswer(false)
                 .build();
