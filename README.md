@@ -1,7 +1,8 @@
 # 👨‍👩‍👧‍👦 엄빠도 어렸다
 > 부모의 추억을 자식과 공유하며 공감대를 찾는 문답형 아카이빙 서비스, 엄빠도 어렸다
 
-<img src="https://github.com/Team-Umbba/Umbba-Server/assets/67463603/601fc7dc-3a54-41e6-a133-0a43f585236b" width="350"/>
+<img src="https://user-images.githubusercontent.com/80024278/254717698-0849c495-c344-4cd2-a369-8b5def6c1154.jpg" width="750"/>
+<br/>
 
 ## 🌸 금쪽이들
 |                             이동섭                             |                                                                박예준                                                                 |
