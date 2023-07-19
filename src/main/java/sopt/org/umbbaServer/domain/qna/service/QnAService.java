@@ -294,6 +294,7 @@ public class QnAService {
         }
     }
 
+
     /*
     리팩토링을 위해 아래로 뺀 메서드들 끝
      */
@@ -304,7 +305,8 @@ public class QnAService {
         Parentchild parentchild = getParentchildByUserId(userId);
         List<QnA> qnaList = getQnAListByParentchild(parentchild);
 
-        QnA lastQna = qnaList.get(parentchild.getCount() - 1);
+        QnA lastQna = qnaList.get(parentchild.getCount()-1);
+        log.info("getCount(): {}", parentchild.getCount());
 
         return GetMainViewResponseDto.of(lastQna, parentchild.getCount());
     }
@@ -321,5 +323,19 @@ public class QnAService {
 
     private GetInvitationResponseDto withdrawUser() {
         return GetInvitationResponseDto.of(false);
+    }
+
+
+    /**
+     * 데모데이 테스트용 메서드
+     */
+    public void resetQnA(Long parentchildId) {
+
+        //
+
+    }
+
+    public void resetOnboard(Long userId) {
+
     }
 }

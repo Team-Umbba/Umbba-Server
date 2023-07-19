@@ -24,7 +24,8 @@ public class SecurityConfig {
             "/qna/**", "onboard/**", "/home", "/dummy",
 //          "/log-out",
             "/test", "/profile", "/health", "/actuator/health",
-            "/alarm/qna", "/alarm/drink"
+            "/alarm/qna", "/alarm/drink",
+            "/demo/reset/**"
     };
 
     @Bean
