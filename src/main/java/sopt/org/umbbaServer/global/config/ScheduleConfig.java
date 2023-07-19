@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Configuration
 public class ScheduleConfig {
 
-    private final int POOL_SIZE = 10;
+    private static final int POOL_SIZE = 10;
     private static ThreadPoolTaskScheduler scheduler;
 
 
@@ -32,6 +32,9 @@ public class ScheduleConfig {
     public static void resetScheduler() {
         scheduler.shutdown();
         FCMService.clearScheduledTasks();
+        scheduler.setPoolSize(POOL_SIZE);
+        scheduler.setThreadNamePrefix("현재 쓰레드 풀-");
+        scheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
         scheduler.initialize();
     }
 

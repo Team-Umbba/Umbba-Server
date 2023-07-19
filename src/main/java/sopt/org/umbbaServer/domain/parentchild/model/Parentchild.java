@@ -33,11 +33,10 @@ public class Parentchild extends AuditingTimeEntity {
     private int count;
 
     public void addCount() {
-        this.count += 1;
-        log.info("Parentchild - addCount() 호출: {}", this.count);
-        /*if (qnaList.size() < 7) {
+        if (this.count < 7) {
             this.count += 1;
-        }*/
+            log.info("Parentchild - addCount() 호출: {}", this.count);
+        }
     }
 
     @Column(nullable = false)
