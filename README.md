@@ -6,7 +6,7 @@
 ## 🌸 금쪽이들
 |                             이동섭                             |                                                                박예준                                                                 |
 | :----------------------------------------------------------: |:----------------------------------------------------------------------------------------------------------------------------------:|
-| <img src="https://github.com/GOSOPT-CDS-TEAM7-DeskTop/Backend/assets/67463603/3c92f168-1ff0-42a4-a91f-9fbd11189d35" width="300"/> | <img src="https://user-images.githubusercontent.com/80024278/222954622-1c2da6cb-d1fe-4b0c-9eaa-cf5608d11e9c.jpeg" width="300"/> |
+| <img src="https://user-images.githubusercontent.com/80024278/254709711-99261fdf-9a96-48e3-abfd-21346143aa8c.png" width="300"/> | <img src="https://user-images.githubusercontent.com/80024278/254709696-8d5a2b63-1fca-4f70-8fcd-242a04a21be9.jpg" width="300"/> |
 |              [ddongseop](https://github.com/ddongseop)               |                                             [jun02160](https://github.com/jun02160)                                              |
 
 ## 👻 Role
