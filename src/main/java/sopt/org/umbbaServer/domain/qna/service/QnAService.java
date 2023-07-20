@@ -2,6 +2,7 @@ package sopt.org.umbbaServer.domain.qna.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
@@ -119,7 +120,10 @@ public class QnAService {
     @Transactional
     public void filterFirstQuestion(Long userId, List<String> onboardingAnswerStringList) {
 
-        Parentchild parentchild = getParentchildByUserId(userId);
+        Parentchild parentchild = getUserById(userId).getParentChild();
+        if (parentchild == null) {
+            throw new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD);
+        }
 
         // String을 Enum으로 변경
         List<OnboardingAnswer> onboardingAnswerList = onboardingAnswerStringList.stream()
@@ -147,7 +151,10 @@ public class QnAService {
     @Transactional
     public void filterAllQuestion(Long userId, List<String> onboardingAnswerStringList) {
 
-        Parentchild parentchild = getParentchildByUserId(userId);
+        Parentchild parentchild = getUserById(userId).getParentChild();
+        if (parentchild == null) {
+            throw new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD);
+        }
 
         // String을 Enum으로 변경
         List<OnboardingAnswer> onboardingAnswerList = onboardingAnswerStringList.stream()
@@ -204,12 +211,6 @@ public class QnAService {
         return parentchild;
     }
 
-    private Parentchild getParentchildByUserId(Long userId) {
-
-        return parentchildDao.findByUserId(userId).orElseThrow(
-                () -> new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD)
-        );
-    }
 
     private List<QnA> getQnAListByParentchild(Parentchild parentchild) {
         List<QnA> qnaList = parentchild.getQnaList();
@@ -304,12 +305,22 @@ public class QnAService {
     // 메인페이지 정보
     public GetMainViewResponseDto getMainInfo(Long userId) {
 
-        Parentchild parentchild = getParentchildByUserId(userId);
+        Parentchild parentchild = getParentchild(userId);
+
         List<QnA> qnaList = getQnAListByParentchild(parentchild);
 
         QnA lastQna = qnaList.get(parentchild.getCount() - 1);
 
         return GetMainViewResponseDto.of(lastQna, parentchild.getCount());
+    }
+
+    @NotNull
+    private Parentchild getParentchild(Long userId) {
+        Parentchild parentchild = getUserById(userId).getParentChild();
+        if (parentchild == null) {
+            throw new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD);
+        }
+        return parentchild;
     }
 
     private GetInvitationResponseDto invitation(Long userId) {

@@ -74,7 +74,7 @@ public class ParentchildService {
     @Transactional
     public OnboardingReceiveResponseDto onboardReceive(Long userId, OnboardingReceiveRequestDto request) throws InterruptedException {
 
-        if (getParentchildByUserId(userId) != null) {
+        if (getUserById(userId).getParentChild() != null) {
 
             User user = getUserById(userId);
             user.updateOnboardingInfo(
@@ -83,7 +83,7 @@ public class ParentchildService {
                     request.getUserInfo().getBornYear()
             );
 
-            Parentchild parentchild = getParentchildByUserId(userId);
+            Parentchild parentchild = user.getParentChild();
 //        parentchild.updateInfo();  TODO 온보딩 송수신 측의 관계 정보가 불일치한 경우에 대한 처리
             List<User> parentChildUsers = getParentChildUsers(parentchild);
 
@@ -139,13 +139,6 @@ public class ParentchildService {
         return userRepository.findUserByParentChild(newMatchRelation);
     }
 
-
-    private Parentchild getParentchildByUserId(Long userId) {
-
-        return parentchildDao.findByUserId(userId).orElseThrow(
-                () -> new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD)
-        );
-    }
 
     private User getUserById(Long userId) {
 
