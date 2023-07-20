@@ -42,28 +42,33 @@ public class ParentchildService {
     public OnboardingInviteResponseDto onboardInvite(Long userId, OnboardingInviteRequestDto request) {
 
         User user = getUserById(userId);
-        user.updateOnboardingInfo(
-                request.getUserInfo().getName(),
-                request.getUserInfo().getGender(),
-                request.getUserInfo().getBornYear()
-        );
-        log.info("isInvitorChild 요청값: {}", request.getIsInvitorChild());
-        user.updateIsMeChild(request.getIsInvitorChild());
-        log.info("업데이트 된 isMeChild 필드: {}", user.isMeChild());
+        if (user.getParentChild() == null) {
+            user.updateOnboardingInfo(
+                    request.getUserInfo().getName(),
+                    request.getUserInfo().getGender(),
+                    request.getUserInfo().getBornYear()
+            );
+            log.info("isInvitorChild 요청값: {}", request.getIsInvitorChild());
+            user.updateIsMeChild(request.getIsInvitorChild());
+            log.info("업데이트 된 isMeChild 필드: {}", user.isMeChild());
 
-        Parentchild parentchild = Parentchild.builder()
-                .inviteCode(generateInviteCode())
-                .isInvitorChild(request.getIsInvitorChild())
-                .relation(ParentchildRelation.relation(request.getUserInfo().getGender(), request.getRelationInfo(), request.getIsInvitorChild()))
-                .pushTime(request.getPushTime())  // TODO 케이스에 따라 없을 수도 있음
-                .count(1)
-                .build();
-        parentchildRepository.save(parentchild);
-        user.updateParentchild(parentchild);
-        user.updateIsMatchFinish(true);
-        log.info("userInfo: {}", request.getUserInfo().getBornYear());
-        return OnboardingInviteResponseDto.of(parentchild, user);
+            Parentchild parentchild = Parentchild.builder()
+                    .inviteCode(generateInviteCode())
+                    .isInvitorChild(request.getIsInvitorChild())
+                    .relation(ParentchildRelation.relation(request.getUserInfo().getGender(), request.getRelationInfo(), request.getIsInvitorChild()))
+                    .pushTime(request.getPushTime())   // TODO 케이스에 따라 없을 수도 있음
+                    .count(1)
+                    .build();
+            parentchildRepository.save(parentchild);
+            user.updateParentchild(parentchild);
+            user.updateIsMatchFinish(true);
+            log.info("userInfo: {}", request.getUserInfo().getBornYear());
+            return OnboardingInviteResponseDto.of(parentchild, user);
+        }
+
+        throw new CustomException(ErrorType.ALREADY_EXISTS_PARENT_CHILD_USER);
     }
+
 
     // [수신] 초대받는 측의 온보딩 정보 입력
     @Transactional
