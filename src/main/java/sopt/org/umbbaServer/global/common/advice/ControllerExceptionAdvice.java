@@ -69,8 +69,8 @@ public class ControllerExceptionAdvice {
     }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ApiResponse<Object> handlerMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException e) {
-        return ApiResponse.error(ErrorType.VALIDATION_WRONG_TYPE_EXCEPTION, e.getMessage());
+    public ApiResponse<Exception> handlerMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException e) {
+        return ApiResponse.error(ErrorType.VALIDATION_WRONG_TYPE_EXCEPTION, e);
     }
 
     // Header에 원하는 Key가 없는 경우
@@ -101,87 +101,86 @@ public class ControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    protected ApiResponse<Object> handleException(final Exception e, final HttpServletRequest request) throws IOException {
+    protected ApiResponse<Exception> handleException(final Exception e, final HttpServletRequest request) throws IOException {
         slackApi.sendAlert(e, request);
 
         log.error("Unexpected exception occurred: {}", e.getMessage(), e);
 
-        return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR);
+        return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IllegalArgumentException.class)
-    public ApiResponse<Object> handlerIllegalArgumentException(final IllegalArgumentException e) {
-        return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, e.getMessage());
+    public ApiResponse<Exception> handlerIllegalArgumentException(final IllegalArgumentException e) {
+        return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IOException.class)
-    public ApiResponse<Object> handlerIOException(final IOException e) {
-        return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, e.getMessage());
+    public ApiResponse<Exception> handlerIOException(final IOException e) {
+        return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException.class)
-    public ApiResponse<Object> handlerRuntimeException(final RuntimeException e) {
-        return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, e.getMessage());
+    public ApiResponse<Exception> handlerRuntimeException(final RuntimeException e) {
+        return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, e);
     }
 
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IndexOutOfBoundsException.class)
-    protected ApiResponse<Object> handlerIndexOutOfBoundsException(final IndexOutOfBoundsException e) {
-        return ApiResponse.error(ErrorType.INDEX_OUT_OF_BOUNDS, e.getMessage());
+    protected ApiResponse<Exception> handlerIndexOutOfBoundsException(final IndexOutOfBoundsException e) {
+        return ApiResponse.error(ErrorType.INDEX_OUT_OF_BOUNDS, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(UnknownClassException.class)
-    protected ApiResponse<Object> handlerUnknownClassException(final UnknownClassException e) {
-        return ApiResponse.error(ErrorType.JWT_SERIALIZE, e.getMessage());
+    protected ApiResponse<Exception> handlerUnknownClassException(final UnknownClassException e) {
+        return ApiResponse.error(ErrorType.JWT_SERIALIZE, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(NoSuchElementException.class)
-    protected ApiResponse<Object> handlerNoSuchElementException(final NoSuchElementException e) {
-        return ApiResponse.error(ErrorType.OPTIONAL_EMPTY, e.getMessage());
+    protected ApiResponse<Exception> handlerNoSuchElementException(final NoSuchElementException e) {
+        return ApiResponse.error(ErrorType.OPTIONAL_EMPTY, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IncorrectResultSizeDataAccessException.class)
-    protected ApiResponse<Object> handlerIncorrectResultSizeDataAccessException(final IncorrectResultSizeDataAccessException e) {
-        return ApiResponse.error(ErrorType.NON_UNIQUE_RESULT_OF_QUERY, e.getMessage());
+    protected ApiResponse<Exception> handlerIncorrectResultSizeDataAccessException(final IncorrectResultSizeDataAccessException e) {
+        return ApiResponse.error(ErrorType.NON_UNIQUE_RESULT_OF_QUERY, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(NestedServletException.class)
-    public ApiResponse<Object> handlerNestedServletException(final NestedServletException e) {
-        return ApiResponse.error(ErrorType.INTERNAL_SERVLET_ERROR, e.getMessage());
+    public ApiResponse<Exception> handlerNestedServletException(final NestedServletException e) {
+        return ApiResponse.error(ErrorType.INTERNAL_SERVLET_ERROR, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(InvalidDataAccessApiUsageException.class)
-    public ApiResponse<Object> handlerInvalidDataAccessApiUsageException(final InvalidDataAccessApiUsageException e) {
-        return ApiResponse.error(ErrorType.NO_ENUM_TYPE, e.getMessage());
+    public ApiResponse<Exception> handlerInvalidDataAccessApiUsageException(final InvalidDataAccessApiUsageException e) {
+        return ApiResponse.error(ErrorType.NO_ENUM_TYPE, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ApiResponse<Object> handlerDataIntegrityViolationException(final DataIntegrityViolationException e) {
-        return ApiResponse.error(ErrorType.DATA_INTEGRITY_ERROR, e.getMessage());
+    public ApiResponse<Exception> handlerDataIntegrityViolationException(final DataIntegrityViolationException e) {
+        return ApiResponse.error(ErrorType.DATA_INTEGRITY_ERROR, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(JpaSystemException.class)
-    public ApiResponse<Object> handlerJpaSystemException(final JpaSystemException e) {
-        return ApiResponse.error(ErrorType.DATABASE_ERROR, e.getMessage());
+    public ApiResponse<Exception> handlerJpaSystemException(final JpaSystemException e) {
+        return ApiResponse.error(ErrorType.DATABASE_ERROR, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(NullPointerException.class)
-    public ApiResponse<Object> handlerNullPointerException(final NullPointerException e) {
-        return ApiResponse.error(ErrorType.NULL_POINTER_ERROR, e.getMessage());
+    public ApiResponse<Exception> handlerNullPointerException(final NullPointerException e) {
+        return ApiResponse.error(ErrorType.NULL_POINTER_ERROR, e);
     }
-
 
 
 
