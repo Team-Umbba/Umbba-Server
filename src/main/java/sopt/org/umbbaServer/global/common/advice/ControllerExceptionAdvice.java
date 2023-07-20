@@ -1,12 +1,9 @@
 package sopt.org.umbbaServer.global.common.advice;
 
-import com.google.api.Http;
-import feign.FeignException;
 import io.jsonwebtoken.lang.UnknownClassException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
@@ -14,17 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.util.NestedServletException;
 import sopt.org.umbbaServer.global.common.dto.ApiResponse;
@@ -121,6 +115,18 @@ public class ControllerExceptionAdvice {
         return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, e.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(IOException.class)
+    public ApiResponse<Object> handlerIOException(final IOException e) {
+        return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(RuntimeException.class)
+    public ApiResponse<Object> handlerRuntimeException(final RuntimeException e) {
+        return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IndexOutOfBoundsException.class)
@@ -170,9 +176,11 @@ public class ControllerExceptionAdvice {
         return ApiResponse.error(ErrorType.DATABASE_ERROR, e.getMessage());
     }
 
-
-
-
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(NullPointerException.class)
+    public ApiResponse<Object> handlerNullPointerException(final NullPointerException e) {
+        return ApiResponse.error(ErrorType.NULL_POINTER_ERROR, e.getMessage());
+    }
 
 
 

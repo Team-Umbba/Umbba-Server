@@ -87,6 +87,8 @@ public enum ErrorType {
     INTERNAL_SERVLET_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "디스패처 서블릿이 요청을 처리하는 중에 예외가 발생했습니다."),
     NO_ENUM_TYPE(HttpStatus.INTERNAL_SERVER_ERROR, "헤딩 Enum 타입이 데이터베이스 엔티티와 매핑될 수 없습니다."),
     DATA_INTEGRITY_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "데이터 무결성 제약조건을 위반했습니다."),
+    NULL_POINTER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "NULL 포인터를 참조했습니다."),
+
 
 
     ;
