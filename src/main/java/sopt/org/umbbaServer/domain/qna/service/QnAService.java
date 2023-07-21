@@ -163,8 +163,10 @@ public class QnAService {
             }
         }
 
-        // 선택 질문에 따라 질문 리스트가 커스텀됨
-        customQuestion(childList, parentList, parentchild.getQnaList());
+        if (childList.size() >= 5 && parentList.size() >= 5) {
+            // 선택 질문에 따라 질문 리스트가 커스텀됨
+            customQuestion(childList, parentList, parentchild.getQnaList());
+        }
 
         log.info("선택된 질문 리스트");
         List<QnA> forLogging= parentchild.getQnaList();

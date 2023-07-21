@@ -165,7 +165,7 @@ public class ParentchildService {
             throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
         }
 
-        return InviteResultResponseDto.of(newMatchRelation, parentChildUsers);
+        return InviteResultResponseDto.of(user.isMatchFinish(), newMatchRelation, parentChildUsers);
     }
 
     public List<User> getParentChildUsers(Parentchild newMatchRelation) {
