@@ -31,7 +31,7 @@ public enum ParentchildRelation {
                 if (relationInfo.equals("아들")) {
                     return ParentchildRelation.DAD_SON;
                 } else if (relationInfo.equals("딸")) {
-                    return ParentchildRelation.DAD_DAU;   // TODO 클라에서 둘 중 하나의 값만 받도록 처리하니까 else if 구문 빼도 무관
+                    return ParentchildRelation.DAD_DAU;
                 }
             } else if(gender.equals("여자")) {   // 엄마
                 if (relationInfo.equals("아들")) {

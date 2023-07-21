@@ -15,6 +15,7 @@ import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.model.ParentchildRelation;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
+import sopt.org.umbbaServer.domain.qna.model.OnboardingAnswer;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
 import sopt.org.umbbaServer.global.config.ScheduleConfig;
@@ -24,6 +25,7 @@ import sopt.org.umbbaServer.global.util.fcm.FCMScheduler;
 import sopt.org.umbbaServer.global.util.fcm.FCMService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -42,34 +44,55 @@ public class ParentchildService {
     public OnboardingInviteResponseDto onboardInvite(Long userId, OnboardingInviteRequestDto request) {
 
         User user = getUserById(userId);
-        user.updateOnboardingInfo(
-                request.getUserInfo().getName(),
-                request.getUserInfo().getGender(),
-                request.getUserInfo().getBornYear()
-        );
-        log.info("isInvitorChild 요청값: {}", request.getIsInvitorChild());
-        user.updateIsMeChild(request.getIsInvitorChild());
-        log.info("업데이트 된 isMeChild 필드: {}", user.isMeChild());
+        if (user.getParentChild() == null) {
+            user.updateOnboardingInfo(
+                    request.getUserInfo().getName(),
+                    request.getUserInfo().getGender(),
+                    request.getUserInfo().getBornYear()
+            );
+            log.info("isInvitorChild 요청값: {}", request.getIsInvitorChild());
+            user.updateIsMeChild(request.getIsInvitorChild());
+            log.info("업데이트 된 isMeChild 필드: {}", user.isMeChild());
 
-        Parentchild parentchild = Parentchild.builder()
-                .inviteCode(generateInviteCode())
-                .isInvitorChild(request.getIsInvitorChild())
-                .relation(ParentchildRelation.relation(request.getUserInfo().getGender(), request.getRelationInfo(), request.getIsInvitorChild()))
-                .pushTime(request.getPushTime())  // TODO 케이스에 따라 없을 수도 있음
-                .count(1)
-                .build();
-        parentchildRepository.save(parentchild);
-        user.updateParentchild(parentchild);
-        user.updateIsMatchFinish(true);
-        log.info("userInfo: {}", request.getUserInfo().getBornYear());
-        return OnboardingInviteResponseDto.of(parentchild, user);
+            Parentchild parentchild = Parentchild.builder()
+                    .inviteCode(generateInviteCode())
+                    .isInvitorChild(request.getIsInvitorChild())
+                    .relation(ParentchildRelation.relation(request.getUserInfo().getGender(), request.getRelationInfo(), request.getIsInvitorChild()))
+                    .pushTime(request.getPushTime())
+                    .count(1)
+                    .build();
+            parentchildRepository.save(parentchild);
+            user.updateParentchild(parentchild);
+            user.updateIsMatchFinish(true);
+            log.info("userInfo: {}", request.getUserInfo().getBornYear());
+
+            // String을 Enum으로 변경
+            List<OnboardingAnswer> onboardingAnswerList = request.getOnboardingAnswerList().stream()
+                    .map(OnboardingAnswer::of)
+                    .collect(Collectors.toList());
+
+            if (onboardingAnswerList.size() != 5) {
+                throw new CustomException(ErrorType.INVALID_ONBOARDING_ANSWER_SIZE);
+            }
+
+            if (getUserById(userId).isMeChild()) {
+                parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
+            } else {
+                parentchild.changeParentOnboardingAnswerList(onboardingAnswerList);
+            }
+
+            return OnboardingInviteResponseDto.of(parentchild, user);
+        }
+
+        throw new CustomException(ErrorType.ALREADY_EXISTS_PARENT_CHILD_USER);
     }
+
 
     // [수신] 초대받는 측의 온보딩 정보 입력
     @Transactional
     public OnboardingReceiveResponseDto onboardReceive(Long userId, OnboardingReceiveRequestDto request) throws InterruptedException {
 
-        if (getParentchildByUserId(userId) != null) {
+        if (getUserById(userId).getParentChild() != null) {
 
             User user = getUserById(userId);
             user.updateOnboardingInfo(
@@ -78,9 +101,24 @@ public class ParentchildService {
                     request.getUserInfo().getBornYear()
             );
 
-            Parentchild parentchild = getParentchildByUserId(userId);
+            Parentchild parentchild = user.getParentChild();
 //        parentchild.updateInfo();  TODO 온보딩 송수신 측의 관계 정보가 불일치한 경우에 대한 처리
             List<User> parentChildUsers = getParentChildUsers(parentchild);
+
+            // String을 Enum으로 변경
+            List<OnboardingAnswer> onboardingAnswerList = request.getOnboardingAnswerList().stream()
+                    .map(OnboardingAnswer::of)
+                    .collect(Collectors.toList());
+
+            if (onboardingAnswerList.size() != 5) {
+                throw new CustomException(ErrorType.INVALID_ONBOARDING_ANSWER_SIZE);
+            }
+
+            if (getUserById(userId).isMeChild()) {
+                parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
+            } else {
+                parentchild.changeParentOnboardingAnswerList(onboardingAnswerList);
+            }
 
             /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
                 throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
@@ -116,8 +154,7 @@ public class ParentchildService {
             throw new CustomException(ErrorType.ALREADY_EXISTS_PARENT_CHILD_USER);
         }
 
-        // TODO ParentChild에 연관된 User 수에 따른 예외처리
-        // TODO 하나의 유저는 하나의 관계만 가지도록 예외처리
+        // TODO ParentChild에 연관된 User 수에 따른 예외 메시지 출력
         user.updateParentchild(newMatchRelation);
         user.updateIsMatchFinish(true);
         log.info("로그인한 유저가 성립된 Parentchild Id: {}", user.getParentChild().getId());
@@ -134,13 +171,6 @@ public class ParentchildService {
         return userRepository.findUserByParentChild(newMatchRelation);
     }
 
-
-    private Parentchild getParentchildByUserId(Long userId) {
-
-        return parentchildDao.findByUserId(userId).orElseThrow(
-                () -> new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD)
-        );
-    }
 
     private User getUserById(Long userId) {
 
