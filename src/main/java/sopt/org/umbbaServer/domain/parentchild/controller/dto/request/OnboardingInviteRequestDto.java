@@ -34,6 +34,6 @@ public class OnboardingInviteRequestDto {
     @JsonFormat(pattern = "kk:mm")
     private LocalTime pushTime;
 
-    @NotEmpty // TODO 여기서 걸러지게 만들어야함
+    @NotEmpty
     private List<String> onboardingAnswerList;
 }

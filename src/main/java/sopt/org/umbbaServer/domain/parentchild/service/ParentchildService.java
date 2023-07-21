@@ -58,7 +58,7 @@ public class ParentchildService {
                     .inviteCode(generateInviteCode())
                     .isInvitorChild(request.getIsInvitorChild())
                     .relation(ParentchildRelation.relation(request.getUserInfo().getGender(), request.getRelationInfo(), request.getIsInvitorChild()))
-                    .pushTime(request.getPushTime())   // TODO 케이스에 따라 없을 수도 있음
+                    .pushTime(request.getPushTime())
                     .count(1)
                     .build();
             parentchildRepository.save(parentchild);
@@ -154,8 +154,7 @@ public class ParentchildService {
             throw new CustomException(ErrorType.ALREADY_EXISTS_PARENT_CHILD_USER);
         }
 
-        // TODO ParentChild에 연관된 User 수에 따른 예외처리
-        // TODO 하나의 유저는 하나의 관계만 가지도록 예외처리
+        // TODO ParentChild에 연관된 User 수에 따른 예외 메시지 출력
         user.updateParentchild(newMatchRelation);
         user.updateIsMatchFinish(true);
         log.info("로그인한 유저가 성립된 Parentchild Id: {}", user.getParentChild().getId());
