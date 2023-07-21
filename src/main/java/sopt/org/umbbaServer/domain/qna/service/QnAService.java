@@ -88,6 +88,10 @@ public class QnAService {
 
     public List<QnAListResponseDto> getQnaList(Long userId, Long sectionId) {
         User myUser = getUserById(userId);
+        if (sectionId < 1L || sectionId > 5L) {
+            throw new CustomException(ErrorType.NOT_FOUND_SECTION);
+        }
+
         Parentchild parentchild = getParentchildByUser(myUser);
         List<QnA> qnaList = getQnAListByParentchild(parentchild);
 

@@ -12,10 +12,10 @@ public enum QuestionSection {
     GOLDEN(3L, "청춘시절", 2),
     COUPLE(4L, "연애시절", 1),
     MARRIAGE(5L, "우리가 만나고", 1),
-    MARRIAGE2(6L, "우리가 만나고", 1); // 전연령 - 우리가 만나고
+    MARRIAGE2(5L, "우리가 만나고", 1); // 전연령 - 우리가 만나고
     ;
 
-    private final Long sectionId;
+    private final Long sectionId; //findBySectionId 하면 안됨
     private final String value;
     private final int questionCount;
 }
