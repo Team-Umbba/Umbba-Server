@@ -44,47 +44,48 @@ public class ParentchildService {
     public OnboardingInviteResponseDto onboardInvite(Long userId, OnboardingInviteRequestDto request) {
 
         User user = getUserById(userId);
-        if (user.getParentChild() == null) {
-            user.updateOnboardingInfo(
-                    request.getUserInfo().getName(),
-                    request.getUserInfo().getGender(),
-                    request.getUserInfo().getBornYear()
-            );
-            log.info("isInvitorChild 요청값: {}", request.getIsInvitorChild());
-            user.updateIsMeChild(request.getIsInvitorChild());
-            log.info("업데이트 된 isMeChild 필드: {}", user.isMeChild());
-
-            Parentchild parentchild = Parentchild.builder()
-                    .inviteCode(generateInviteCode())
-                    .isInvitorChild(request.getIsInvitorChild())
-                    .relation(ParentchildRelation.relation(request.getUserInfo().getGender(), request.getRelationInfo(), request.getIsInvitorChild()))
-                    .pushTime(request.getPushTime())
-                    .count(1)
-                    .build();
-            parentchildRepository.save(parentchild);
-            user.updateParentchild(parentchild);
-            user.updateIsMatchFinish(true);
-            log.info("userInfo: {}", request.getUserInfo().getBornYear());
-
-            // String을 Enum으로 변경
-            List<OnboardingAnswer> onboardingAnswerList = request.getOnboardingAnswerList().stream()
-                    .map(OnboardingAnswer::of)
-                    .collect(Collectors.toList());
-
-            if (onboardingAnswerList.size() != 5) {
-                throw new CustomException(ErrorType.INVALID_ONBOARDING_ANSWER_SIZE);
-            }
-
-            if (getUserById(userId).isMeChild()) {
-                parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
-            } else {
-                parentchild.changeParentOnboardingAnswerList(onboardingAnswerList);
-            }
-
-            return OnboardingInviteResponseDto.of(parentchild, user);
+        if (user.getParentChild() != null) {
+            throw new CustomException(ErrorType.ALREADY_EXISTS_PARENT_CHILD_USER);
         }
 
-        throw new CustomException(ErrorType.ALREADY_EXISTS_PARENT_CHILD_USER);
+        user.updateOnboardingInfo(
+                request.getUserInfo().getName(),
+                request.getUserInfo().getGender(),
+                request.getUserInfo().getBornYear()
+        );
+        log.info("isInvitorChild 요청값: {}", request.getIsInvitorChild());
+        user.updateIsMeChild(request.getIsInvitorChild());
+        log.info("업데이트 된 isMeChild 필드: {}", user.isMeChild());
+
+        Parentchild parentchild = Parentchild.builder()
+                .inviteCode(generateInviteCode())
+                .isInvitorChild(request.getIsInvitorChild())
+                .relation(ParentchildRelation.relation(request.getUserInfo().getGender(), request.getRelationInfo(), request.getIsInvitorChild()))
+                .pushTime(request.getPushTime())
+                .count(1)
+                .build();
+        parentchildRepository.save(parentchild);
+        user.updateParentchild(parentchild);
+        user.updateIsMatchFinish(true);
+        log.info("userInfo: {}", request.getUserInfo().getBornYear());
+
+        // String을 Enum으로 변경
+        List<OnboardingAnswer> onboardingAnswerList = request.getOnboardingAnswerList().stream()
+                .map(OnboardingAnswer::of)
+                .collect(Collectors.toList());
+
+        if (onboardingAnswerList.size() != 5) {
+            throw new CustomException(ErrorType.INVALID_ONBOARDING_ANSWER_SIZE);
+        }
+
+        if (getUserById(userId).isMeChild()) {
+            parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
+        } else {
+            parentchild.changeParentOnboardingAnswerList(onboardingAnswerList);
+        }
+
+        return OnboardingInviteResponseDto.of(parentchild, user);
+
     }
 
 
