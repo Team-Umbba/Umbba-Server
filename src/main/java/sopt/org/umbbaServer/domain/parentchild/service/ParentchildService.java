@@ -44,10 +44,6 @@ public class ParentchildService {
     public OnboardingInviteResponseDto onboardInvite(Long userId, OnboardingInviteRequestDto request) {
 
         User user = getUserById(userId);
-        if (user.getParentChild() != null) {
-            throw new CustomException(ErrorType.ALREADY_EXISTS_PARENT_CHILD_USER);
-        }
-
         user.updateOnboardingInfo(
                 request.getUserInfo().getName(),
                 request.getUserInfo().getGender(),
@@ -93,45 +89,46 @@ public class ParentchildService {
     @Transactional
     public OnboardingReceiveResponseDto onboardReceive(Long userId, OnboardingReceiveRequestDto request) throws InterruptedException {
 
-        if (getUserById(userId).getParentChild() != null) {
 
-            User user = getUserById(userId);
-            user.updateOnboardingInfo(
-                    request.getUserInfo().getName(),
-                    request.getUserInfo().getGender(),
-                    request.getUserInfo().getBornYear()
-            );
-
-            Parentchild parentchild = user.getParentChild();
-//        parentchild.updateInfo();  TODO 온보딩 송수신 측의 관계 정보가 불일치한 경우에 대한 처리
-            List<User> parentChildUsers = getParentChildUsers(parentchild);
-
-            // String을 Enum으로 변경
-            List<OnboardingAnswer> onboardingAnswerList = request.getOnboardingAnswerList().stream()
-                    .map(OnboardingAnswer::of)
-                    .collect(Collectors.toList());
-
-            if (onboardingAnswerList.size() != 5) {
-                throw new CustomException(ErrorType.INVALID_ONBOARDING_ANSWER_SIZE);
-            }
-
-            if (getUserById(userId).isMeChild()) {
-                parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
-            } else {
-                parentchild.changeParentOnboardingAnswerList(onboardingAnswerList);
-            }
-
-            /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
-                throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
-            }*/
-            ScheduleConfig.resetScheduler();
-            fcmScheduler.pushTodayQna();
-
-
-            return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
+        if (getUserById(userId).getParentChild() == null) {
+            throw new CustomException(ErrorType.RECEIVE_AFTER_MATCH);
         }
 
-        throw new CustomException(ErrorType.RECEIVE_AFTER_MATCH);
+        User user = getUserById(userId);
+        user.updateOnboardingInfo(
+                request.getUserInfo().getName(),
+                request.getUserInfo().getGender(),
+                request.getUserInfo().getBornYear()
+        );
+
+        Parentchild parentchild = user.getParentChild();
+//        parentchild.updateInfo();  TODO 온보딩 송수신 측의 관계 정보가 불일치한 경우에 대한 처리
+        List<User> parentChildUsers = getParentChildUsers(parentchild);
+
+        // String을 Enum으로 변경
+        List<OnboardingAnswer> onboardingAnswerList = request.getOnboardingAnswerList().stream()
+                .map(OnboardingAnswer::of)
+                .collect(Collectors.toList());
+
+        if (onboardingAnswerList.size() != 5) {
+            throw new CustomException(ErrorType.INVALID_ONBOARDING_ANSWER_SIZE);
+        }
+
+        if (getUserById(userId).isMeChild()) {
+            parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
+        } else {
+            parentchild.changeParentOnboardingAnswerList(onboardingAnswerList);
+        }
+
+        /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
+            throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
+        }*/
+        ScheduleConfig.resetScheduler();
+        fcmScheduler.pushTodayQna();
+
+
+        return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
+
     }
 
 
