@@ -70,7 +70,7 @@ public class ControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ApiResponse<Exception> handlerMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException e) {
-        return ApiResponse.error(ErrorType.VALIDATION_WRONG_TYPE_EXCEPTION, e);
+        return ApiResponse.error(ErrorType.VALIDATION_WRONG_TYPE_EXCEPTION);
     }
 
     // Header에 원하는 Key가 없는 경우
