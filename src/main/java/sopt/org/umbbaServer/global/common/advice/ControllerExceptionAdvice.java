@@ -1,15 +1,10 @@
 package sopt.org.umbbaServer.global.common.advice;
 
-import io.jsonwebtoken.lang.UnknownClassException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
@@ -20,7 +15,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.util.NestedServletException;
 import sopt.org.umbbaServer.global.common.dto.ApiResponse;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
@@ -31,7 +25,6 @@ import javax.validation.UnexpectedTypeException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @RestControllerAdvice
@@ -109,7 +102,7 @@ public class ControllerExceptionAdvice {
         return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, e);
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    /*@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IllegalArgumentException.class)
     public ApiResponse<Exception> handlerIllegalArgumentException(final IllegalArgumentException e) {
         return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, e);
@@ -134,11 +127,11 @@ public class ControllerExceptionAdvice {
         return ApiResponse.error(ErrorType.INDEX_OUT_OF_BOUNDS, e);
     }
 
-    /*@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    *//*@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(UnknownClassException.class)
     protected ApiResponse<Exception> handlerUnknownClassException(final UnknownClassException e) {
         return ApiResponse.error(ErrorType.JWT_SERIALIZE, e);
-    }*/
+    }*//*
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(NoSuchElementException.class)
@@ -180,7 +173,7 @@ public class ControllerExceptionAdvice {
     @ExceptionHandler(NullPointerException.class)
     public ApiResponse<Exception> handlerNullPointerException(final NullPointerException e) {
         return ApiResponse.error(ErrorType.NULL_POINTER_ERROR, e);
-    }
+    }*/
 
 
 
