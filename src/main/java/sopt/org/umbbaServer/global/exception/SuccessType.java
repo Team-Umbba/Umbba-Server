@@ -1,5 +1,6 @@
 package sopt.org.umbbaServer.global.exception;
 
+import com.google.api.Http;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public enum SuccessType {
     GET_INVITE_CODE_SUCCESS(HttpStatus.OK, "초대장을 보낼 코드 조회에 성공했습니다."),
     PUSH_ALARM_SUCCESS(HttpStatus.OK, "푸시알림 전송에 성공했습니다."),
     PUSH_ALARM_PERIODIC_SUCCESS(HttpStatus.OK, "오늘의 질문 푸시알림 활성에 성공했습니다."),
+    TEST_SUCCESS(HttpStatus.OK, "데모데이 테스트용 API 호출에 성공했습니다."),
 
 
     /**

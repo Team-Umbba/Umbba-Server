@@ -18,7 +18,9 @@ import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 import sopt.org.umbbaServer.global.util.fcm.FCMService;
+import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -283,6 +285,7 @@ public class QnAService {
         }
     }
 
+
     /*
     리팩토링을 위해 아래로 뺀 메서드들 끝
      */
@@ -294,7 +297,8 @@ public class QnAService {
 
         List<QnA> qnaList = getQnAListByParentchild(parentchild);
 
-        QnA lastQna = qnaList.get(parentchild.getCount() - 1);
+        QnA lastQna = qnaList.get(parentchild.getCount()-1);
+        log.info("getCount(): {}", parentchild.getCount());
 
         return GetMainViewResponseDto.of(lastQna, parentchild.getCount());
     }
@@ -320,5 +324,52 @@ public class QnAService {
 
     private GetInvitationResponseDto withdrawUser() {
         return GetInvitationResponseDto.of(false);
+    }
+
+
+    /**
+     * 데모데이 테스트용 메서드
+     */
+    @Transactional
+    public void updateDemoList(Long userId) {
+
+        User myUser = getUserById(userId);
+        Parentchild parentchild = getParentchildByUser(myUser);
+
+        for (int i=0; i<4; i++) {
+            updateDay(parentchild,
+                    "우리 부모님은 어렸을 때부터 행복하고 좋은 기억을 많이 주셨고, 정말 행복하게 자랐어. 그 덕에 지금까지 행복하고 안정된 느낌을 받아.",
+                    "오구 내 똥강아지~ 어렸을 때는 매일 볼 수 있었는데, 어른이 되고 나서 자주 못봐서 너무 아쉽다... 연락 잘하거라 요녀석~");
+        }
+        QnA fifthQnA = getTodayQnAByParentchild(parentchild);
+        log.info("💖💖💖💖Day 5 QnA: {}", fifthQnA.getId());
+        fcmService.multipleSendByToken(FCMPushRequestDto.sendTodayQna(
+                fifthQnA.getQuestion().getSection().getValue(),
+                fifthQnA.getQuestion().getTopic()), parentchild.getId());
+
+    }
+
+    @Transactional
+    public void todayUpdate(Long userId) {
+
+        User myUser = getUserById(userId);
+        Parentchild parentchild = getParentchildByUser(myUser);
+
+        updateDay(parentchild,
+                "우리 부모님은 어렸을 때부터 행복하고 좋은 기억을 많이 주셨고, 정말 행복하게 자랐어. 그 덕에 지금까지 행복하고 안정된 느낌을 받아.",
+                "오구 내 똥강아지~ 어렸을 때는 매일 볼 수 있었는데, 어른이 되고 나서 자주 못봐서 너무 아쉽다... 연락 잘하거라 요녀석~");
+
+        QnA todayQnA = getTodayQnAByParentchild(parentchild);
+        fcmService.multipleSendByToken(FCMPushRequestDto.sendTodayQna(
+                todayQnA.getQuestion().getSection().getValue(),
+                todayQnA.getQuestion().getTopic()), parentchild.getId());
+    }
+
+    private void updateDay(Parentchild parentchild, String childAnswer, String parentAnswer) {
+        QnA currentQnA = getTodayQnAByParentchild(parentchild);
+        log.info("💖💖💖💖Current QnA: {}", currentQnA.getId());
+        currentQnA.saveChildAnswer(childAnswer);
+        currentQnA.saveParentAnswer(parentAnswer);
+        parentchild.addCount();
     }
 }

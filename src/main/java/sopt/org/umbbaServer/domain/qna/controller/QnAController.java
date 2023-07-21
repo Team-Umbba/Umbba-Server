@@ -67,6 +67,7 @@ public class QnAController {
     }
 
     @GetMapping("/home/case")
+    @ResponseStatus(HttpStatus.OK)
     public ApiResponse<GetInvitationResponseDto> invitation(Principal principal) {
 
         return ApiResponse.success(SuccessType.GET_INVITE_CODE_SUCCESS, qnAService.getInvitation(JwtProvider.getUserFromPrincial(principal)));
