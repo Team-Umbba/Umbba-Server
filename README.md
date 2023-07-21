@@ -4,6 +4,7 @@
 <img src="https://user-images.githubusercontent.com/80024278/254717698-0849c495-c344-4cd2-a369-8b5def6c1154.jpg" width="750"/>
 <br/>
 
+
 ## 🌸 금쪽이들
 |                             이동섭                             |                                                                박예준                                                                 |
 | :----------------------------------------------------------: |:----------------------------------------------------------------------------------------------------------------------------------:|
@@ -17,7 +18,7 @@
 | Nginx 배포, CI/CD 구축 |   이동섭    |
 | DB 구축 (RDS)         |   이동섭    |
 | ERD 작성              | 이동섭, 박예준 |
-| API 구현              | 이동섭, 박예준 |
+| API 개발              | 이동섭, 박예준 |
 | 소셜로그인 기능 구현      | 이동섭 |
 | 푸시알림 기능 구현       | 박예준 |
 
@@ -49,12 +50,12 @@
 
 ## 📜 API Docs
 
-### 🔗 [API Docs](https://harsh-step-7dd.notion.site/9e5e7a93f4904a0795b15d54f79d9bae?v=c252004af7b248c1bf408fedd45ebb37&pvs=4)
+### 🔗 [API Docs](https://harsh-step-7dd.notion.site/API-887ec56c3fdd48e19fec44820b63a83d?pvs=4)
 
 <hr>
 
 ## ☁️ ERD
-<img width="600" src="https://github.com/Team-Umbba/Umbba-Server/assets/67463603/d7230c16-016f-4119-b5cd-595053a55a5c">
+<img width="600" src="https://user-images.githubusercontent.com/80024278/254723343-d27666c0-1a4d-4e0e-a4cf-ea79dcd08c08.png">
 
 <hr>
 
@@ -64,19 +65,19 @@
     🗂 main
         🗂 java/sopt/org/umbbaServer
             🗂 domain
-                🗂 parentchild
+                📁 parentchild
                     🗂 controller
                     🗂 dao
                     🗂 model
                     🗂 repository
                     🗂 service
-                🗂 qna
+                📁 qna
                     🗂 controller
                     🗂 dao
                     🗂 model
                     🗂 repository
                     🗂 service
-                🗂 user
+                📁 user
                     🗂 controller
                     🗂 model
                     🗂 repository
@@ -85,15 +86,15 @@
                         🗂 apple
                         🗂 kakao
             🗂 global 
-                🗂 common
+                📁 common
                     🗂 advice
                     🗂 dto
-                🗂 config
+                📁 config
                     🗂 auth
                     🗂 jwt
                         🗂 redis   
                     🗂 exception
-                🗂 util
+                📁 util
                     🗂 slack
         🗂 resources
             application.yaml

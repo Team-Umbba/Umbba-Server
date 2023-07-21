@@ -33,24 +33,24 @@ public class ParentchildController {
 
         Long userId = JwtProvider.getUserFromPrincial(principal);
         OnboardingInviteResponseDto response = parentchildService.onboardInvite(userId, request);
-        qnAService.filterFirstQuestion(userId, request.getOnboardingAnswerList());
+        qnAService.filterFirstQuestion(userId);
 
         return ApiResponse.success(SuccessType.CREATE_PARENT_CHILD_SUCCESS, response);
     }
 
     @PatchMapping("/onboard/match")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<InviteResultResponseDto> inviteRelation(@RequestBody @Valid final InviteCodeRequestDto request, Principal principal) {
         return ApiResponse.success(SuccessType.MATCH_PARENT_CHILD_SUCCESS, parentchildService.matchRelation(JwtProvider.getUserFromPrincial(principal), request));
     }
 
     @PatchMapping("/onboard/receive")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<OnboardingReceiveResponseDto> onboardReceive(@RequestBody @Valid final OnboardingReceiveRequestDto request, Principal principal) throws InterruptedException {
 
         Long userId = JwtProvider.getUserFromPrincial(principal);
         OnboardingReceiveResponseDto response = parentchildService.onboardReceive(userId, request);
-        qnAService.filterAllQuestion(userId, request.getOnboardingAnswerList());
+        qnAService.filterAllQuestion(userId);
 
         return ApiResponse.success(SuccessType.CREATE_PARENT_CHILD_SUCCESS, response);
     }

@@ -2,14 +2,13 @@ package sopt.org.umbbaServer.global.util.fcm.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.*;
 import sopt.org.umbbaServer.global.common.dto.ApiResponse;
 import sopt.org.umbbaServer.global.config.jwt.JwtProvider;
 import sopt.org.umbbaServer.global.exception.SuccessType;
 import sopt.org.umbbaServer.global.util.fcm.FCMScheduler;
-import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
 import sopt.org.umbbaServer.global.util.fcm.FCMService;
+import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
 
 import java.io.IOException;
 import java.security.Principal;

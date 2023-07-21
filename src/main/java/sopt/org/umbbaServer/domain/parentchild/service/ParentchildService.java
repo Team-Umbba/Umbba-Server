@@ -15,6 +15,7 @@ import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.model.ParentchildRelation;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
+import sopt.org.umbbaServer.domain.qna.model.OnboardingAnswer;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
 import sopt.org.umbbaServer.global.config.ScheduleConfig;
@@ -24,6 +25,7 @@ import sopt.org.umbbaServer.global.util.fcm.FCMScheduler;
 import sopt.org.umbbaServer.global.util.fcm.FCMService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -55,44 +57,78 @@ public class ParentchildService {
                 .inviteCode(generateInviteCode())
                 .isInvitorChild(request.getIsInvitorChild())
                 .relation(ParentchildRelation.relation(request.getUserInfo().getGender(), request.getRelationInfo(), request.getIsInvitorChild()))
-                .pushTime(request.getPushTime())  // TODO 케이스에 따라 없을 수도 있음
+                .pushTime(request.getPushTime())
                 .count(1)
                 .build();
         parentchildRepository.save(parentchild);
         user.updateParentchild(parentchild);
         user.updateIsMatchFinish(true);
         log.info("userInfo: {}", request.getUserInfo().getBornYear());
+
+        // String을 Enum으로 변경
+        List<OnboardingAnswer> onboardingAnswerList = request.getOnboardingAnswerList().stream()
+                .map(OnboardingAnswer::of)
+                .collect(Collectors.toList());
+
+        if (onboardingAnswerList.size() != 5) {
+            throw new CustomException(ErrorType.INVALID_ONBOARDING_ANSWER_SIZE);
+        }
+
+        if (getUserById(userId).isMeChild()) {
+            parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
+        } else {
+            parentchild.changeParentOnboardingAnswerList(onboardingAnswerList);
+        }
+
         return OnboardingInviteResponseDto.of(parentchild, user);
+
     }
+
 
     // [수신] 초대받는 측의 온보딩 정보 입력
     @Transactional
     public OnboardingReceiveResponseDto onboardReceive(Long userId, OnboardingReceiveRequestDto request) throws InterruptedException {
 
-        if (getParentchildByUserId(userId) != null) {
 
-            User user = getUserById(userId);
-            user.updateOnboardingInfo(
-                    request.getUserInfo().getName(),
-                    request.getUserInfo().getGender(),
-                    request.getUserInfo().getBornYear()
-            );
-
-            Parentchild parentchild = getParentchildByUserId(userId);
-//        parentchild.updateInfo();  TODO 온보딩 송수신 측의 관계 정보가 불일치한 경우에 대한 처리
-            List<User> parentChildUsers = getParentChildUsers(parentchild);
-
-            /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
-                throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
-            }*/
-            ScheduleConfig.resetScheduler();
-            fcmScheduler.pushTodayQna();
-
-
-            return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
+        if (getUserById(userId).getParentChild() == null) {
+            throw new CustomException(ErrorType.RECEIVE_AFTER_MATCH);
         }
 
-        throw new CustomException(ErrorType.RECEIVE_AFTER_MATCH);
+        User user = getUserById(userId);
+        user.updateOnboardingInfo(
+                request.getUserInfo().getName(),
+                request.getUserInfo().getGender(),
+                request.getUserInfo().getBornYear()
+        );
+
+        Parentchild parentchild = user.getParentChild();
+//        parentchild.updateInfo();  TODO 온보딩 송수신 측의 관계 정보가 불일치한 경우에 대한 처리
+        List<User> parentChildUsers = getParentChildUsers(parentchild);
+
+        // String을 Enum으로 변경
+        List<OnboardingAnswer> onboardingAnswerList = request.getOnboardingAnswerList().stream()
+                .map(OnboardingAnswer::of)
+                .collect(Collectors.toList());
+
+        if (onboardingAnswerList.size() != 5) {
+            throw new CustomException(ErrorType.INVALID_ONBOARDING_ANSWER_SIZE);
+        }
+
+        if (getUserById(userId).isMeChild()) {
+            parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
+        } else {
+            parentchild.changeParentOnboardingAnswerList(onboardingAnswerList);
+        }
+
+        /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
+            throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
+        }*/
+        ScheduleConfig.resetScheduler();
+        fcmScheduler.pushTodayQna();
+
+
+        return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
+
     }
 
 
@@ -116,8 +152,7 @@ public class ParentchildService {
             throw new CustomException(ErrorType.ALREADY_EXISTS_PARENT_CHILD_USER);
         }
 
-        // TODO ParentChild에 연관된 User 수에 따른 예외처리
-        // TODO 하나의 유저는 하나의 관계만 가지도록 예외처리
+        // TODO ParentChild에 연관된 User 수에 따른 예외 메시지 출력
         user.updateParentchild(newMatchRelation);
         user.updateIsMatchFinish(true);
         log.info("로그인한 유저가 성립된 Parentchild Id: {}", user.getParentChild().getId());
@@ -127,20 +162,13 @@ public class ParentchildService {
             throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
         }
 
-        return InviteResultResponseDto.of(newMatchRelation, parentChildUsers);
+        return InviteResultResponseDto.of(user.isMatchFinish(), newMatchRelation, parentChildUsers);
     }
 
     public List<User> getParentChildUsers(Parentchild newMatchRelation) {
         return userRepository.findUserByParentChild(newMatchRelation);
     }
 
-
-    private Parentchild getParentchildByUserId(Long userId) {
-
-        return parentchildDao.findByUserId(userId).orElseThrow(
-                () -> new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD)
-        );
-    }
 
     private User getUserById(Long userId) {
 

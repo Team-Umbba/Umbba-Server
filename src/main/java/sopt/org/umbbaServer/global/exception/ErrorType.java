@@ -12,12 +12,17 @@ public enum ErrorType {
     /**
      * 400 BAD REQUEST
      */
+
+    // Common
     REQUEST_VALIDATION_EXCEPTION(HttpStatus.BAD_REQUEST, "잘못된 요청입니다"),
-    VALIDATION_WRONG_TYPE_EXCEPTION(HttpStatus.BAD_REQUEST, "잘못된 타입이 입력되었습니다"),
+    VALIDATION_WRONG_TYPE_EXCEPTION(HttpStatus.BAD_REQUEST, "잘못된 타입이 입력되었습니다."),
     HEADER_REQUEST_MISSING_EXCEPTION(HttpStatus.BAD_REQUEST, "요청에 필요한 헤더값이 존재하지 않습니다."),
-    VALIDATION_WRONG_ENUM_EXCEPTION(HttpStatus.BAD_REQUEST, "허용되지 않는 문자열이 입력되었습니다."),
+    VALIDATION_WRONG_HTTP_REQUEST(HttpStatus.BAD_REQUEST, "허용되지 않는 문자열이 입력되었습니다."),
+    INVALID_HTTP_METHOD(HttpStatus.BAD_REQUEST, "지원되지 않는 HTTP Method 요청입니다."),
+
     INVALID_SOCIAL_PLATFORM(HttpStatus.BAD_REQUEST, "유효하지 않은 소셜 플랫폼입니다."),
-    INVALID_ONBOARDING_ANSWER(HttpStatus.BAD_REQUEST, "유효하지 않은 선택질문 응답값입니다."),
+    INVALID_ONBOARDING_ANSWER(HttpStatus.BAD_REQUEST, "유효하지 않은 선택질문 답변값입니다."),
+    INVALID_ONBOARDING_ANSWER_SIZE(HttpStatus.BAD_REQUEST, "유효한 선택질문 답변 개수는 5개입니다."),
     INVALID_SOCIALPLATFORM(HttpStatus.BAD_REQUEST, "유효하지 않은 소셜 플랫폼 문자열"),
 
     // ParentChild - Onboarding
@@ -26,6 +31,7 @@ public enum ErrorType {
     INVALID_PARENT_CHILD_RELATION(HttpStatus.BAD_REQUEST, "유효하지 않는 부모자식 관계입니다."),
     NOT_MATCH_PARENT_CHILD_RELATION(HttpStatus.BAD_REQUEST, "아직 부모자식 관계 매칭이 이루어지지 않았습니다."),
     ALREADY_EXISTS_PARENT_CHILD_USER(HttpStatus.BAD_REQUEST, "이미 해당 유저의 부모자식 관계가 존재합니다."),
+
 
     /**
      * 401 UNAUTHORIZED
@@ -52,6 +58,7 @@ public enum ErrorType {
     USER_HAVE_NO_QNALIST(HttpStatus.NOT_FOUND, "해당 유저가 가지고 있는 QnA 데이터가 없습니다."),
     PARENTCHILD_HAVE_NO_QNALIST(HttpStatus.NOT_FOUND, "부모자식 관계가 가지고 있는 QnA 데이터가 없습니다."),
     PARENTCHILD_HAVE_NO_OPPONENT(HttpStatus.NOT_FOUND, "부모자식 관계에 1명만 참여하고 있습니다."),
+    NOT_FOUND_SECTION(HttpStatus.NOT_FOUND, "해당 아이디와 일치하는 섹션이 없습니다."),
 
 
     /**
@@ -69,8 +76,22 @@ public enum ErrorType {
      * 500 INTERNAL SERVER ERROR
      */
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 서버 에러가 발생했습니다"),
+    DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "데이터베이스 관련 에러가 발생했습니다."),
     FIREBASE_CONNECTION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파이어베이스 서버와의 연결에 실패했습니다."),
     FAIL_TO_SEND_PUSH_ALARM(HttpStatus.INTERNAL_SERVER_ERROR, "푸시 알림 메세지 전송에 실패했습니다."),
+
+
+    // ETC
+    INDEX_OUT_OF_BOUNDS(HttpStatus.INTERNAL_SERVER_ERROR, "인덱스 범위를 초과했습니다."),
+    JWT_SERIALIZE(HttpStatus.INTERNAL_SERVER_ERROR, "JWT 라이브러리 직렬화에 실패했습니다."),
+    OPTIONAL_EMPTY(HttpStatus.INTERNAL_SERVER_ERROR, "Optional 객체가 비어있습니다."),
+    NON_UNIQUE_RESULT_OF_QUERY(HttpStatus.INTERNAL_SERVER_ERROR, "JPA 쿼리가 유일한 결과를 반환하지 않습니다."),
+    INTERNAL_SERVLET_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "디스패처 서블릿이 요청을 처리하는 중에 예외가 발생했습니다."),
+    NO_ENUM_TYPE(HttpStatus.INTERNAL_SERVER_ERROR, "해당 Enum 타입이 데이터베이스 엔티티와 매핑될 수 없습니다."),
+    DATA_INTEGRITY_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "데이터 무결성 제약조건을 위반했습니다."),
+    NULL_POINTER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "NULL 포인터를 참조했습니다."),
+
+
 
     ;
 

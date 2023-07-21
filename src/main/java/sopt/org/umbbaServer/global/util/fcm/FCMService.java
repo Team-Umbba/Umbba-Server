@@ -147,6 +147,7 @@ public class FCMService {
 
         Response response = client.newCall(httpRequest).execute();
 
+        log.info("단일 기기 알림 전송 성공 ! successCount: 1 messages were sent successfully");
         log.info("알림 전송: {}", response.body().string());
     }
 
