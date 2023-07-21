@@ -176,6 +176,9 @@ public class FCMService {
 
         List<String> tokenList = parentchildDao.findFcmTokensById(parentchildId);
 
+        log.info("tokenList: {}🌈,  {}🌈",tokenList.get(0), tokenList.get(1));
+
+
         MulticastMessage message = MulticastMessage.builder()
                 .setNotification(Notification.builder()
                         .setTitle(request.getTitle())
