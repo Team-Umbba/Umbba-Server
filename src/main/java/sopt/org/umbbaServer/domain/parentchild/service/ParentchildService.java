@@ -15,6 +15,7 @@ import sopt.org.umbbaServer.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbbaServer.domain.parentchild.model.Parentchild;
 import sopt.org.umbbaServer.domain.parentchild.model.ParentchildRelation;
 import sopt.org.umbbaServer.domain.parentchild.repository.ParentchildRepository;
+import sopt.org.umbbaServer.domain.qna.model.OnboardingAnswer;
 import sopt.org.umbbaServer.domain.user.model.User;
 import sopt.org.umbbaServer.domain.user.repository.UserRepository;
 import sopt.org.umbbaServer.global.config.ScheduleConfig;
@@ -24,6 +25,7 @@ import sopt.org.umbbaServer.global.util.fcm.FCMScheduler;
 import sopt.org.umbbaServer.global.util.fcm.FCMService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -63,6 +65,18 @@ public class ParentchildService {
             user.updateParentchild(parentchild);
             user.updateIsMatchFinish(true);
             log.info("userInfo: {}", request.getUserInfo().getBornYear());
+
+            // String을 Enum으로 변경
+            List<OnboardingAnswer> onboardingAnswerList = request.getOnboardingAnswerList().stream()
+                    .map(OnboardingAnswer::of)
+                    .collect(Collectors.toList());
+
+            if (getUserById(userId).isMeChild()) {
+                parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
+            } else {
+                parentchild.changeParentOnboardingAnswerList(onboardingAnswerList);
+            }
+
             return OnboardingInviteResponseDto.of(parentchild, user);
         }
 
@@ -86,6 +100,17 @@ public class ParentchildService {
             Parentchild parentchild = user.getParentChild();
 //        parentchild.updateInfo();  TODO 온보딩 송수신 측의 관계 정보가 불일치한 경우에 대한 처리
             List<User> parentChildUsers = getParentChildUsers(parentchild);
+
+            // String을 Enum으로 변경
+            List<OnboardingAnswer> onboardingAnswerList = request.getOnboardingAnswerList().stream()
+                    .map(OnboardingAnswer::of)
+                    .collect(Collectors.toList());
+
+            if (getUserById(usdd erId).isMeChild()) {
+                parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
+            } else {
+                parentchild.changeParentOnboardingAnswerList(onboardingAnswerList);
+            }
 
             /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
                 throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);

@@ -33,7 +33,7 @@ public class ParentchildController {
 
         Long userId = JwtProvider.getUserFromPrincial(principal);
         OnboardingInviteResponseDto response = parentchildService.onboardInvite(userId, request);
-        qnAService.filterFirstQuestion(userId, request.getOnboardingAnswerList());
+        qnAService.filterFirstQuestion(userId);
 
         return ApiResponse.success(SuccessType.CREATE_PARENT_CHILD_SUCCESS, response);
     }
@@ -50,7 +50,7 @@ public class ParentchildController {
 
         Long userId = JwtProvider.getUserFromPrincial(principal);
         OnboardingReceiveResponseDto response = parentchildService.onboardReceive(userId, request);
-        qnAService.filterAllQuestion(userId, request.getOnboardingAnswerList());
+        qnAService.filterAllQuestion(userId);
 
         return ApiResponse.success(SuccessType.CREATE_PARENT_CHILD_SUCCESS, response);
     }

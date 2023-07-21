@@ -118,23 +118,13 @@ public class QnAService {
     }
 
     @Transactional
-    public void filterFirstQuestion(Long userId, List<String> onboardingAnswerStringList) {
+    public void filterFirstQuestion(Long userId) {
 
         Parentchild parentchild = getUserById(userId).getParentChild();
         if (parentchild == null) {
             throw new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD);
         }
 
-        // String을 Enum으로 변경
-        List<OnboardingAnswer> onboardingAnswerList = onboardingAnswerStringList.stream()
-                .map(OnboardingAnswer::of)
-                .collect(Collectors.toList());
-
-        if (getUserById(userId).isMeChild()) {
-            parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
-        } else {
-            parentchild.changeParentOnboardingAnswerList(onboardingAnswerList);
-        }
 
         // 첫번째 질문은 MVP 단에서는 고정
         QnA newQnA = QnA.builder()
@@ -149,22 +139,11 @@ public class QnAService {
     }
 
     @Transactional
-    public void filterAllQuestion(Long userId, List<String> onboardingAnswerStringList) {
+    public void filterAllQuestion(Long userId) {
 
         Parentchild parentchild = getUserById(userId).getParentChild();
         if (parentchild == null) {
             throw new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD);
-        }
-
-        // String을 Enum으로 변경
-        List<OnboardingAnswer> onboardingAnswerList = onboardingAnswerStringList.stream()
-                .map(OnboardingAnswer::of)
-                .collect(Collectors.toList());
-
-        if (getUserById(userId).isMeChild()) {
-            parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
-        } else {
-            parentchild.changeParentOnboardingAnswerList(onboardingAnswerList);
         }
 
         List<OnboardingAnswer> childList = parentchild.getChildOnboardingAnswerList();
