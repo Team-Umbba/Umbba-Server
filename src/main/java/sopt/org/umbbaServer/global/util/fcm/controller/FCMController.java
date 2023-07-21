@@ -35,11 +35,11 @@ public class FCMController {
     /**
      * 장난용 푸시 알림 활성화 API
      */
-    @PostMapping("/drink")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse drinkAlarm() {
-        return ApiResponse.success(SuccessType.PUSH_ALARM_PERIODIC_SUCCESS, fcmScheduler.drink());
-    }
+//    @PostMapping("/drink")
+//    @ResponseStatus(HttpStatus.OK)
+//    public ApiResponse drinkAlarm() {
+//        return ApiResponse.success(SuccessType.PUSH_ALARM_PERIODIC_SUCCESS, fcmScheduler.drink());
+//    }
 
 
     /**
