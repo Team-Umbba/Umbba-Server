@@ -73,12 +73,4 @@ public class QnAController {
         return ApiResponse.success(SuccessType.GET_INVITE_CODE_SUCCESS, qnAService.getInvitation(JwtProvider.getUserFromPrincial(principal)));
     }
 
-    @PatchMapping("/demo/reset/{parentchildId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse demoTest(@PathVariable final Long parentchildId) {
-
-        qnAService.resetQnA(parentchildId);
-        return ApiResponse.success(SuccessType.TEST_SUCCESS);
-    }
-
 }

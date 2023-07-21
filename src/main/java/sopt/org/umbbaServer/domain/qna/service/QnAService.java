@@ -18,6 +18,7 @@ import sopt.org.umbbaServer.domain.user.social.SocialPlatform;
 import sopt.org.umbbaServer.global.exception.CustomException;
 import sopt.org.umbbaServer.global.exception.ErrorType;
 import sopt.org.umbbaServer.global.util.fcm.FCMService;
+import sopt.org.umbbaServer.global.util.fcm.controller.dto.FCMPushRequestDto;
 
 import java.util.List;
 import java.util.Objects;
@@ -328,13 +329,42 @@ public class QnAService {
     /**
      * 데모데이 테스트용 메서드
      */
-    public void resetQnA(Long parentchildId) {
+    @Transactional
+    public void updateDemoList(Long userId) {
 
-        //
+        User myUser = getUserById(userId);
+        Parentchild parentchild = getParentchildByUser(myUser);
+
+        for (int i=0; i<4; i++) {
+            updateDay(parentchild, "Test", "test");
+        }
+        QnA fifthQnA = getTodayQnAByParentchild(parentchild);
+        log.info("💖💖💖💖Day 5 QnA: {}", fifthQnA.getId());
+        fcmService.multipleSendByToken(FCMPushRequestDto.sendTodayQna(
+                fifthQnA.getQuestion().getSection().getValue(),
+                fifthQnA.getQuestion().getTopic()), parentchild.getId());
 
     }
 
-    public void resetOnboard(Long userId) {
+    @Transactional
+    public void todayUpdate(Long userId) {
 
+        User myUser = getUserById(userId);
+        Parentchild parentchild = getParentchildByUser(myUser);
+
+        updateDay(parentchild, "엄빠 화이팅", "SOPT 화이팅");
+        QnA todayQnA = getTodayQnAByParentchild(parentchild);
+        fcmService.multipleSendByToken(FCMPushRequestDto.sendTodayQna(
+                todayQnA.getQuestion().getSection().getValue(),
+                todayQnA.getQuestion().getTopic()), parentchild.getId());
+
+    }
+
+    private void updateDay(Parentchild parentchild, String childAnswer, String parentAnswer) {
+        QnA currentQnA = getTodayQnAByParentchild(parentchild);
+        log.info("💖💖💖💖Current QnA: {}", currentQnA.getId());
+        currentQnA.saveChildAnswer(childAnswer);
+        currentQnA.saveParentAnswer(parentAnswer);
+        parentchild.addCount();
     }
 }
