@@ -134,11 +134,11 @@ public class ControllerExceptionAdvice {
         return ApiResponse.error(ErrorType.INDEX_OUT_OF_BOUNDS, e);
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    /*@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(UnknownClassException.class)
     protected ApiResponse<Exception> handlerUnknownClassException(final UnknownClassException e) {
         return ApiResponse.error(ErrorType.JWT_SERIALIZE, e);
-    }
+    }*/
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(NoSuchElementException.class)
