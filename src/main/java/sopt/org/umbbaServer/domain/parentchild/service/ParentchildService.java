@@ -44,10 +44,6 @@ public class ParentchildService {
     public OnboardingInviteResponseDto onboardInvite(Long userId, OnboardingInviteRequestDto request) {
 
         User user = getUserById(userId);
-        if (user.getParentChild() != null) {
-            throw new CustomException(ErrorType.ALREADY_EXISTS_PARENT_CHILD_USER);
-        }
-
         user.updateOnboardingInfo(
                 request.getUserInfo().getName(),
                 request.getUserInfo().getGender(),
