@@ -21,7 +21,8 @@ public enum ErrorType {
     INVALID_HTTP_METHOD(HttpStatus.BAD_REQUEST, "지원되지 않는 HTTP Method 요청입니다."),
 
     INVALID_SOCIAL_PLATFORM(HttpStatus.BAD_REQUEST, "유효하지 않은 소셜 플랫폼입니다."),
-    INVALID_ONBOARDING_ANSWER(HttpStatus.BAD_REQUEST, "유효하지 않은 선택질문 응답값입니다."),
+    INVALID_ONBOARDING_ANSWER(HttpStatus.BAD_REQUEST, "유효하지 않은 선택질문 답변값입니다."),
+    INVALID_ONBOARDING_ANSWER_SIZE(HttpStatus.BAD_REQUEST, "유효한 선택질문 답변 개수는 5개입니다."),
     INVALID_SOCIALPLATFORM(HttpStatus.BAD_REQUEST, "유효하지 않은 소셜 플랫폼 문자열"),
 
     // ParentChild - Onboarding

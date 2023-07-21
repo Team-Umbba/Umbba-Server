@@ -71,6 +71,10 @@ public class ParentchildService {
                     .map(OnboardingAnswer::of)
                     .collect(Collectors.toList());
 
+            if (onboardingAnswerList.size() != 5) {
+                throw new CustomException(ErrorType.INVALID_ONBOARDING_ANSWER_SIZE);
+            }
+
             if (getUserById(userId).isMeChild()) {
                 parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
             } else {
@@ -106,7 +110,11 @@ public class ParentchildService {
                     .map(OnboardingAnswer::of)
                     .collect(Collectors.toList());
 
-            if (getUserById(usdd erId).isMeChild()) {
+            if (onboardingAnswerList.size() != 5) {
+                throw new CustomException(ErrorType.INVALID_ONBOARDING_ANSWER_SIZE);
+            }
+
+            if (getUserById(userId).isMeChild()) {
                 parentchild.changeChildOnboardingAnswerList(onboardingAnswerList);
             } else {
                 parentchild.changeParentOnboardingAnswerList(onboardingAnswerList);
