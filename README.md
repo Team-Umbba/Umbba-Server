@@ -18,7 +18,7 @@
 | Nginx 배포, CI/CD 구축 |   이동섭    |
 | DB 구축 (RDS)         |   이동섭    |
 | ERD 작성              | 이동섭, 박예준 |
-| API 구현              | 이동섭, 박예준 |
+| API 개발              | 이동섭, 박예준 |
 | 소셜로그인 기능 구현      | 이동섭 |
 | 푸시알림 기능 구현       | 박예준 |
 
@@ -50,7 +50,7 @@
 
 ## 📜 API Docs
 
-### 🔗 [API Docs](https://harsh-step-7dd.notion.site/9e5e7a93f4904a0795b15d54f79d9bae?v=c252004af7b248c1bf408fedd45ebb37&pvs=4)
+### 🔗 [API Docs](https://harsh-step-7dd.notion.site/API-887ec56c3fdd48e19fec44820b63a83d?pvs=4)
 
 <hr>
 
