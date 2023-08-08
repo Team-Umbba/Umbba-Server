@@ -9,6 +9,14 @@ cloud:
       bucket: ${bucket-name}
     stack:
       auto: false
+    sqs:
+      notification:
+        name: ${sqs-notification-name}
+        url: ${sqs-notification-url}
+      #api:
+      #  name: ${sqs-api-name}
+      #  url: ${sqs-api-url}
+
 
 spring:
   datasource:

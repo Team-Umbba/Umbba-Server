@@ -11,11 +11,11 @@ cloud:
       auto: false
     sqs:
       notification:
-        name: ${AWS_SQS_NOTIFICATION_NAME_DEV}
-        url: ${AWS_SQS_NOTIFICATION_URL_DEV}
-      api:
-        name: ${AWS_SQS_API_NAME_DEV}
-        url: ${AWS_SQS_API_URL_DEV}
+        name: ${sqs-notification-name}
+        url: ${sqs-notification-url}
+      #api:
+      #  name: ${sqs-api-name}
+      #  url: ${sqs-api-url}
 
 
 spring:
