@@ -1,3 +1,5 @@
+jar { enabled = false }
+
 dependencies {
     implementation project(':umbba-common')
     implementation project(':umbba-domain')
@@ -26,6 +28,10 @@ dependencies {
 
     // for FeignException
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.7'
+
+    // redis
+    implementation "org.springframework.boot:spring-boot-starter-data-redis"
+    implementation "org.springframework.session:spring-session-data-redis"
 
     // s3
 //    implementation "org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE"

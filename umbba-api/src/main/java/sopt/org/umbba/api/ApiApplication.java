@@ -9,13 +9,13 @@ import sopt.org.umbba.common.UmbbaCommonRoot;
 import sopt.org.umbba.domain.UmbbaDomainRoot;
 import sopt.org.umbba.external.UmbbaExternalRoot;
 
-@EnableFeignClients
 @SpringBootApplication(scanBasePackageClasses = {
         UmbbaCommonRoot.class,
         UmbbaDomainRoot.class,
         UmbbaExternalRoot.class,
         ApiApplication.class
 }, exclude = { UserDetailsServiceAutoConfiguration.class })
+@EnableFeignClients(basePackageClasses = UmbbaExternalRoot.class)
 public class ApiApplication {
 
     public static void main(String[] args) {
