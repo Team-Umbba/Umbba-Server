@@ -1,4 +1,4 @@
-package sopt.org.umbba.domain.user.social.apple.verify;
+package sopt.org.umbba.external.client.auth.apple.verify;
 
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Value;
