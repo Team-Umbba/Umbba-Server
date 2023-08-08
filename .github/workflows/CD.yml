@@ -37,7 +37,7 @@ jobs:
         aws-region: ap-northeast-2
     
     # 3) 환경변수 파일 생성
-    - name: make application.properties 파일 생성
+    - name: make application.yaml 파일 생성
       run: |
         # application.yml 파일 생성
         cd ./src/main/resources

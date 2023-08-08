@@ -1,0 +1,11 @@
+bootJar { enabled = false }
+jar { enabled = true }
+dependencies {
+    // redis
+    implementation "org.springframework.boot:spring-boot-starter-data-redis"
+
+    // jwt
+    implementation group: "io.jsonwebtoken", name: "jjwt-api", version: "0.11.2"
+    implementation group: "io.jsonwebtoken", name: "jjwt-impl", version: "0.11.2"
+    implementation group: "io.jsonwebtoken", name: "jjwt-jackson", version: "0.11.2"
+}

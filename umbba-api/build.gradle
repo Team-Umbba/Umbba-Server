@@ -1,0 +1,28 @@
+dependencies {
+    implementation project(':umbba-common')
+    implementation project(':umbba-domain')
+    implementation project(':umbba-external')
+
+    // spring mvc
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // redis
+    implementation "org.springframework.boot:spring-boot-starter-data-redis"
+    implementation "org.springframework.session:spring-session-data-redis"
+
+    // swagger
+//	implementation 'org.springdoc:springdoc-openapi-ui:1.5.4'
+
+    // SQS
+    implementation "org.springframework.cloud:spring-cloud-aws-messaging:2.2.6.RELEASE"
+
+    // Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-test'
+
+    // random String
+    implementation 'org.apache.commons:commons-lang3'
+
+    // s3
+//    implementation "org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE"
+}

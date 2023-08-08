@@ -1,1 +1,8 @@
 rootProject.name = 'umbbaServer'
+
+include 'umbba-common'
+include 'umbba-domain'
+include 'umbba-external'
+include 'umbba-api'
+include 'umbba-notification'
+

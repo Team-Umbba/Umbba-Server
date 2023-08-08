@@ -1,0 +1,12 @@
+bootJar { enabled = false }
+jar { enabled = true }
+
+dependencies {
+    implementation project(":umbba-common")
+
+    // Social Login
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.7'
+
+    // spring webflux
+//    implementation "org.springframework.boot:spring-boot-starter-webflux"
+}

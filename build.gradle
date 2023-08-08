@@ -1,74 +1,51 @@
-plugins {
-	id 'java'
-	id 'org.springframework.boot' version '2.7.13'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-}
+buildscript {
+	ext {
+		springBootVersion = "2.7.14"
+	}
 
-group = 'sopt.org'
-version = '0.0.1-SNAPSHOT'
+	repositories {
+		mavenCentral()
+	}
 
-java {
-	sourceCompatibility = '11'
-}
-
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	}
 }
 
-repositories {
-	mavenCentral()
-}
+subprojects {
+	group = "sopt.org.umbba"
+	version = '0.0.1-SNAPSHOT'
 
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	apply plugin: "java-library"
+	apply plugin: "org.springframework.boot"
+	apply plugin: "io.spring.dependency-management"
 
-	// Health Check
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	sourceCompatibility = "11"
 
-	// JPA & Database
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'mysql:mysql-connector-java:8.0.32'
+	repositories {
+		mavenCentral()
+	}
 
-	//JSON
-	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+	configurations {
+		compileOnly {
+			extendsFrom annotationProcessor
+		}
+	}
 
-	// Slack Webhook
-	implementation 'com.slack.api:slack-api-client:1.28.0'
-	implementation 'com.google.code.gson:gson:2.10.1'
-	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
-	implementation 'com.slack.api:slack-app-backend:1.28.0'
-	implementation 'com.slack.api:slack-api-model:1.28.0'
+	dependencies {
+		implementation "org.springframework.boot:spring-boot-starter-validation"
+		testImplementation "org.springframework.boot:spring-boot-starter-test"
 
-	// JWT
-	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
-	implementation group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
-	implementation group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
+		// lombok
+		compileOnly "org.projectlombok:lombok"
+		annotationProcessor "org.projectlombok:lombok"
 
-	// Spring Security
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.security:spring-security-test'
+		// Health Check
+		implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-	// Redis
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	}
 
-	// Social Login
-	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.7'
-
-	// random String
-	implementation 'org.apache.commons:commons-lang3'
-
-	// Firebase
-	implementation 'com.google.firebase:firebase-admin:9.1.1'
-
-
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
+	test {
+		useJUnitPlatform()
+	}
 }

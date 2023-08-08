@@ -41,7 +41,7 @@ jobs:
         distribution: 'temurin'
     
     # 3) 환경변수 파일 생성
-    - name: make application.properties 파일 생성
+    - name: make application.yaml 파일 생성
       run: |
         ## create application.yml
         cd ./src/main/resources
