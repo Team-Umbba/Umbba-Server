@@ -12,8 +12,12 @@ dependencies {
     // JSON
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
+    // redis
+    implementation "org.springframework.boot:spring-boot-starter-data-redis"
+    implementation "org.springframework.session:spring-session-data-redis"
+
     // jackson
-//    implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: '2.12.7.1'
+    implementation group: "io.jsonwebtoken", name: "jjwt-jackson", version: "0.11.2"
 
     // querydsl
 //    implementation "com.querydsl:querydsl-jpa"

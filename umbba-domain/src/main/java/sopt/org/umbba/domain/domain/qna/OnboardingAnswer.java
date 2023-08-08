@@ -22,7 +22,7 @@ public enum OnboardingAnswer {
                 return answer;
             }
         }
-        throw new CustomException(ErroType.INVALID_ONBOARDING_ANSWER);
+        throw new CustomException(ErrorType.INVALID_ONBOARDING_ANSWER);
     }
 
 }
