@@ -1,4 +1,4 @@
-package sopt.org.umbba.global.config;
+package sopt.org.umbba.notification.config.fcm;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import sopt.org.umbba.global.exception.CustomException;
-import sopt.org.umbba.global.exception.ErrorType;
-import sopt.org.umbba.global.util.fcm.controller.dto.FCMPushRequestDto;
+import sopt.org.umbba.common.exception.ErrorType;
+import sopt.org.umbba.common.exception.model.CustomException;
+import sopt.org.umbba.notification.controller.fcm.dto.FCMPushRequestDto;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;

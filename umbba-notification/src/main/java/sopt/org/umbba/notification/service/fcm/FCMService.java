@@ -1,4 +1,4 @@
-package sopt.org.umbba.global.util.fcm;
+package sopt.org.umbba.notification.service.fcm;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,17 +19,16 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import sopt.org.umbba.domain.parentchild.dao.ParentchildDao;
-import sopt.org.umbba.domain.parentchild.model.Parentchild;
-import sopt.org.umbba.domain.parentchild.repository.ParentchildRepository;
-import sopt.org.umbba.domain.qna.model.QnA;
-import sopt.org.umbba.domain.user.model.User;
-import sopt.org.umbba.domain.user.repository.UserRepository;
-import sopt.org.umbba.domain.user.social.SocialPlatform;
-import sopt.org.umbba.global.exception.CustomException;
-import sopt.org.umbba.global.exception.ErrorType;
-import sopt.org.umbba.global.util.fcm.controller.dto.FCMMessage;
-import sopt.org.umbba.global.util.fcm.controller.dto.FCMPushRequestDto;
+import sopt.org.umbba.common.exception.ErrorType;
+import sopt.org.umbba.common.exception.model.CustomException;
+import sopt.org.umbba.domain.domain.parentchild.Parentchild;
+import sopt.org.umbba.domain.domain.parentchild.repository.ParentchildRepository;
+import sopt.org.umbba.domain.domain.qna.QnA;
+import sopt.org.umbba.domain.domain.user.SocialPlatform;
+import sopt.org.umbba.domain.domain.user.User;
+import sopt.org.umbba.domain.domain.user.repository.UserRepository;
+import sopt.org.umbba.notification.controller.fcm.dto.FCMMessage;
+import sopt.org.umbba.notification.controller.fcm.dto.FCMPushRequestDto;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

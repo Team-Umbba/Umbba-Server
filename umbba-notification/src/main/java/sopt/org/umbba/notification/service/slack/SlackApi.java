@@ -1,4 +1,4 @@
-package sopt.org.umbba.global.util.slack;
+package sopt.org.umbba.notification.service.slack;
 
 import com.slack.api.Slack;
 import com.slack.api.model.block.Blocks;
