@@ -1,4 +1,4 @@
-package sopt.org.umbba.domain.user.social.kakao.response;
+package sopt.org.umbba.external.client.auth.kakao.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -9,8 +9,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class KakaoUserProfile {
+public class KakaoAccount {
 
-    private String nickname;
-    private String profileImageUrl;
+    private KakaoUserProfile profile;
 }

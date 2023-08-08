@@ -1,4 +1,4 @@
-package sopt.org.umbba.global.exception;
+package sopt.org.umbba.common.exception;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

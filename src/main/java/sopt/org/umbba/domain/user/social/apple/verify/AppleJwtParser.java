@@ -1,4 +1,4 @@
-package sopt.org.umbba.domain.user.social.apple.verify;
+package sopt.org.umbba.external.client.auth.apple.verify;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

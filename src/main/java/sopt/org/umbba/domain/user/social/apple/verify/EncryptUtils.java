@@ -1,4 +1,4 @@
-package sopt.org.umbba.domain.user.social.apple.verify;
+package sopt.org.umbba.external.client.auth.apple.verify;
 
 import sopt.org.umbba.global.exception.CustomException;
 import sopt.org.umbba.global.exception.ErrorType;

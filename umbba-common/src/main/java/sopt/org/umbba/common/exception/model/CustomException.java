@@ -1,6 +1,7 @@
-package sopt.org.umbba.global.exception;
+package sopt.org.umbba.common.exception.model;
 
 import lombok.Getter;
+import sopt.org.umbba.common.exception.ErrorType;
 
 @Getter
 public class CustomException extends RuntimeException {
