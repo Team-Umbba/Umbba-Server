@@ -1,7 +1,7 @@
-package sopt.org.umbba.domain.parentchild.repository;
+package sopt.org.umbba.domain.domain.parentchild.repository;
 
 import org.springframework.data.repository.Repository;
-import sopt.org.umbba.domain.parentchild.model.Parentchild;
+import sopt.org.umbba.domain.domain.parentchild.Parentchild;
 
 import java.util.List;
 import java.util.Optional;

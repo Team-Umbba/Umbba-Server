@@ -1,9 +1,9 @@
-package sopt.org.umbba.domain.qna.repository;
+package sopt.org.umbba.domain.domain.qna.repository;
 
 import org.springframework.data.repository.Repository;
-import sopt.org.umbba.domain.qna.model.Question;
-import sopt.org.umbba.domain.qna.model.QuestionSection;
-import sopt.org.umbba.domain.qna.model.QuestionType;
+import sopt.org.umbba.domain.domain.qna.Question;
+import sopt.org.umbba.domain.domain.qna.QuestionSection;
+import sopt.org.umbba.domain.domain.qna.QuestionType;
 
 import java.util.*;
 import java.util.stream.Collectors;

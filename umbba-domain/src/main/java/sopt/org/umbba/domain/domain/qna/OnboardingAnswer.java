@@ -1,10 +1,8 @@
-package sopt.org.umbba.domain.qna.model;
+package sopt.org.umbba.domain.domain.qna;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import sopt.org.umbba.global.exception.CustomException;
-import sopt.org.umbba.global.exception.ErrorType;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

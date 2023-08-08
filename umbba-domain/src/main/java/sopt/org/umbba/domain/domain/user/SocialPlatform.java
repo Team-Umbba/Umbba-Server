@@ -1,10 +1,8 @@
-package sopt.org.umbba.domain.user.social;
+package sopt.org.umbba.domain.domain.user;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import sopt.org.umbba.global.exception.CustomException;
-import sopt.org.umbba.global.exception.ErrorType;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

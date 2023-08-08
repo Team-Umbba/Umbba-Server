@@ -1,11 +1,9 @@
-package sopt.org.umbba.domain.parentchild.model;
+package sopt.org.umbba.domain.domain.parentchild;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import sopt.org.umbba.domain.user.model.User;
-import sopt.org.umbba.global.exception.CustomException;
-import sopt.org.umbba.global.exception.ErrorType;
+import sopt.org.umbba.domain.domain.user.User;
 
 import java.util.List;
 

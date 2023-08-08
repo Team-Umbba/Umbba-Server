@@ -1,7 +1,7 @@
-package sopt.org.umbba.domain.qna.model;
+package sopt.org.umbba.domain.domain.qna;
 
 import lombok.*;
-import sopt.org.umbba.global.util.AuditingTimeEntity;
+import sopt.org.umbba.domain.domain.common.AuditingTimeEntity;
 
 import javax.persistence.*;
 
