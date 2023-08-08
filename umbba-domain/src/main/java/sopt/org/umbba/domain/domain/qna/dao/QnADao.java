@@ -2,7 +2,7 @@ package sopt.org.umbba.domain.domain.qna.dao;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import sopt.org.umbba.domain.qna.model.QnA;
+import sopt.org.umbba.domain.domain.qna.QnA;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
