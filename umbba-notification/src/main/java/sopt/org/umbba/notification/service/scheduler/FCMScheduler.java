@@ -1,14 +1,15 @@
-package sopt.org.umbba.global.util.fcm;
+package sopt.org.umbba.notification.service.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import sopt.org.umbba.domain.parentchild.dao.ParentchildDao;
-import sopt.org.umbba.domain.parentchild.repository.ParentchildRepository;
-import sopt.org.umbba.domain.user.model.User;
-import sopt.org.umbba.domain.user.repository.UserRepository;
-import sopt.org.umbba.domain.user.social.SocialPlatform;
+
+import sopt.org.umbba.domain.domain.parentchild.repository.ParentchildRepository;
+import sopt.org.umbba.domain.domain.user.SocialPlatform;
+import sopt.org.umbba.domain.domain.user.User;
+import sopt.org.umbba.domain.domain.user.repository.UserRepository;
+import sopt.org.umbba.notification.service.fcm.FCMService;
 
 import java.util.List;
 

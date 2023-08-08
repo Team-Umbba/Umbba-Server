@@ -1,4 +1,4 @@
-package sopt.org.umbba.global.util.fcm.controller.dto;
+package sopt.org.umbba.notification.controller.fcm.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

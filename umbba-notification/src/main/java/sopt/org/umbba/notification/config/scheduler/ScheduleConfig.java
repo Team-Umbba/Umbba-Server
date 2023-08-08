@@ -1,10 +1,10 @@
-package sopt.org.umbba.global.config;
+package sopt.org.umbba.notification.config.scheduler;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import sopt.org.umbba.global.util.fcm.FCMService;
+import sopt.org.umbba.notification.service.fcm.FCMService;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
