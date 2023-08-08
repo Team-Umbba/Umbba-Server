@@ -22,13 +22,14 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
 import sopt.org.umbba.domain.domain.parentchild.Parentchild;
+import sopt.org.umbba.domain.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbba.domain.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbba.domain.domain.qna.QnA;
 import sopt.org.umbba.domain.domain.user.SocialPlatform;
 import sopt.org.umbba.domain.domain.user.User;
 import sopt.org.umbba.domain.domain.user.repository.UserRepository;
-import sopt.org.umbba.notification.controller.fcm.dto.FCMMessage;
-import sopt.org.umbba.notification.controller.fcm.dto.FCMPushRequestDto;
+import sopt.org.umbba.notification.service.fcm.dto.FCMMessage;
+import sopt.org.umbba.notification.service.fcm.dto.FCMPushRequestDto;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

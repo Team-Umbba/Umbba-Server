@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import sopt.org.umbba.domain.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbba.domain.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbba.domain.domain.user.SocialPlatform;
 import sopt.org.umbba.domain.domain.user.User;

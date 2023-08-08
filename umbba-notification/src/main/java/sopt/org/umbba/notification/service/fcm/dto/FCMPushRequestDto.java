@@ -1,4 +1,4 @@
-package sopt.org.umbba.notification.controller.fcm.dto;
+package sopt.org.umbba.notification.service.fcm.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
