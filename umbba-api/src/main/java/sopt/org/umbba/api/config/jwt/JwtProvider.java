@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import sopt.org.umbba.domain.domain.redis.RefreshToken;
-import sopt.org.umbba.domain.domain.redis.TokenRepository;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
 
