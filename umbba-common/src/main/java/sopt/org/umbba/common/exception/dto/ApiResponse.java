@@ -1,4 +1,4 @@
-package sopt.org.umbba.global.common.dto;
+package sopt.org.umbba.common.exception.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -6,8 +6,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import sopt.org.umbba.global.exception.ErrorType;
-import sopt.org.umbba.global.exception.SuccessType;
+import sopt.org.umbba.common.exception.ErrorType;
+import sopt.org.umbba.common.exception.SuccessType;
 
 @Getter
 @JsonPropertyOrder({"status", "message", "data"})
