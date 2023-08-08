@@ -1,7 +1,7 @@
-package sopt.org.umbba.domain.qna.repository;
+package sopt.org.umbba.domain.domain.qna.repository;
 
 import org.springframework.data.repository.Repository;
-import sopt.org.umbba.domain.qna.model.QnA;
+import sopt.org.umbba.domain.domain.qna.QnA;
 
 import java.util.Optional;
 

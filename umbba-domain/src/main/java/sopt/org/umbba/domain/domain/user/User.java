@@ -1,10 +1,9 @@
-package sopt.org.umbba.domain.user.model;
+package sopt.org.umbba.domain.domain.user;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import sopt.org.umbba.domain.parentchild.model.Parentchild;
-import sopt.org.umbba.domain.user.social.SocialPlatform;
-import sopt.org.umbba.global.util.AuditingTimeEntity;
+import sopt.org.umbba.domain.domain.common.AuditingTimeEntity;
+import sopt.org.umbba.domain.domain.parentchild.Parentchild;
 
 import javax.persistence.*;
 import java.util.List;

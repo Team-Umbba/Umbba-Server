@@ -1,4 +1,4 @@
-package sopt.org.umbba.global.util;
+package sopt.org.umbba.domain.domain.common;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

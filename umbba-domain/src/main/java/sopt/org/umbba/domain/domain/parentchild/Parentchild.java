@@ -1,10 +1,9 @@
-package sopt.org.umbba.domain.parentchild.model;
+package sopt.org.umbba.domain.domain.parentchild;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import sopt.org.umbba.domain.qna.model.OnboardingAnswer;
-import sopt.org.umbba.domain.qna.model.QnA;
-import sopt.org.umbba.global.util.AuditingTimeEntity;
+import sopt.org.umbba.domain.domain.common.AuditingTimeEntity;
+import sopt.org.umbba.domain.domain.qna.QnA;
 
 import javax.persistence.*;
 import java.time.LocalTime;
