@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sopt.org.umbba.api.controller.parentchild.dto.request.InviteCodeRequestDto;
 import sopt.org.umbba.api.controller.parentchild.dto.request.OnboardingInviteRequestDto;
 import sopt.org.umbba.api.controller.parentchild.dto.request.OnboardingReceiveRequestDto;
+import sopt.org.umbba.api.controller.parentchild.dto.response.InviteResultResponseDto;
 import sopt.org.umbba.api.controller.parentchild.dto.response.OnboardingInviteResponseDto;
 import sopt.org.umbba.api.controller.parentchild.dto.response.OnboardingReceiveResponseDto;
 import sopt.org.umbba.common.exception.ErrorType;
@@ -19,6 +21,7 @@ import sopt.org.umbba.domain.domain.qna.OnboardingAnswer;
 import sopt.org.umbba.domain.domain.user.User;
 import sopt.org.umbba.domain.domain.user.repository.UserRepository;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,8 +34,7 @@ public class ParentchildService {
     private final ParentchildRepository parentchildRepository;
     private final UserRepository userRepository;
     private final ParentchildDao parentchildDao;
-    private final FCMScheduler fcmScheduler;
-    private final FCMService fcmService;
+//    private final FCMScheduler fcmScheduler; TODO ⭐️SQS로 변경
 
     // [발신] 초대하는 측의 온보딩 정보 입력
     @Transactional
@@ -118,9 +120,9 @@ public class ParentchildService {
         /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
             throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
         }*/
-        ScheduleConfig.resetScheduler();
-        fcmScheduler.pushTodayQna();
-
+        // TODO ⭐️SQS로 변경
+//        ScheduleConfig.resetScheduler();
+//        fcmScheduler.pushTodayQna();
 
         return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
 
@@ -135,7 +137,7 @@ public class ParentchildService {
 
     // 초대코드 확인 후 부모자식 관계 성립
     @Transactional
-    public InviteResultResponseDto matchRelation(Long userId, InviteCodeRequestDto request) {
+    public InviteResultResponseDto matchRelation(Long userId, @Valid InviteCodeRequestDto request) {
 
         log.info("ParentchlidService 실행 - 요청 초대코드: {}", request.getInviteCode());
         Parentchild newMatchRelation = parentchildRepository.findByInviteCode(request.getInviteCode()).orElseThrow(

@@ -41,7 +41,7 @@ public class QnAService {
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
     private final ParentchildDao parentchildDao;
-    private final FCMService fcmService;  //TODO Service에서 Service를 주입받는 부분 수정
+//    private final FCMService fcmService;  //TODO ⭐️SQS로 변경
 
     public TodayQnAResponseDto getTodayQnA(Long userId) {
 
@@ -82,10 +82,12 @@ public class QnAService {
 
         if (myUser.isMeChild()) {
             todayQnA.saveChildAnswer(request.getAnswer());
-            fcmService.pushOpponentReply(todayQnA.getQuestion().getParentQuestion(), opponentUser.getId());
+            //TODO ⭐️SQS로 변경
+//            fcmService.pushOpponentReply(todayQnA.getQuestion().getParentQuestion(), opponentUser.getId());
         } else {
             todayQnA.saveParentAnswer(request.getAnswer());
-            fcmService.pushOpponentReply(todayQnA.getQuestion().getChildQuestion(), opponentUser.getId());
+            //TODO ⭐️SQS로 변경
+//            fcmService.pushOpponentReply(todayQnA.getQuestion().getChildQuestion(), opponentUser.getId());
         }
     }
 
@@ -237,7 +239,7 @@ public class QnAService {
     }
 
     @Transactional
-    private void customQuestion(List<OnboardingAnswer> childList, List<OnboardingAnswer> parentList, List<QnA> qnAList) {
+    public void customQuestion(List<OnboardingAnswer> childList, List<OnboardingAnswer> parentList, List<QnA> qnAList) {
 
         // Type 1 : 1번째 선택 질문인 거주 현황에 대해 한명이라도 아니/애매해라고 답한 경우
         if (childList.get(0) != YES || parentList.get(0) !=YES) {
@@ -344,9 +346,10 @@ public class QnAService {
         }
         QnA fifthQnA = getTodayQnAByParentchild(parentchild);
         log.info("💖💖💖💖Day 5 QnA: {}", fifthQnA.getId());
-        fcmService.multipleSendByToken(FCMPushRequestDto.sendTodayQna(
-                fifthQnA.getQuestion().getSection().getValue(),
-                fifthQnA.getQuestion().getTopic()), parentchild.getId());
+        //TODO ⭐️SQS로 변경
+//        fcmService.multipleSendByToken(FCMPushRequestDto.sendTodayQna(
+//                fifthQnA.getQuestion().getSection().getValue(),
+//                fifthQnA.getQuestion().getTopic()), parentchild.getId());
 
     }
 
@@ -361,9 +364,10 @@ public class QnAService {
                 "오구 내 똥강아지~ 어렸을 때는 매일 볼 수 있었는데, 어른이 되고 나서 자주 못봐서 너무 아쉽다... 연락 잘하거라 요녀석~");
 
         QnA todayQnA = getTodayQnAByParentchild(parentchild);
-        fcmService.multipleSendByToken(FCMPushRequestDto.sendTodayQna(
-                todayQnA.getQuestion().getSection().getValue(),
-                todayQnA.getQuestion().getTopic()), parentchild.getId());
+        //TODO ⭐️SQS로 변경
+//        fcmService.multipleSendByToken(FCMPushRequestDto.sendTodayQna(
+//                todayQnA.getQuestion().getSection().getValue(),
+//                todayQnA.getQuestion().getTopic()), parentchild.getId());
     }
 
     private void updateDay(Parentchild parentchild, String childAnswer, String parentAnswer) {

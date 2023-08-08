@@ -2,8 +2,8 @@ package sopt.org.umbba.domain.domain.parentchild.dao;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import sopt.org.umbba.domain.parentchild.model.Parentchild;
-import sopt.org.umbba.domain.user.model.User;
+import sopt.org.umbba.domain.domain.parentchild.Parentchild;
+import sopt.org.umbba.domain.domain.user.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;

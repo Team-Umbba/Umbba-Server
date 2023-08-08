@@ -3,6 +3,7 @@ package sopt.org.umbba.domain.domain.parentchild;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import sopt.org.umbba.domain.domain.common.AuditingTimeEntity;
+import sopt.org.umbba.domain.domain.qna.OnboardingAnswer;
 import sopt.org.umbba.domain.domain.qna.QnA;
 
 import javax.persistence.*;
