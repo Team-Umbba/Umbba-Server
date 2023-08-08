@@ -1,4 +1,4 @@
-package sopt.org.umbba.domain.user.social.kakao;
+package sopt.org.umbba.external.client.auth.kakao;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

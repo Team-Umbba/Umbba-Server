@@ -1,10 +1,10 @@
-package sopt.org.umbba.domain.user.social.kakao.feign;
+package sopt.org.umbba.external.client.auth.kakao;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import sopt.org.umbba.domain.user.social.kakao.response.KakaoAccessTokenResponse;
+import sopt.org.umbba.external.client.auth.kakao.response.KakaoAccessTokenResponse;
 
 @FeignClient(name = "kakaoAuthApiClient", url = "https://kauth.kakao.com")
 public interface KakaoAuthApiClient {

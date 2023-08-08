@@ -1,9 +1,9 @@
-package sopt.org.umbba.domain.user.social.apple.verify;
+package sopt.org.umbba.external.client.auth.apple.verify;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
-import sopt.org.umbba.domain.user.social.apple.response.ApplePublicKey;
-import sopt.org.umbba.domain.user.social.apple.response.ApplePublicKeys;
+import sopt.org.umbba.external.client.auth.apple.response.ApplePublicKey;
+import sopt.org.umbba.external.client.auth.apple.response.ApplePublicKeys;
 import sopt.org.umbba.global.exception.CustomException;
 import sopt.org.umbba.global.exception.ErrorType;
 

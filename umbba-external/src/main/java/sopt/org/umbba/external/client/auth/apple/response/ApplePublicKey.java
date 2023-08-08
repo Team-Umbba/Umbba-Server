@@ -1,4 +1,4 @@
-package sopt.org.umbba.domain.user.social.apple.response;
+package sopt.org.umbba.external.client.auth.apple.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -1,11 +1,11 @@
-package sopt.org.umbba.domain.user.social.apple.response;
+package sopt.org.umbba.external.client.auth.apple.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import sopt.org.umbba.global.exception.CustomException;
-import sopt.org.umbba.global.exception.ErrorType;
+import sopt.org.umbba.common.exception.model.CustomException;
+import sopt.org.umbba.common.exception.ErrorType;
 
 import java.util.List;
 

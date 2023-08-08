@@ -1,4 +1,4 @@
-package sopt.org.umbba.domain.user.social.apple;
+package sopt.org.umbba.external.client.auth.apple;
 
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
