@@ -29,7 +29,7 @@ import sopt.org.umbba.domain.domain.user.SocialPlatform;
 import sopt.org.umbba.domain.domain.user.User;
 import sopt.org.umbba.domain.domain.user.repository.UserRepository;
 import sopt.org.umbba.notification.service.fcm.dto.FCMMessage;
-import sopt.org.umbba.notification.service.fcm.dto.FCMPushRequestDto;
+import sopt.org.umbba.common.sqs.dto.FCMPushRequestDto;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

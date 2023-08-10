@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
-import sopt.org.umbba.notification.service.fcm.dto.FCMPushRequestDto;
+import sopt.org.umbba.common.sqs.dto.FCMPushRequestDto;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;

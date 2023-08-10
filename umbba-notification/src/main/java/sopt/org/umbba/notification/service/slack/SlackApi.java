@@ -32,7 +32,7 @@ public class SlackApi {
 
 
     // Slack으로 알림 보내기
-    public void sendAlert(Exception error, HttpServletRequest request) throws IOException {
+    public void sendAlert(Exception error, String requestMethod, String requestURI) throws IOException {
 
         // 현재 프로파일이 특정 프로파일이 아니면 알림보내지 않기
 //        if (!env.getActiveProfiles()[0].equals("set1")) {
@@ -40,7 +40,7 @@ public class SlackApi {
 //        }
 
         // 메시지 내용인 LayoutBlock List 생성
-        List<LayoutBlock> layoutBlocks = generateLayoutBlock(error, request);
+        List<LayoutBlock> layoutBlocks = generateLayoutBlock(error, requestMethod, requestURI);
 
         // 슬랙의 send API과 webhookURL을 통해 생성한 메시지 내용 전송
         Slack.getInstance().send(webhookUrl, WebhookPayloads
@@ -54,13 +54,13 @@ public class SlackApi {
     }
 
     // 전체 메시지가 담긴 LayoutBlock 생성
-    private List<LayoutBlock> generateLayoutBlock(Exception error, HttpServletRequest request) {
+    private List<LayoutBlock> generateLayoutBlock(Exception error, String requestMethod, String requestURI) {
         return Blocks.asBlocks(
                 getHeader("서버 측 오류로 예상되는 예외 상황이 발생하였습니다."),
                 Blocks.divider(),
                 getSection(generateErrorMessage(error)),
                 Blocks.divider(),
-                getSection(generateErrorPointMessage(request)),
+                getSection(generateErrorPointMessage(requestMethod, requestURI)),
                 Blocks.divider(),
                 // 이슈 생성을 위해 프로젝트의 Issue URL을 입력하여 바로가기 링크를 생성
                 getSection("<https://github.com/Team-Umbba/Umbba-Server/issues|이슈 생성하러 가기>")
@@ -77,11 +77,11 @@ public class SlackApi {
     }
 
     // HttpServletRequest를 사용하여 예외발생 요청에 대한 정보 메시지 생성
-    private String generateErrorPointMessage(HttpServletRequest request) {
+    private String generateErrorPointMessage(String requestMethod, String requestURI) {
         sb.setLength(0);
         sb.append("*[🧾세부정보]*" + NEW_LINE);
-        sb.append("Request URL : " + request.getRequestURL().toString() + NEW_LINE);
-        sb.append("Request Method : " + request.getMethod() + NEW_LINE);
+        sb.append("Request URL : " + requestURI + NEW_LINE);
+        sb.append("Request Method : " + requestMethod + NEW_LINE);
         sb.append("Request Time : " + new Date() + NEW_LINE);
 
         return sb.toString();

@@ -1,15 +1,17 @@
-package sopt.org.umbba.notification.service.fcm.dto;
+package sopt.org.umbba.common.sqs.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
+import sopt.org.umbba.common.sqs.MessageType;
 
 @Slf4j
 @Getter
-@Builder
+@SuperBuilder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class FCMPushRequestDto {
+public class FCMPushRequestDto extends MessageDto{
 
     private String targetToken;
 
@@ -24,6 +26,7 @@ public class FCMPushRequestDto {
     public static FCMPushRequestDto sendTodayQna(String section, String topic) {
 
         return FCMPushRequestDto.builder()
+                .type(MessageType.FIREBASE)
                 .title("📞" + section + PushMessage.TODAY_QNA.getTitle())
                 .body("'" + topic + PushMessage.TODAY_QNA.getBody())
                 .build();
@@ -33,6 +36,7 @@ public class FCMPushRequestDto {
     public static FCMPushRequestDto sendOpponentReply(String targetToken, String question) {
 
         return FCMPushRequestDto.builder()
+                .type(MessageType.FIREBASE)
                 .targetToken(targetToken)
                 .title(PushMessage.OPPONENT_REPLY.getTitle())
                 .body("'" + question + PushMessage.OPPONENT_REPLY.getBody())
