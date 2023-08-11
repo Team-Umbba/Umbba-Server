@@ -39,6 +39,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 
+/**
+ * 서버에서 파이어베이스로 전송이 잘 이루어지는지 테스트하기 위한 컨트롤러
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -121,13 +124,7 @@ public class FCMService {
 
     // FCM Service에 메시지를 수신하는 함수 (헤더와 바디 직접 만들기) -> 상대 답변 알람 전송에 사용
     @Transactional
-    public String pushAlarm(FCMPushRequestDto request, Long userId) throws IOException {
-
-        // TODO 같은 Parentchild ID를 가진 User를 찾은 후, 이들에 대한 토큰 리스트로 동일한 알림 메시지 전송하도록
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ErrorType.INVALID_USER)
-        );
-        user.updateFcmToken(request.getTargetToken());
+    public String pushAlarm(FCMPushRequestDto request) throws IOException {
 
         String message = makeMessage(request);
         sendPushMessage(message);

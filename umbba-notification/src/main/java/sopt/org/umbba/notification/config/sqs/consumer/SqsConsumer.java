@@ -48,7 +48,7 @@ public class SqsConsumer {
 
                 case MessageType.FIREBASE:
                     FCMPushRequestDto request = objectMapper.readValue(payload, FCMPushRequestDto.class);
-                    fcmService.pushAlarm(request, 1L);  // TODO userId 를 넘겨주는 방식 대신 어떻게 유저 식별할지?
+                    fcmService.pushAlarm(request);  // TODO userId 를 넘겨주는 방식 대신 어떻게 유저 식별할지?
                     break;
 
                 case MessageType.SLACK:

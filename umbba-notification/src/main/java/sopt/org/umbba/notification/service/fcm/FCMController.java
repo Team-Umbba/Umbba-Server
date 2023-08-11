@@ -1,9 +1,16 @@
 package sopt.org.umbba.notification.service.fcm;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import sopt.org.umbba.common.exception.SuccessType;
+import sopt.org.umbba.common.exception.dto.ApiResponse;
+import sopt.org.umbba.common.sqs.dto.FCMPushRequestDto;
 import sopt.org.umbba.notification.service.fcm.FCMService;
 import sopt.org.umbba.notification.service.scheduler.FCMScheduler;
+
+import java.io.IOException;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/alarm")
@@ -18,11 +25,11 @@ public class FCMController {
      * 새로운 질문이 도착했음을 알리는 푸시 알림 활성화 API
      * 실제로는 초대 받는측의 온보딩이 완료되었을 때 호출됨
      */
-    /*@PostMapping("/qna")
+    @PostMapping("/qna")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse sendTopicScheduledTest() {
         return ApiResponse.success(SuccessType.PUSH_ALARM_PERIODIC_SUCCESS, fcmScheduler.pushTodayQna());
-    }*/
+    }
 
     /**
      * 장난용 푸시 알림 활성화 API
@@ -37,21 +44,21 @@ public class FCMController {
     /**
      * 헤더와 바디를 직접 만들어 알림을 전송하는 테스트용 API (상대 답변 알람 전송에 사용)
      */
-    /*@PostMapping
+    @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse sendNotificationByToken(@RequestBody FCMPushRequestDto request, Principal principal) throws IOException {
 
-        return ApiResponse.success(SuccessType.PUSH_ALARM_SUCCESS, fcmService.pushAlarm(request, JwtProvider.getUserFromPrincial(principal)));
-    }*/
+        return ApiResponse.success(SuccessType.PUSH_ALARM_SUCCESS, fcmService.pushAlarm(request));
+    }
 
     /**
      * 동시에 여러 사람에게 푸시 알림을 보내보는 테스트용 API (주기적 알람 전송에 사용)
      */
-    /*@PostMapping("/parentchild")
+    @PostMapping("/parentchild")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse sendMultiScheduledTest() {
         return ApiResponse.success(SuccessType.PUSH_ALARM_SUCCESS, fcmService.multipleSendByToken(FCMPushRequestDto.sendTodayQna("section", "question") ,93L));
-    }*/
+    }
 
 
 }
