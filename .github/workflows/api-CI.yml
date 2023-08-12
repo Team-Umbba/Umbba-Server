@@ -65,14 +65,6 @@ jobs:
         
         # application.yml 파일 확인
         cat ./application.yml
-        
-        ####################################
-
-        # FCM secret key 폴더 생성 
-        mkdir ./firebase
-        cd ./firebase
-
-        aws s3 cp --region ap-northeast-2 s3://${{ secrets.S3_BUCKET_NAME }}/json/umbba-fcm-firebase-adminsdk.json .
 
       shell: bash
         

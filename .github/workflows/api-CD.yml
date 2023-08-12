@@ -10,13 +10,6 @@ on:
       - umbba-domain/**
       - umbba-common/**
       - umbba-external/**
-  pull_request:
-    branches: [ "develop" ]
-    paths:
-      - umbba-api/**
-      - umbba-domain/**
-      - umbba-common/**
-      - umbba-external/**
 
 env:
   S3_BUCKET_NAME: umbba-storage
