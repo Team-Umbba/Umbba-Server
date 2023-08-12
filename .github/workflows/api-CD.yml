@@ -10,6 +10,7 @@ on:
       - umbba-domain/**
       - umbba-common/**
       - umbba-external/**
+      - .github/workflows/**
 
 env:
   S3_BUCKET_NAME: umbba-storage
