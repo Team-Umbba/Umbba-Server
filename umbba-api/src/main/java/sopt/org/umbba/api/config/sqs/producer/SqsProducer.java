@@ -46,8 +46,8 @@ public class SqsProducer {
         try {
             SendMessageRequest request = new SendMessageRequest(NOTIFICATION_URL,
                     objectMapper.writeValueAsString(message))
-                    .withMessageGroupId(GROUP_ID)
-                    .withMessageDeduplicationId(GROUP_ID)  // TODO UUID Random String으로 변경
+//                    .withMessageGroupId(GROUP_ID)
+//                    .withMessageDeduplicationId(UUID.randomUUID().toString())  // TODO UUID Random String으로 변경
                     .withMessageAttributes(createMessageAttributes(message.getType()));
 
             amazonSqs.sendMessage(request);

@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sopt.org.umbba.api.config.sqs.producer.SqsProducer;
 import sopt.org.umbba.api.controller.qna.dto.request.TodayAnswerRequestDto;
 import sopt.org.umbba.api.controller.qna.dto.response.*;
+import sopt.org.umbba.api.service.notification.NotificationService;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
 import sopt.org.umbba.domain.domain.parentchild.Parentchild;
@@ -41,7 +43,7 @@ public class QnAService {
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
     private final ParentchildDao parentchildDao;
-//    private final FCMService fcmService;  //TODO ⭐️SQS로 변경
+    private final NotificationService notificationService;
 
     public TodayQnAResponseDto getTodayQnA(Long userId) {
 
@@ -82,12 +84,12 @@ public class QnAService {
 
         if (myUser.isMeChild()) {
             todayQnA.saveChildAnswer(request.getAnswer());
-            //TODO ⭐️SQS로 변경
-//            fcmService.pushOpponentReply(todayQnA.getQuestion().getParentQuestion(), opponentUser.getId());
+            notificationService.pushOpponentReply(todayQnA.getQuestion().getChildQuestion(), opponentUser.getId());
+//            fcmService.pushOpponentReply(todayQnA.getQuestion().getChildQuestion(), opponentUser.getId());
         } else {
             todayQnA.saveParentAnswer(request.getAnswer());
-            //TODO ⭐️SQS로 변경
-//            fcmService.pushOpponentReply(todayQnA.getQuestion().getChildQuestion(), opponentUser.getId());
+            notificationService.pushOpponentReply(todayQnA.getQuestion().getParentQuestion(), opponentUser.getId());
+//            fcmService.pushOpponentReply(todayQnA.getQuestion().getParentQuestion(), opponentUser.getId());
         }
     }
 

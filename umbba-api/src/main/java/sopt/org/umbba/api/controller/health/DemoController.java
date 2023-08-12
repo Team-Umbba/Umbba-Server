@@ -3,15 +3,19 @@ package sopt.org.umbba.api.controller.health;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import sopt.org.umbba.api.config.sqs.producer.SqsProducer;
+import sopt.org.umbba.api.service.notification.NotificationService;
 import sopt.org.umbba.api.service.qna.QnAService;
 import sopt.org.umbba.common.exception.SuccessType;
 import sopt.org.umbba.common.exception.dto.ApiResponse;
+import sopt.org.umbba.common.sqs.dto.FCMPushRequestDto;
 
 @RestController
 @RequiredArgsConstructor
 public class DemoController {
 
     private final QnAService qnAService;
+    private final NotificationService notificationService;
 
     /**
      * 데모데이 테스트용 QnA리스트 세팅 API
@@ -41,6 +45,14 @@ public class DemoController {
     public ApiResponse demoQnA(@PathVariable final Long userId) {
 
         qnAService.todayUpdate(userId);
+        return ApiResponse.success(SuccessType.TEST_SUCCESS);
+    }
+
+    @PatchMapping("/demo/qna/alarm/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse qnaAnswerAlarm(@PathVariable final Long userId, @RequestBody String question) {
+
+        notificationService.pushOpponentReply(question, userId);
         return ApiResponse.success(SuccessType.TEST_SUCCESS);
     }
 
