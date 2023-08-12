@@ -251,6 +251,8 @@ public class FCMService {
                 }
             } catch (PessimisticLockingFailureException | PessimisticLockException e) {
                 transactionManager.rollback(transactionStatus);
+            } finally {
+                em.close();
             }
 
                 // 현재 실행중인 쓰레드 확인
