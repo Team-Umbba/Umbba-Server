@@ -3,7 +3,7 @@ os: linux
 
 files:
   - source:  /
-    destination: /home/ubuntu/app
+    destination: /home/ubuntu/api-server
     overwrite: yes
 
 permissions:
@@ -15,5 +15,8 @@ permissions:
 hooks:
   AfterInstall:
     - location: deploy.sh
-      timeout: 60
+      timeout: 180
+      runas: ubuntu
+    - location: switch.sh
+      timeout: 180
       runas: ubuntu

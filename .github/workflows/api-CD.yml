@@ -1,10 +1,22 @@
 # 워크플로우의 이름 지정
-name: Umbba-Server CD
+name: Umbba API Server CD
 
 # 해당 workflow가 언제 실행될 것인지에 대한 트리거를 지정
 on:
   push:
-    branches: [ develop ] # develop branch로 push 될 때 실행됩니다.
+    branches: [ "develop" ]
+    paths:
+      - umbba-api/**
+      - umbba-domain/**
+      - umbba-common/**
+      - umbba-external/**
+  pull_request:
+    branches: [ "develop" ]
+    paths:
+      - umbba-api/**
+      - umbba-domain/**
+      - umbba-common/**
+      - umbba-external/**
 
 env:
   S3_BUCKET_NAME: umbba-storage
@@ -37,7 +49,7 @@ jobs:
         aws-region: ap-northeast-2
     
     # 3) 환경변수 파일 생성
-    - name: make application.yaml 파일 생성
+    - name: make application.yml 파일 생성
       run: |
         # application.yml 파일 생성
         cd ./src/main/resources
@@ -51,14 +63,14 @@ jobs:
         # 생성된 파일 확인
         cat ./application.yml
         
+        ####################################
+        
         # FCM secret key 폴더 생성 
         mkdir ./firebase
         cd ./firebase
         
         aws s3 cp --region ap-northeast-2 s3://${{ secrets.S3_BUCKET_NAME }}/json/umbba-fcm-firebase-adminsdk.json .
-        
-        cat umbba-fcm-firebase-adminsdk.json
-        
+
       shell: bash
         
     # 이 워크플로우는 gradle build
@@ -66,7 +78,7 @@ jobs:
       run: chmod +x gradlew
       
     - name: Build with Gradle # 실제 application build(-x 옵션을 통해 test는 제외)
-      run: ./gradlew build -x test
+      run: ./gradlew umbba-api:bootJar -x test
       
     # 디렉토리 생성
     - name: Make Directory
@@ -74,19 +86,15 @@ jobs:
       
     # Jar 파일 복사
     - name: Copy Jar
-      run: cp ./build/libs/*.jar ./deploy
+      run: cp ./umbba-api/build/libs/*.jar ./deploy
       # run: cp -r src/main/* ./deploy
     
-    # appspec.yml 파일 복사
-    - name: Copy appspec.yml
-      run: cp appspec.yml ./deploy
-
-    # script files 복사
-    - name: Copy script
-      run: cp ./scripts/*.sh ./deploy
+    # appspec.yml, script files 파일 복사
+    - name: Copy files
+      run: cp ./scripts/umbba-api/* ./deploy
       
     - name: Make zip file
-      run: zip -r ./umbba_server.zip ./deploy
+      run: zip -r ./umbba-api.zip ./deploy
       shell: bash
       
     - name: Configure AWS credentials
@@ -97,7 +105,7 @@ jobs:
         aws-region: ap-northeast-2
         
     - name: Upload to S3
-      run: aws s3 cp --region ap-northeast-2 ./umbba_server.zip s3://$S3_BUCKET_NAME/
+      run: aws s3 cp --region ap-northeast-2 ./umbba-api.zip s3://$S3_BUCKET_NAME/
       
     # Deploy 
     - name: Deploy
@@ -107,7 +115,7 @@ jobs:
       run:
         aws deploy create-deployment 
         --application-name umbba-server-codedeploy
-        --deployment-group-name umbba-server-codedeploy-group
+        --deployment-group-name umbba-api-server-codedeploy-group
         --file-exists-behavior OVERWRITE 
-        --s3-location bucket=umbba-storage,bundleType=zip,key=umbba_server.zip
+        --s3-location bucket=umbba-storage,bundleType=zip,key=umbba-api.zip
         --region ap-northeast-2
