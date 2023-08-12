@@ -80,8 +80,8 @@ jobs:
       
     # Jar 파일 복사
     - name: Copy Jar
-      run: cp ./umbba-api/build/libs/*.jar ./deploy
-      # run: cp -r src/main/* ./deploy
+      run: cp -r ./umbba-api/src/main/* ./deploy
+      # run: cp ./umbba-api/build/libs/*.jar ./deploy
     
     # appspec.yml, script files 파일 복사
     - name: Copy files
