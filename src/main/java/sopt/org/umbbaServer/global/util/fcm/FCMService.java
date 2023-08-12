@@ -233,7 +233,7 @@ public class FCMService {
                         log.info("스케줄링 작업 예약 내 addCount 후 count: {}", pc.getCount());
 
                         QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
-                        em.close();
+//                        em.close();
 
 
                         log.info("\n  Current QnA: {}  \n  Today QnA: {}", currentQnA.getId(), todayQnA.getId());
@@ -257,6 +257,8 @@ public class FCMService {
                 }
             } catch (PessimisticLockingFailureException | PessimisticLockException e) {
                 transactionManager.rollback(transactionStatus);
+            } finally {
+                em.close();
             }
 
                 // 현재 실행중인 쓰레드 확인

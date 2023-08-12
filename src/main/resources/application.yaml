@@ -68,6 +68,7 @@ logging:
         type:
           descriptor:
             sql: debug
+    com.zaxxer.hikari.pool.HikariPool: debug
 
 server:
   port: 9091
