@@ -46,7 +46,7 @@ jobs:
     - name: make application.yml 파일 생성
       run: |
         # application.yml 파일 생성
-        cd ./umbba-notification/src/main/resources
+        cd ./umbba-api/src/main/resources
         rm application.yaml
 
         touch ./application.yml
@@ -80,8 +80,8 @@ jobs:
       
     # Jar 파일 복사
     - name: Copy Jar
-      run: cp -r ./umbba-api/src/main/* ./deploy
-      # run: cp ./umbba-api/build/libs/*.jar ./deploy
+      run: cp ./umbba-api/build/libs/*.jar ./deploy
+      # run: cp -r ./umbba-api/src/main/* ./deploy
     
     # appspec.yml, script files 파일 복사
     - name: Copy files
