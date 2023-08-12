@@ -20,16 +20,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.util.NestedServletException;
-<<<<<<< HEAD:umbba-api/src/main/java/sopt/org/umbba/api/controller/advice/ControllerExceptionAdvice.java
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.dto.ApiResponse;
 import sopt.org.umbba.common.exception.model.CustomException;
-=======
-import sopt.org.umbbaServer.global.common.dto.ApiResponse;
-import sopt.org.umbbaServer.global.exception.CustomException;
-import sopt.org.umbbaServer.global.exception.ErrorType;
-import sopt.org.umbbaServer.global.util.slack.SlackApi;
->>>>>>> develop:src/main/java/sopt/org/umbbaServer/global/common/advice/ControllerExceptionAdvice.java
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.UnexpectedTypeException;
@@ -184,11 +177,6 @@ public class ControllerExceptionAdvice {
     public ApiResponse<Exception> handlerNullPointerException(final NullPointerException e) {
         return ApiResponse.error(ErrorType.NULL_POINTER_ERROR, e);
     }
-<<<<<<< HEAD:umbba-api/src/main/java/sopt/org/umbba/api/controller/advice/ControllerExceptionAdvice.java
-=======
-
->>>>>>> develop:src/main/java/sopt/org/umbbaServer/global/common/advice/ControllerExceptionAdvice.java
-
 
     /**
      * CUSTOM_ERROR
