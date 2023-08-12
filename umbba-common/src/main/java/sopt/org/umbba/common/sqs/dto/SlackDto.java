@@ -4,6 +4,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import sopt.org.umbba.common.sqs.MessageType;
 
+import javax.servlet.http.HttpServletRequest;
+
 @ToString
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -12,6 +14,7 @@ import sopt.org.umbba.common.sqs.MessageType;
 public class SlackDto extends MessageDto {
 
 	private Exception error;
+	private HttpServletRequest request;
 	private String requestMethod;
 	private String requestURI;
 

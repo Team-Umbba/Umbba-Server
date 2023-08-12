@@ -9,6 +9,14 @@ cloud:
       bucket: ${bucket-name}
     stack:
       auto: false
+    sqs:
+      notification:
+        name: ${sqs-notification-name}
+        url: ${sqs-notification-url}
+      #api:
+      #  name: ${sqs-api-name}
+      #  url: ${sqs-api-url}
+
 
 spring:
   datasource:
@@ -16,6 +24,12 @@ spring:
     url: ${db-url}
     username: ${db-user}
     password: ${db-pwd}
+    hikari:
+      pool-name: Hikari 커넥션 풀  # Pool
+      connection-timeout: 30000 # 30초(default: 30초)
+      maximum-pool-size: 10  # default: 10개
+      max-lifetime: 600000   # 10분(default: 30분)
+      leak-detection-threshold: 2000  # default: 0(이용X)
   jpa:
     show-sql: false
     hibernate:
@@ -60,6 +74,8 @@ logging:
         type:
           descriptor:
             sql: debug
+    com.zaxxer.hikari.pool.HikariPool: debug
+
 
 server:
-  port: 9092
+  port: 9091

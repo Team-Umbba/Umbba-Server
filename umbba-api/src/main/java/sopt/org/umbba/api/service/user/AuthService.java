@@ -2,6 +2,7 @@ package sopt.org.umbba.api.service.user;
 
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbba.api.config.auth.UserAuthentication;
@@ -21,6 +22,7 @@ import sopt.org.umbba.domain.domain.user.repository.UserRepository;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -65,6 +67,7 @@ public class AuthService {
 
         // 클라이언트 요청에 따라 FCM 토큰을 로그인할 때마다 업데이트 하도록 변경
         loginUser.updateFcmToken(request.getFcmToken());
+        log.info("🔮{}의 JWT Access Token: {}", loginUser.getUsername(), tokenDto.getAccessToken());
 
         return UserLoginResponseDto.of(loginUser, tokenDto.getAccessToken());
     }
