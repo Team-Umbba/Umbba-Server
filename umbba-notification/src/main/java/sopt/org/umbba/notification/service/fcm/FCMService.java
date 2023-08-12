@@ -233,6 +233,7 @@ public class FCMService {
                         log.info("스케줄링 작업 예약 내 addCount 후 count: {}", pc.getCount());
 
                         QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
+                        em.close();
 
                         log.info("\n  Current QnA: {}  \n  Today QnA: {}", currentQnA.getId(), todayQnA.getId());
                         if (todayQnA == null) {
