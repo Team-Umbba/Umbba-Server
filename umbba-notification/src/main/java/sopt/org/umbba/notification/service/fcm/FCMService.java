@@ -139,26 +139,6 @@ public class FCMService {
         log.info("알림 전송: {}", response.body().string());
     }
 
-    public void pushOpponentReply(String question, Long userId) {
-
-        // 상대 측 유저의 FCM 토큰 찾기
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ErrorType.INVALID_USER)
-        );
-
-        try {
-            log.info("상대방 답변 완료!");
-            String message = makeMessage(FCMPushRequestDto.sendOpponentReply(user.getFcmToken(), question), userId);
-            sendPushMessage(message);
-        } catch (IOException e) {
-            log.error("푸시메시지 전송 실패 - IOException: {}", e.getMessage());
-            throw new CustomException(ErrorType.FAIL_TO_SEND_PUSH_ALARM);
-        } catch (FirebaseMessagingException e) {
-            log.error("푸시메시지 전송 실패 - FirebaseMessagingException: {}", e.getMessage());
-            throw new CustomException(ErrorType.FAIL_TO_SEND_PUSH_ALARM);
-        }
-    }
-
     // 다수의 기기(부모자식 ID에 포함된 유저 2명)에 알림 메시지 전송 -> 주기적 알림 전송에서 사용
     public String multipleSendByToken(FCMPushRequestDto request) {
 

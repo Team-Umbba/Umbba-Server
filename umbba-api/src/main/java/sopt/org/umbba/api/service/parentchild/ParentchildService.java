@@ -5,12 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sopt.org.umbba.api.config.scheduler.ScheduleConfig;
 import sopt.org.umbba.api.controller.parentchild.dto.request.InviteCodeRequestDto;
 import sopt.org.umbba.api.controller.parentchild.dto.request.OnboardingInviteRequestDto;
 import sopt.org.umbba.api.controller.parentchild.dto.request.OnboardingReceiveRequestDto;
 import sopt.org.umbba.api.controller.parentchild.dto.response.InviteResultResponseDto;
 import sopt.org.umbba.api.controller.parentchild.dto.response.OnboardingInviteResponseDto;
 import sopt.org.umbba.api.controller.parentchild.dto.response.OnboardingReceiveResponseDto;
+import sopt.org.umbba.api.service.scheduler.FCMScheduler;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
 import sopt.org.umbba.domain.domain.parentchild.Parentchild;
@@ -34,7 +36,7 @@ public class ParentchildService {
     private final ParentchildRepository parentchildRepository;
     private final UserRepository userRepository;
     private final ParentchildDao parentchildDao;
-//    private final FCMScheduler fcmScheduler; TODO ⭐️SQS로 변경
+    private final FCMScheduler fcmScheduler;
 
     // [발신] 초대하는 측의 온보딩 정보 입력
     @Transactional
@@ -120,9 +122,8 @@ public class ParentchildService {
         /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
             throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
         }*/
-        // TODO ⭐️SQS로 변경
-//        ScheduleConfig.resetScheduler();
-//        fcmScheduler.pushTodayQna();
+        ScheduleConfig.resetScheduler();
+        fcmScheduler.pushTodayQna();
 
         return OnboardingReceiveResponseDto.of(parentchild, user, parentChildUsers);
 

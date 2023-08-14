@@ -81,7 +81,7 @@ public class QnAController {
      * 새로운 질문이 도착했음을 알리는 푸시 알림 활성화 API
      * 실제로는 초대 받는측의 온보딩이 완료되었을 때 호출됨
      */
-    @PostMapping("/qna")
+    @PostMapping("/alarm/qna")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse sendTopicScheduledTest() {
         return ApiResponse.success(SuccessType.PUSH_ALARM_PERIODIC_SUCCESS, fcmScheduler.pushTodayQna());

@@ -10,6 +10,7 @@ import sopt.org.umbba.api.controller.qna.dto.response.*;
 import sopt.org.umbba.api.service.notification.NotificationService;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
+import sopt.org.umbba.common.sqs.dto.FCMPushRequestDto;
 import sopt.org.umbba.domain.domain.parentchild.Parentchild;
 import sopt.org.umbba.domain.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbba.domain.domain.qna.OnboardingAnswer;
@@ -85,11 +86,9 @@ public class QnAService {
         if (myUser.isMeChild()) {
             todayQnA.saveChildAnswer(request.getAnswer());
             notificationService.pushOpponentReply(todayQnA.getQuestion().getChildQuestion(), opponentUser.getId());
-//            fcmService.pushOpponentReply(todayQnA.getQuestion().getChildQuestion(), opponentUser.getId());
         } else {
             todayQnA.saveParentAnswer(request.getAnswer());
             notificationService.pushOpponentReply(todayQnA.getQuestion().getParentQuestion(), opponentUser.getId());
-//            fcmService.pushOpponentReply(todayQnA.getQuestion().getParentQuestion(), opponentUser.getId());
         }
     }
 
@@ -349,10 +348,10 @@ public class QnAService {
         }
         QnA fifthQnA = getTodayQnAByParentchild(parentchild);
         log.info("💖💖💖💖Day 5 QnA: {}", fifthQnA.getId());
-        //TODO ⭐️SQS로 변경
-//        fcmService.multipleSendByToken(FCMPushRequestDto.sendTodayQna(
-//                fifthQnA.getQuestion().getSection().getValue(),
-//                fifthQnA.getQuestion().getTopic()), parentchild.getId());
+        notificationService.pushTodayQnA(FCMPushRequestDto.sendTodayQna(
+                tokenList,
+                fifthQnA.getQuestion().getSection().getValue(),
+                fifthQnA.getQuestion().getTopic()));
 
     }
 
@@ -361,16 +360,17 @@ public class QnAService {
 
         User myUser = getUserById(userId);
         Parentchild parentchild = getParentchildByUser(myUser);
+        List<String> tokenList = parentchildDao.findFcmTokensById(parentchild.getId());
 
         updateDay(parentchild,
                 "우리 부모님은 어렸을 때부터 행복하고 좋은 기억을 많이 주셨고, 정말 행복하게 자랐어. 그 덕에 지금까지 행복하고 안정된 느낌을 받아.",
                 "오구 내 똥강아지~ 어렸을 때는 매일 볼 수 있었는데, 어른이 되고 나서 자주 못봐서 너무 아쉽다... 연락 잘하거라 요녀석~");
 
         QnA todayQnA = getTodayQnAByParentchild(parentchild);
-        //TODO ⭐️SQS로 변경
-//        fcmService.multipleSendByToken(FCMPushRequestDto.sendTodayQna(
-//                todayQnA.getQuestion().getSection().getValue(),
-//                todayQnA.getQuestion().getTopic()), parentchild.getId());
+        notificationService.pushTodayQnA(FCMPushRequestDto.sendTodayQna(
+                tokenList,
+                todayQnA.getQuestion().getSection().getValue(),
+                todayQnA.getQuestion().getTopic()));
     }
 
     private void updateDay(Parentchild parentchild, String childAnswer, String parentAnswer) {

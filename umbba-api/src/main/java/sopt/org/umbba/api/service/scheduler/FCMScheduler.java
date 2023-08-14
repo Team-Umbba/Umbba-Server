@@ -7,12 +7,11 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
-
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import sopt.org.umbba.api.config.sqs.producer.SqsProducer;
+import sopt.org.umbba.api.service.notification.NotificationService;
 import sopt.org.umbba.common.sqs.dto.FCMPushRequestDto;
 import sopt.org.umbba.domain.domain.parentchild.Parentchild;
 import sopt.org.umbba.domain.domain.parentchild.dao.ParentchildDao;
@@ -36,7 +35,7 @@ public class FCMScheduler {
     private final ParentchildRepository parentchildRepository;
     private final UserRepository userRepository;
     private final ParentchildDao parentchildDao;
-    private final SqsProducer sqsProducer;
+    private final NotificationService notificationService;
 
     private static ScheduledFuture<?> scheduledFuture;
     private final TaskScheduler taskScheduler;
@@ -50,7 +49,6 @@ public class FCMScheduler {
     public String pushTodayQna()  {
 
         log.info("오늘의 질문 알람 - 유저마다 보내는 시간 다름");
-//        List<String> tokenList = parentchildDao.findFcmTokensById(parentchildId);
 
 
         parentchildRepository.findAll().stream()
@@ -64,8 +62,8 @@ public class FCMScheduler {
                 })
                 .forEach(pc -> {
                 log.info(pc.getId() + "번째 Parentchild");
-                String cronExpression = String.format("0 %s %s * * ?", pc.getPushTime().getMinute(), pc.getPushTime().getHour());
-//                String cronExpression = String.format("*/20 * * * * *");
+//                String cronExpression = String.format("0 %s %s * * ?", pc.getPushTime().getMinute(), pc.getPushTime().getHour());
+                String cronExpression = String.format("*/20 * * * * *");  // [TEST용] 20초마다 호출
                 log.info("cron: {}", cronExpression);
                 schedulePushAlarm(cronExpression, pc.getId());
             })
@@ -81,6 +79,8 @@ public class FCMScheduler {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
+            } finally {
+                em.close();
             }
 
             Parentchild parentchild = parentchildRepository.findById(parentchildId).get();
@@ -122,7 +122,7 @@ public class FCMScheduler {
 
                             log.info("FCMService - schedulePushAlarm() 실행");
                             log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
-                            multipleSendByToken(FCMPushRequestDto.sendTodayQna(  // TODO SqsProducer의 produce() 호출
+                            notificationService.pushTodayQnA(FCMPushRequestDto.sendTodayQna(  // TODO SqsProducer의 produce() 호출
                                     tokenList,
                                     todayQnA.getQuestion().getSection().getValue(),
                                     todayQnA.getQuestion().getTopic()));
