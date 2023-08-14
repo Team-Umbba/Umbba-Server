@@ -1,4 +1,4 @@
-package sopt.org.umbba.notification.config.sqs;
+package sopt.org.umbba.notification.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
