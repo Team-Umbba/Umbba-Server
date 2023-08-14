@@ -227,7 +227,6 @@ public class FCMService {
                             multipleSendByToken(FCMPushRequestDto.sendTodayQna(
                                     todayQnA.getQuestion().getSection().getValue(),
                                     todayQnA.getQuestion().getTopic()), parentchild.getId());
-                            multipleSendByToken(FCMPushRequestDto.sendTodayQna("술이슈", "새벽4시 술 먹을시간"), 3L);
                         }
                     }
                 }
