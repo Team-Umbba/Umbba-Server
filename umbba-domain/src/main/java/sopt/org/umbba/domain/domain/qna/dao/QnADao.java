@@ -42,6 +42,8 @@ public class QnADao {
         } catch (NoResultException e) {
 
             return Optional.empty();
+        } finally {
+            em.close();
         }
     }
 

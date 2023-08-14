@@ -8,6 +8,7 @@ import sopt.org.umbba.domain.domain.user.User;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,8 @@ public class ParentchildDao {
 
         } catch (NoResultException e) {
             return Optional.empty();
+        } finally {
+            em.close();
         }
 
     }
@@ -49,6 +52,8 @@ public class ParentchildDao {
             return Optional.ofNullable(user);
         } catch (NoResultException e) {
             return Optional.empty();
+        } finally {
+            em.close();
         }
     }
 
@@ -58,9 +63,15 @@ public class ParentchildDao {
                 "JOIN Parentchild pc ON pc.id = u.parentChild.id " +
                 "WHERE pc.id = :id";
 
-        return em.createQuery(jpql, String.class)
-                .setParameter("id", parentchildId)
-                .getResultList();
+        try {
+            return em.createQuery(jpql, String.class)
+                    .setParameter("id", parentchildId)
+                    .getResultList();
+        } catch (NoResultException e) {
+            return new ArrayList<>();
+        } finally {
+            em.close();
+        }
     }
 
 
