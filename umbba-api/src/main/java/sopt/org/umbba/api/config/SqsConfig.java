@@ -1,4 +1,4 @@
-package sopt.org.umbba.api.config.sqs;
+package sopt.org.umbba.api.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
