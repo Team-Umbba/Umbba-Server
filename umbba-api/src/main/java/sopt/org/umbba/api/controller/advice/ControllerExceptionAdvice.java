@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.util.NestedServletException;
+import sopt.org.umbba.api.service.notification.NotificationService;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.dto.ApiResponse;
 import sopt.org.umbba.common.exception.model.CustomException;
@@ -37,7 +38,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class ControllerExceptionAdvice {
 
-//    private final SlackApi slackApi;
+    private final NotificationService notificationService;
 
     /**
      * 400 BAD_REQUEST
@@ -98,10 +99,8 @@ public class ControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     protected ApiResponse<Exception> handleException(final Exception e, final HttpServletRequest request) throws IOException {
-//        slackApi.sendAlert(e, request); TODO ⭐️이 지점에서 SQS에 넣어야함
-
         log.error("Unexpected exception occurred: {}", e.getMessage(), e);
-
+        notificationService.sendExceptionToSlack(e, request);
         return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, e);
     }
 

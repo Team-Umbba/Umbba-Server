@@ -7,14 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbba.api.config.sqs.producer.SqsProducer;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
-import sopt.org.umbba.common.sqs.MessageType;
 import sopt.org.umbba.common.sqs.dto.FCMPushRequestDto;
-import sopt.org.umbba.common.sqs.dto.MessageDto;
 import sopt.org.umbba.common.sqs.dto.ScheduleDto;
 import sopt.org.umbba.common.sqs.dto.SlackDto;
 import sopt.org.umbba.domain.domain.user.User;
 import sopt.org.umbba.domain.domain.user.repository.UserRepository;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
@@ -53,5 +52,9 @@ public class NotificationService {
 
     public void activateTodayQna() {
         sqsProducer.produce(ScheduleDto.of());
+    }
+
+    public void sendExceptionToSlack(Exception e, HttpServletRequest request) {
+        sqsProducer.produce(SlackDto.of(e, request.getMethod(), request.getRequestURI()));
     }
 }
