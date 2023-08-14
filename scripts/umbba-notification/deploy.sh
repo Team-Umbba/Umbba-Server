@@ -1,3 +1,4 @@
+#!/bin/bash
 NOW_TIME="$(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S)"
 
 BUILD_PATH=/home/ubuntu/notification-server/umbba-notification-0.0.1-SNAPSHOT.jar
