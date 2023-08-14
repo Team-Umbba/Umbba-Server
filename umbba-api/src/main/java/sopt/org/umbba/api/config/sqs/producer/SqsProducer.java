@@ -13,6 +13,7 @@ import sopt.org.umbba.common.sqs.MessageUtils;
 import sopt.org.umbba.common.sqs.dto.MessageDto;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -51,7 +52,12 @@ public class SqsProducer {
                     .withMessageAttributes(createMessageAttributes(message.getType()));
 
             amazonSqs.sendMessage(request);
-            log.info(MessageUtils.generate(SQS_QUEUE_REQUEST_LOG_MESSAGE, request));
+            if (Objects.equals(message.getType(), MessageType.SLACK)) {
+                log.info(MessageUtils.generate(SQS_QUEUE_REQUEST_LOG_MESSAGE, "Slack 500 Error 내용"));
+            } else {
+                log.info(MessageUtils.generate(SQS_QUEUE_REQUEST_LOG_MESSAGE, request));
+            }
+
 
         } catch (JsonProcessingException e) {
             log.error(e.getMessage(), e);
