@@ -61,45 +61,199 @@
 
 ## 📂 Project Structure
 ```
-🗂 src
-    🗂 main
-        🗂 java/sopt/org/umbbaServer
-            🗂 domain
-                📁 parentchild
-                    🗂 controller
-                    🗂 dao
-                    🗂 model
-                    🗂 repository
-                    🗂 service
-                📁 qna
-                    🗂 controller
-                    🗂 dao
-                    🗂 model
-                    🗂 repository
-                    🗂 service
-                📁 user
-                    🗂 controller
-                    🗂 model
-                    🗂 repository
-                    🗂 service
-                    🗂 social
-                        🗂 apple
-                        🗂 kakao
-            🗂 global 
-                📁 common
-                    🗂 advice
-                    🗂 dto
-                📁 config
-                    🗂 auth
-                    🗂 jwt
-                        🗂 redis   
-                    🗂 exception
-                📁 util
-                    🗂 slack
-        🗂 resources
-            application.yaml
-    🗂 test 
-    
+📂 umbba-api
+├── build.gradle
+└── src
+    ├── main
+    │   ├── 📂 java/sopt/org/umbba/api
+    │   │    ├── ApiApplication.java
+    │   │    ├── 🗂 config
+    │   │    │   ├── SecurityConfig.java
+    │   │    │   ├── 🗂 auth
+    │   │    │   │   ├── CustomJwtAuthenticationEntryPoint.java
+    │   │    │   │   ├── JwtAuthenticationFilter.java
+    │   │    │   │   └── UserAuthentication.java
+    │   │    │   ├── 🗂 jwt
+    │   │    │   │   ├── JwtProvider.java
+    │   │    │   │   ├── JwtValidationType.java
+    │   │    │   │   ├── TokenDto.java
+    │   │    │   │   └── TokenRepository.java
+    │   │    │   └── 🗂 sqs
+    │   │    │       ├── SqsConfig.java
+    │   │    │       └── 🗂 producer
+    │   │    │           └── SqsProducer.java
+    │   │    ├── 🗂 controller
+    │   │    │   ├── 🗂 advice
+    │   │    │   │   └── ControllerExceptionAdvice.java
+    │   │    │   ├── 🗂 health
+    │   │    │   │   ├── DemoController.java
+    │   │    │   │   ├── ServerProfileController.java
+    │   │    │   │   └── SlackTestController.java
+    │   │    │   ├── 🗂 parentchild
+    │   │    │   │   ├── ParentchildController.java
+    │   │    │   │   └── 🗂 dto
+    │   │    │   │       ├── 🗂 request
+    │   │    │   │       │   ├── InviteCodeRequestDto.java
+    │   │    │   │       │   ├── OnboardingInviteRequestDto.java
+    │   │    │   │       │   └── OnboardingReceiveRequestDto.java
+    │   │    │   │       └── 🗂 response
+    │   │    │   │           ├── InviteResultResponseDto.java
+    │   │    │   │           ├── OnboardingInviteResponseDto.java
+    │   │    │   │           └── OnboardingReceiveResponseDto.java
+    │   │    │   ├── 🗂 qna
+    │   │    │   │   ├── QnAController.java
+    │   │    │   │   └── 🗂 dto
+    │   │    │   │       ├── 🗂 request
+    │   │    │   │       │   └── TodayAnswerRequestDto.java
+    │   │    │   │       └── 🗂 response
+    │   │    │   │           ├── GetInvitationResponseDto.java
+    │   │    │   │           ├── GetMainViewResponseDto.java
+    │   │    │   │           ├── QnAListResponseDto.java
+    │   │    │   │           ├── SingleQnAResponseDto.java
+    │   │    │   │           └── TodayQnAResponseDto.java
+    │   │    │   └── 🗂 user
+    │   │    │       ├── AuthController.java
+    │   │    │       └── 🗂 dto
+    │   │    │           ├── 🗂 request
+    │   │    │           │   ├── RefreshRequestDto.java
+    │   │    │           │   ├── SocialLoginRequestDto.java
+    │   │    │           │   └── UserInfoDto.java
+    │   │    │           └── 🗂 response
+    │   │    │               └── UserLoginResponseDto.java
+    │   │    └── 🗂 service
+    │   │        ├── 🗂 notification
+    │   │        │   └── NotificationService.java
+    │   │        ├── 🗂 parentchild
+    │   │        │   └── ParentchildService.java
+    │   │        ├── 🗂 qna
+    │   │        │   └── QnAService.java
+    │   │        └── 🗂 user
+    │   │            ├── AuthService.java
+    │   │            └── 🗂 social
+    │   │                ├── 🗂 apple
+    │   │                │   ├── AppleLoginService.java
+    │   │                │   └── 🗂 verify
+    │   │                │       ├── AppleClaimsValidator.java
+    │   │                │       ├── AppleJwtParser.java
+    │   │                │       ├── EncryptUtils.java
+    │   │                │       └── PublicKeyGenerator.java
+    │   │                └── 🗂 kakao
+    │   │                    └── KakaoLoginService.java
+    │   └── 📂 resources
+            └── application.yaml
+
+📂 umbba-notification
+├── build.gradle
+└── src
+    └── main
+        ├── 📂 java/sopt/org/umbba/notification
+        │   ├── NotificationApplication.java
+        │   ├── 🗂 config
+        │   │   ├── 🗂 fcm
+        │   │   │   └── FCMConfig.java
+        │   │   ├── 🗂 scheduler
+        │   │   │   └── ScheduleConfig.java
+        │   │   └── 🗂 sqs
+        │   │       ├── SqsConfig.java
+        │   │       └── 🗂 consumer
+        │   │           └── SqsConsumer.java
+        │   └── 🗂 service
+        │       ├── 🗂 fcm
+        │       │   ├── FCMController.java
+        │       │   ├── FCMService.java
+        │       │   └── 🗂 dto
+        │       │       └── FCMMessage.java
+        │       ├── 🗂 scheduler
+        │       │   └── FCMScheduler.java
+        │       └── 🗂 slack
+        │              └── SlackApi.java
+        └── 📂 resources
+            ├── application.yaml
+            └── 🗂 firebase
+                └── umbba-fcm-firebase-adminsdk.json
+
+📂 umbba-domain
+├── build.gradle
+└── src
+    └── main
+        └── 📂 java/sopt/org/umbba/domain
+             ├── UmbbaDomainRoot.java
+             ├── 🗂 config
+             │   └── 🗂 jpa
+             │       └── JpaConfig.java
+             └── 🗂 domain
+                 ├── 🗂 common
+                 │   └── AuditingTimeEntity.java
+                 ├── 🗂 parentchild
+                 │   ├── Parentchild.java
+                 │   ├── ParentchildRelation.java
+                 │   ├── 🗂 dao
+                 │   │   └── ParentchildDao.java
+                 │   └── 🗂 repository
+                 │       └── ParentchildRepository.java
+                 ├── 🗂 qna
+                 │   ├── OnboardingAnswer.java
+                 │   ├── QnA.java
+                 │   ├── Question.java
+                 │   ├── QuestionSection.java
+                 │   ├── QuestionType.java
+                 │   ├── 🗂 dao
+                 │   │   └── QnADao.java
+                 │   └── 🗂 repository
+                 │       ├── QnARepository.java
+                 │       └── QuestionRepository.java
+                 ├── 🗂 redis
+                 │   └── RefreshToken.java
+                 └── 🗂 user
+                     ├── SocialPlatform.java
+                     ├── User.java
+                     └── 🗂 repository
+                         └── UserRepository.java
+
+📂 umbba-common
+├── build.gradle
+└── src
+    └── main
+        └── 📂 java/sopt/org/umbba/common
+             ├── UmbbaCommonRoot.java
+             ├── 🗂 exception
+             │   ├── ErrorType.java
+             │   ├── SuccessType.java
+             │   ├── 🗂 dto
+             │   │   └── ApiResponse.java
+             │   └── 🗂 model
+             │       └── CustomException.java
+             └── 🗂 sqs
+                 ├── MessageType.java
+                 ├── MessageUtils.java
+                 └── 🗂 dto
+                     ├── FCMPushRequestDto.java
+                     ├── FirebaseDto.java
+                     ├── MessageDto.java
+                     ├── PushMessage.java
+                     └── SlackDto.java
+
+📂 umbba-external
+├── build.gradle
+└── src
+    └── main
+        └── 📂 java/sopt/org/umbba/external
+             ├── UmbbaExternalRoot.java
+             └── 🗂 client
+                  └── 🗂 auth
+                       ├── 🗂 apple
+                       │   ├── AppleApiClient.java
+                       │   └── 🗂 response
+                       │       ├── ApplePublicKey.java
+                       │       └── ApplePublicKeys.java
+                       └── 🗂 kakao
+                            ├── KakaoApiClient.java
+                            ├── KakaoAuthApiClient.java
+                            └── 🗂 response
+                                 ├── KakaoAccessTokenResponse.java
+                                 ├── KakaoAccount.java
+                                 ├── KakaoUserProfile.java
+                                 └── KakaoUserResponse.java
 ```
 
 <hr>
