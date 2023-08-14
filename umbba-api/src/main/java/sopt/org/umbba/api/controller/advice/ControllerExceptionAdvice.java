@@ -106,26 +106,30 @@ public class ControllerExceptionAdvice {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IllegalArgumentException.class)
-    public ApiResponse<Exception> handlerIllegalArgumentException(final IllegalArgumentException e) {
+    public ApiResponse<Exception> handlerIllegalArgumentException(final IllegalArgumentException e, final HttpServletRequest request) {
+        notificationService.sendExceptionToSlack(e, request);
         return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IOException.class)
-    public ApiResponse<Exception> handlerIOException(final IOException e) {
+    public ApiResponse<Exception> handlerIOException(final IOException e, final HttpServletRequest request) {
+        notificationService.sendExceptionToSlack(e, request);
         return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException.class)
-    public ApiResponse<Exception> handlerRuntimeException(final RuntimeException e) {
+    public ApiResponse<Exception> handlerRuntimeException(final RuntimeException e, final HttpServletRequest request) {
+        notificationService.sendExceptionToSlack(e, request);
         return ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR, e);
     }
 
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IndexOutOfBoundsException.class)
-    protected ApiResponse<Exception> handlerIndexOutOfBoundsException(final IndexOutOfBoundsException e) {
+    protected ApiResponse<Exception> handlerIndexOutOfBoundsException(final IndexOutOfBoundsException e, final HttpServletRequest request) {
+        notificationService.sendExceptionToSlack(e, request);
         return ApiResponse.error(ErrorType.INDEX_OUT_OF_BOUNDS, e);
     }
 
@@ -137,43 +141,50 @@ public class ControllerExceptionAdvice {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(NoSuchElementException.class)
-    protected ApiResponse<Exception> handlerNoSuchElementException(final NoSuchElementException e) {
+    protected ApiResponse<Exception> handlerNoSuchElementException(final NoSuchElementException e, final HttpServletRequest request) {
+        notificationService.sendExceptionToSlack(e, request);
         return ApiResponse.error(ErrorType.OPTIONAL_EMPTY, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IncorrectResultSizeDataAccessException.class)
-    protected ApiResponse<Exception> handlerIncorrectResultSizeDataAccessException(final IncorrectResultSizeDataAccessException e) {
+    protected ApiResponse<Exception> handlerIncorrectResultSizeDataAccessException(final IncorrectResultSizeDataAccessException e, final HttpServletRequest request) {
+        notificationService.sendExceptionToSlack(e, request);
         return ApiResponse.error(ErrorType.NON_UNIQUE_RESULT_OF_QUERY, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(NestedServletException.class)
-    public ApiResponse<Exception> handlerNestedServletException(final NestedServletException e) {
+    public ApiResponse<Exception> handlerNestedServletException(final NestedServletException e, final HttpServletRequest request) {
+        notificationService.sendExceptionToSlack(e, request);
         return ApiResponse.error(ErrorType.INTERNAL_SERVLET_ERROR, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(InvalidDataAccessApiUsageException.class)
-    public ApiResponse<Exception> handlerInvalidDataAccessApiUsageException(final InvalidDataAccessApiUsageException e) {
+    public ApiResponse<Exception> handlerInvalidDataAccessApiUsageException(final InvalidDataAccessApiUsageException e, final HttpServletRequest request) {
+        notificationService.sendExceptionToSlack(e, request);
         return ApiResponse.error(ErrorType.NO_ENUM_TYPE, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ApiResponse<Exception> handlerDataIntegrityViolationException(final DataIntegrityViolationException e) {
+    public ApiResponse<Exception> handlerDataIntegrityViolationException(final DataIntegrityViolationException e, final HttpServletRequest request) {
+        notificationService.sendExceptionToSlack(e, request);
         return ApiResponse.error(ErrorType.DATA_INTEGRITY_ERROR, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(JpaSystemException.class)
-    public ApiResponse<Exception> handlerJpaSystemException(final JpaSystemException e) {
+    public ApiResponse<Exception> handlerJpaSystemException(final JpaSystemException e, final HttpServletRequest request) {
+        notificationService.sendExceptionToSlack(e, request);
         return ApiResponse.error(ErrorType.DATABASE_ERROR, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(NullPointerException.class)
-    public ApiResponse<Exception> handlerNullPointerException(final NullPointerException e) {
+    public ApiResponse<Exception> handlerNullPointerException(final NullPointerException e, final HttpServletRequest request) {
+        notificationService.sendExceptionToSlack(e, request);
         return ApiResponse.error(ErrorType.NULL_POINTER_ERROR, e);
     }
 
