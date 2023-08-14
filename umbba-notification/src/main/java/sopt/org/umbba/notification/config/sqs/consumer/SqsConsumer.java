@@ -61,7 +61,7 @@ public class SqsConsumer {
                 case MessageType.SLACK:
                     SlackDto slackDto = objectMapper.readValue(payload, SlackDto.class);
                     slackApi.sendAlert(slackDto.getError(), slackDto.getRequestMethod(), slackDto.getRequestURI());
-                    log.info(MessageUtils.generate(SQS_CONSUME_LOG_MESSAGE, "Slack 500 Error 내용"));
+                    log.info(MessageUtils.generate(SQS_CONSUME_LOG_MESSAGE, payload, "Slack 500 Error 내용"));
                     break;
             }
         } catch (Exception e) {
