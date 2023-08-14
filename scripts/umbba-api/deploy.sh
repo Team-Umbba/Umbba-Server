@@ -43,7 +43,11 @@ then
 else
   echo "[$NOW_TIME] kill -15 $IDLE_PID"
   kill -15 $IDLE_PID
-  sleep 10
+
+  while ps -p $IDLE_PID > /dev/null; do
+      sleep 1
+    done
+  echo "[$NOW_TIME] 애플리케이션이 정상 종료되었습니다."
 fi
 
 echo "[$NOW_TIME] $IDLE_PROFILE 배포"
