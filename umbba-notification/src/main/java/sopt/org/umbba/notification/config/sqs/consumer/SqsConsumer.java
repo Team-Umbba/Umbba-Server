@@ -19,6 +19,7 @@ import sopt.org.umbba.notification.service.scheduler.FCMScheduler;
 import sopt.org.umbba.notification.service.slack.SlackApi;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 큐 대기열에 있는 메시지 목록을 조회하여 받아오는(pull) 역할
@@ -42,23 +43,25 @@ public class SqsConsumer {
     @SqsListener(value = "${cloud.aws.sqs.notification.name}", deletionPolicy = SqsMessageDeletionPolicy.NEVER)
     public void consume(@Payload String payload, @Headers Map<String, String> headers, Acknowledgment ack) {
         try {
-            log.info(MessageUtils.generate(SQS_CONSUME_LOG_MESSAGE, payload, headers));
 
             switch (headers.get(MessageType.MESSAGE_TYPE_HEADER)) {
 
                 case MessageType.FIREBASE:
                     FCMPushRequestDto request = objectMapper.readValue(payload, FCMPushRequestDto.class);
                     fcmService.pushAlarm(request);  // TODO userId 를 넘겨주는 방식 대신 어떻게 유저 식별할지?
+                    log.info(MessageUtils.generate(SQS_CONSUME_LOG_MESSAGE, payload, headers));
                     break;
 
                 case MessageType.SCHEDULE:
                     ScheduleConfig.resetScheduler();
                     fcmScheduler.pushTodayQna();
+                    log.info(MessageUtils.generate(SQS_CONSUME_LOG_MESSAGE, payload, headers));
                     break;
 
                 case MessageType.SLACK:
                     SlackDto slackDto = objectMapper.readValue(payload, SlackDto.class);
                     slackApi.sendAlert(slackDto.getError(), slackDto.getRequestMethod(), slackDto.getRequestURI());
+                    log.info(MessageUtils.generate(SQS_CONSUME_LOG_MESSAGE, "Slack 500 Error 내용"));
                     break;
             }
         } catch (Exception e) {
