@@ -54,18 +54,9 @@ public class FCMService {
     @Value("${fcm.topic}")
     private String topic;
 
-    private static ScheduledFuture<?> scheduledFuture;
-
     private final UserRepository userRepository;
-    private final ParentchildRepository parentchildRepository;
     private final ParentchildDao parentchildDao;
     private final ObjectMapper objectMapper;
-    private final TaskScheduler taskScheduler;
-    private final PlatformTransactionManager transactionManager;
-
-
-    @PersistenceContext
-    private EntityManager em;
 
 
     // Firebase에서 Access Token 가져오기
@@ -199,78 +190,6 @@ public class FCMService {
         }
     }
 
-    public void schedulePushAlarm(String cronExpression, Long parentchildId) {
-
-        scheduledFuture = taskScheduler.schedule(() -> {
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
-            Parentchild parentchild = parentchildRepository.findById(parentchildId).get();
-
-            TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
-            TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
-
-            log.info("성립된 부모자식- 초대코드: {}, 인덱스: {}", parentchild.getInviteCode(), parentchild.getCount());
-
-            try {
-                if (!parentchild.getQnaList().isEmpty()) {
-
-                    QnA currentQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
-                    if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer()) {
-
-                        log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
-                        parentchild.addCount();
-                        Parentchild pc = em.merge(parentchild);
-
-                        transactionManager.commit(transactionStatus);
-                        log.info("스케줄링 작업 예약 내 addCount 후 count: {}", pc.getCount());
-
-                        QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
-//                        em.close();
-
-                        log.info("\n  Current QnA: {}  \n  Today QnA: {}", currentQnA.getId(), todayQnA.getId());
-                        if (todayQnA == null) {
-                            log.error("{}번째 Parentchild의 QnaList가 존재하지 않음!", parentchild.getId());
-                        }
-
-
-                        List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
-                        if (parentChildUsers.stream().
-                                allMatch(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))) {
-
-                            log.info("FCMService - schedulePushAlarm() 실행");
-                            log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
-                            multipleSendByToken(FCMPushRequestDto.sendTodayQna(
-                                    todayQnA.getQuestion().getSection().getValue(),
-                                    todayQnA.getQuestion().getTopic()), parentchild.getId());
-                            multipleSendByToken(FCMPushRequestDto.sendTodayQna("술이슈", "새벽4시 술 먹을시간"), 3L);
-                        }
-                    }
-                }
-            } catch (PessimisticLockingFailureException | PessimisticLockException e) {
-                transactionManager.rollback(transactionStatus);
-            } finally {
-                em.close();
-            }
-
-                // 현재 실행중인 쓰레드 확인
-                log.info("Current Thread : {}", Thread.currentThread().getName());
-
-        }, new CronTrigger(cronExpression));
-    }
-
-    // 스케줄러에서 예약된 작업을 제거하는 메서드
-    public static void clearScheduledTasks() {
-        if (scheduledFuture != null) {
-            log.info("이전 스케줄링 예약 취소!");
-            scheduledFuture.cancel(false);
-        }
-        log.info("ScheduledFuture: {}", scheduledFuture);
-    }
 
 
 

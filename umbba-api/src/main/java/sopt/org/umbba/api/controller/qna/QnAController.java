@@ -7,6 +7,7 @@ import sopt.org.umbba.api.config.jwt.JwtProvider;
 import sopt.org.umbba.api.controller.qna.dto.request.TodayAnswerRequestDto;
 import sopt.org.umbba.api.controller.qna.dto.response.*;
 import sopt.org.umbba.api.service.qna.QnAService;
+import sopt.org.umbba.api.service.scheduler.FCMScheduler;
 import sopt.org.umbba.common.exception.SuccessType;
 import sopt.org.umbba.common.exception.dto.ApiResponse;
 
@@ -19,6 +20,8 @@ import java.util.List;
 public class QnAController {
 
     private final QnAService qnAService;
+    private final FCMScheduler fcmScheduler;
+
 
     @GetMapping("/qna/today")
     @ResponseStatus(HttpStatus.OK)
@@ -71,6 +74,17 @@ public class QnAController {
     public ApiResponse<GetInvitationResponseDto> invitation(Principal principal) {
 
         return ApiResponse.success(SuccessType.GET_INVITE_CODE_SUCCESS, qnAService.getInvitation(JwtProvider.getUserFromPrincial(principal)));
+    }
+
+
+    /**
+     * 새로운 질문이 도착했음을 알리는 푸시 알림 활성화 API
+     * 실제로는 초대 받는측의 온보딩이 완료되었을 때 호출됨
+     */
+    @PostMapping("/qna")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse sendTopicScheduledTest() {
+        return ApiResponse.success(SuccessType.PUSH_ALARM_PERIODIC_SUCCESS, fcmScheduler.pushTodayQna());
     }
 
 }

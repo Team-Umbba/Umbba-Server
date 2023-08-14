@@ -1,4 +1,6 @@
 firebase/
+test/DBConnectionTest.java,
+test/TestConfig.java
 
 HELP.md
 .gradle

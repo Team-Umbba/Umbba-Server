@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import sopt.org.umbba.common.exception.SuccessType;
 import sopt.org.umbba.common.exception.dto.ApiResponse;
 import sopt.org.umbba.common.sqs.dto.FCMPushRequestDto;
-import sopt.org.umbba.notification.service.fcm.FCMService;
-import sopt.org.umbba.notification.service.scheduler.FCMScheduler;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -18,18 +16,6 @@ import java.security.Principal;
 public class FCMController {
 
     private final FCMService fcmService;
-    private final FCMScheduler fcmScheduler;
-
-
-    /**
-     * 새로운 질문이 도착했음을 알리는 푸시 알림 활성화 API
-     * 실제로는 초대 받는측의 온보딩이 완료되었을 때 호출됨
-     */
-    @PostMapping("/qna")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse sendTopicScheduledTest() {
-        return ApiResponse.success(SuccessType.PUSH_ALARM_PERIODIC_SUCCESS, fcmScheduler.pushTodayQna());
-    }
 
     /**
      * 장난용 푸시 알림 활성화 API
