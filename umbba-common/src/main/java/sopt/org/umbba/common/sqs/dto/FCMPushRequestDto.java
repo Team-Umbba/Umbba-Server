@@ -6,6 +6,9 @@ import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import sopt.org.umbba.common.sqs.MessageType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @Getter
 @SuperBuilder
@@ -15,6 +18,8 @@ public class FCMPushRequestDto extends MessageDto{
 
     private String targetToken;
 
+    private List<String> targetTokenList;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String title;
 
@@ -23,10 +28,11 @@ public class FCMPushRequestDto extends MessageDto{
 
 
     // Spring Scheduler를 이용해 Parentchild 테이블의 모든 값을 주기적으로 검사한 후 보낼 때 호출 -> 다수기기 or 주제구독 방식으로 다수의 사용자에 전송
-    public static FCMPushRequestDto sendTodayQna(String section, String topic) {
+    public static FCMPushRequestDto sendTodayQna(List<String> tokenList, String section, String topic) {
 
         return FCMPushRequestDto.builder()
-                .type(MessageType.FIREBASE)
+                .type(MessageType.FCM_MULTI)
+                .targetTokenList(tokenList)
                 .title("📞" + section + PushMessage.TODAY_QNA.getTitle())
                 .body("'" + topic + PushMessage.TODAY_QNA.getBody())
                 .build();
@@ -36,7 +42,7 @@ public class FCMPushRequestDto extends MessageDto{
     public static FCMPushRequestDto sendOpponentReply(String targetToken, String question) {
 
         return FCMPushRequestDto.builder()
-                .type(MessageType.FIREBASE)
+                .type(MessageType.FCM_SINGLE)
                 .targetToken(targetToken)
                 .title(PushMessage.OPPONENT_REPLY.getTitle())
                 .body("'" + question + PushMessage.OPPONENT_REPLY.getBody())

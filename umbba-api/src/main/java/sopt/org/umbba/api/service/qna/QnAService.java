@@ -340,6 +340,7 @@ public class QnAService {
 
         User myUser = getUserById(userId);
         Parentchild parentchild = getParentchildByUser(myUser);
+        List<String> tokenList = parentchildDao.findFcmTokensById(parentchild.getId());
 
         for (int i=0; i<4; i++) {
             updateDay(parentchild,

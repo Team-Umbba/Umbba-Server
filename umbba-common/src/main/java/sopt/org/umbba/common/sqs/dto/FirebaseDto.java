@@ -17,7 +17,7 @@ public class FirebaseDto extends MessageDto {
 
 	public static FirebaseDto of(String fcmToken, String title, String body) {
 		return FirebaseDto.builder()
-			.type(MessageType.FIREBASE)
+//			.type(MessageType.FIREBASE)
 			.fcmToken(fcmToken)
 			.title(title)
 			.body(body)

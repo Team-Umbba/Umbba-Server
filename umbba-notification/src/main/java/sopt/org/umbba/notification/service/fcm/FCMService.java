@@ -160,12 +160,7 @@ public class FCMService {
     }
 
     // 다수의 기기(부모자식 ID에 포함된 유저 2명)에 알림 메시지 전송 -> 주기적 알림 전송에서 사용
-    public String multipleSendByToken(FCMPushRequestDto request, Long parentchildId) {
-
-        List<String> tokenList = parentchildDao.findFcmTokensById(parentchildId);
-
-        log.info("tokenList: {}🌈,  {}🌈",tokenList.get(0), tokenList.get(1));
-
+    public String multipleSendByToken(FCMPushRequestDto request) {
 
         MulticastMessage message = MulticastMessage.builder()
                 .setNotification(Notification.builder()
@@ -173,7 +168,7 @@ public class FCMService {
                         .setBody(request.getBody())
                         .setImage(null)
                         .build())
-                .addAllTokens(tokenList)
+                .addAllTokens(request.getTargetTokenList())
                 .build();
 
         log.info("message: {}", request.getTitle() +" "+ request.getBody());
@@ -183,7 +178,7 @@ public class FCMService {
             log.info("다수 기기 알림 전송 성공 ! successCount: " + response.getSuccessCount() + " messages were sent successfully");
             log.info("알림 전송: {}", response.getResponses().toString());
 
-            return "알림을 성공적으로 전송했습니다. \ntargetUserId = 1." + tokenList.get(0) + ", \n\n2." + tokenList.get(1);
+            return "알림을 성공적으로 전송했습니다. \ntargetUserId = 1." + request.getTargetTokenList().get(0) + ", \n\n2." + request.getTargetTokenList().get(1);
         } catch (FirebaseMessagingException e) {
             log.error("다수기기 푸시메시지 전송 실패 - FirebaseMessagingException: {}", e.getMessage());
             throw new CustomException(ErrorType.FAIL_TO_SEND_PUSH_ALARM);

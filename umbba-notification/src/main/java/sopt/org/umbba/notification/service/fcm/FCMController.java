@@ -9,6 +9,8 @@ import sopt.org.umbba.common.sqs.dto.FCMPushRequestDto;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/alarm")
@@ -43,7 +45,7 @@ public class FCMController {
     @PostMapping("/parentchild")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse sendMultiScheduledTest() {
-        return ApiResponse.success(SuccessType.PUSH_ALARM_SUCCESS, fcmService.multipleSendByToken(FCMPushRequestDto.sendTodayQna("section", "question") ,93L));
+        return ApiResponse.success(SuccessType.PUSH_ALARM_SUCCESS, fcmService.multipleSendByToken(FCMPushRequestDto.sendTodayQna(List.of("token1", "token2"),"section", "question")));
     }
 
 

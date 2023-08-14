@@ -1,11 +1,11 @@
-package sopt.org.umbba.notification.config.scheduler;
+package sopt.org.umbba.api.config.scheduler;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import sopt.org.umbba.notification.service.fcm.FCMService;
+import sopt.org.umbba.api.service.scheduler.FCMScheduler;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -33,7 +33,7 @@ public class ScheduleConfig {
     // 스케줄러 중지 후 재시작 (초기화)
     public static void resetScheduler() {
         scheduler.shutdown();
-        FCMService.clearScheduledTasks();
+        FCMScheduler.clearScheduledTasks();
         scheduler.setPoolSize(POOL_SIZE);
         scheduler.setThreadNamePrefix("현재 쓰레드 풀-");
         scheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());

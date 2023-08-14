@@ -113,15 +113,21 @@ public class FCMScheduler {
 
 
                         List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
+                        List<String> tokenList = parentchildDao.findFcmTokensById(parentchildId);
+
+                        log.info("tokenList: {}🌈,  {}🌈",tokenList.get(0), tokenList.get(1));
+
                         if (parentChildUsers.stream().
                                 allMatch(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))) {
 
                             log.info("FCMService - schedulePushAlarm() 실행");
                             log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
-                            multipleSendByToken(FCMPushRequestDto.sendTodayQna(
+                            multipleSendByToken(FCMPushRequestDto.sendTodayQna(  // TODO SqsProducer의 produce() 호출
+                                    tokenList,
                                     todayQnA.getQuestion().getSection().getValue(),
-                                    todayQnA.getQuestion().getTopic()), parentchild.getId());
-                            multipleSendByToken(FCMPushRequestDto.sendTodayQna("술이슈", "새벽4시 술 먹을시간"), 3L);
+                                    todayQnA.getQuestion().getTopic()));
+
+//                            multipleSendByToken(FCMPushRequestDto.sendTodayQna("술이슈", "새벽4시 술 먹을시간"), 3L);
                         }
                     }
                 }
