@@ -7,7 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import sopt.org.umbba.api.config.sqs.producer.SqsProducer;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
+import sopt.org.umbba.common.sqs.MessageType;
 import sopt.org.umbba.common.sqs.dto.FCMPushRequestDto;
+import sopt.org.umbba.common.sqs.dto.MessageDto;
+import sopt.org.umbba.common.sqs.dto.ScheduleDto;
 import sopt.org.umbba.common.sqs.dto.SlackDto;
 import sopt.org.umbba.domain.domain.user.User;
 import sopt.org.umbba.domain.domain.user.repository.UserRepository;
@@ -46,5 +49,9 @@ public class NotificationService {
             log.error("푸시메시지 전송 실패 - FirebaseMessagingException: {}", e.getMessage());
             throw new CustomException(ErrorType.FAIL_TO_SEND_PUSH_ALARM);
         }*/
+    }
+
+    public void activateTodayQna() {
+        sqsProducer.produce(ScheduleDto.of());
     }
 }

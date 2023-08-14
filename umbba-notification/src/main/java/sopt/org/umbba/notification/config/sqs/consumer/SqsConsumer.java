@@ -13,12 +13,10 @@ import org.springframework.stereotype.Component;
 import sopt.org.umbba.common.sqs.MessageType;
 import sopt.org.umbba.common.sqs.MessageUtils;
 import sopt.org.umbba.common.sqs.dto.FCMPushRequestDto;
-import sopt.org.umbba.common.sqs.dto.FirebaseDto;
 import sopt.org.umbba.common.sqs.dto.SlackDto;
 import sopt.org.umbba.notification.service.fcm.FCMService;
 import sopt.org.umbba.notification.service.slack.SlackApi;
 
-import javax.websocket.SendResult;
 import java.util.Map;
 
 /**

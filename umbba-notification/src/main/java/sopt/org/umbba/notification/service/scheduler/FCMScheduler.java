@@ -46,8 +46,7 @@ public class FCMScheduler {
 //                String cronExpression = String.format("*/20 * * * * *");
                 log.info("cron: {}", cronExpression);
                 fcmService.schedulePushAlarm(cronExpression, pc.getId());
-            })
-                ;
+            });
         return "Today QnA messages were sent successfully";
     }
 

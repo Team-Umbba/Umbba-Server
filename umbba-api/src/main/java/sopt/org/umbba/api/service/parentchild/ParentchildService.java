@@ -11,6 +11,7 @@ import sopt.org.umbba.api.controller.parentchild.dto.request.OnboardingReceiveRe
 import sopt.org.umbba.api.controller.parentchild.dto.response.InviteResultResponseDto;
 import sopt.org.umbba.api.controller.parentchild.dto.response.OnboardingInviteResponseDto;
 import sopt.org.umbba.api.controller.parentchild.dto.response.OnboardingReceiveResponseDto;
+import sopt.org.umbba.api.service.notification.NotificationService;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
 import sopt.org.umbba.domain.domain.parentchild.Parentchild;
@@ -34,7 +35,7 @@ public class ParentchildService {
     private final ParentchildRepository parentchildRepository;
     private final UserRepository userRepository;
     private final ParentchildDao parentchildDao;
-//    private final FCMScheduler fcmScheduler; TODO ⭐️SQS로 변경
+    private final NotificationService notificationService;
 
     // [발신] 초대하는 측의 온보딩 정보 입력
     @Transactional
@@ -120,7 +121,8 @@ public class ParentchildService {
         /*if (!ParentchildRelation.validate(parentChildUsers, parentchild.getRelation())) {
             throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION);
         }*/
-        // TODO ⭐️SQS로 변경
+
+        notificationService.activateTodayQna();
 //        ScheduleConfig.resetScheduler();
 //        fcmScheduler.pushTodayQna();
 
