@@ -1,4 +1,4 @@
-package sopt.org.umbba.notification.config.fcm;
+package sopt.org.umbba.notification.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;

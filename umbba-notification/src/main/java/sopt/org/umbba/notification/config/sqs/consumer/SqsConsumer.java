@@ -1,6 +1,5 @@
 package sopt.org.umbba.notification.config.sqs.consumer;
 
-import com.amazonaws.services.sqs.AmazonSQS;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,12 +12,12 @@ import org.springframework.stereotype.Component;
 import sopt.org.umbba.common.sqs.MessageType;
 import sopt.org.umbba.common.sqs.MessageUtils;
 import sopt.org.umbba.common.sqs.dto.FCMPushRequestDto;
-import sopt.org.umbba.common.sqs.dto.FirebaseDto;
 import sopt.org.umbba.common.sqs.dto.SlackDto;
+import sopt.org.umbba.notification.config.ScheduleConfig;
 import sopt.org.umbba.notification.service.fcm.FCMService;
+import sopt.org.umbba.notification.service.scheduler.FCMScheduler;
 import sopt.org.umbba.notification.service.slack.SlackApi;
 
-import javax.websocket.SendResult;
 import java.util.Map;
 
 /**
@@ -32,6 +31,7 @@ public class SqsConsumer {
 
     private final ObjectMapper objectMapper;
     private final FCMService fcmService;
+    private final FCMScheduler fcmScheduler;
     private final SlackApi slackApi;
     private static final String SQS_CONSUME_LOG_MESSAGE =
             "====> [SQS Queue Response]\n" + "info: %s\n" + "header: %s\n";
@@ -49,6 +49,11 @@ public class SqsConsumer {
                 case MessageType.FIREBASE:
                     FCMPushRequestDto request = objectMapper.readValue(payload, FCMPushRequestDto.class);
                     fcmService.pushAlarm(request);  // TODO userId 를 넘겨주는 방식 대신 어떻게 유저 식별할지?
+                    break;
+
+                case MessageType.SCHEDULE:
+                    ScheduleConfig.resetScheduler();
+                    fcmScheduler.pushTodayQna();
                     break;
 
                 case MessageType.SLACK:
