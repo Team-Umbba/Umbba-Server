@@ -189,7 +189,9 @@ public class FCMService {
                 throw new RuntimeException(e);
             }
 
-            Parentchild parentchild = parentchildRepository.findById(parentchildId).get();
+            Parentchild parentchild = parentchildRepository.findById(parentchildId).orElseThrow(
+                    () -> new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_RELATION)
+            );
 
             TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
             TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
