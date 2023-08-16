@@ -189,12 +189,12 @@ public class FCMService {
                 throw new RuntimeException(e);
             }
 
+            TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+            TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
+
             Parentchild parentchild = parentchildRepository.findById(parentchildId).orElseThrow(
                     () -> new CustomException(ErrorType.NOT_EXIST_PARENT_CHILD_RELATION)
             );
-
-            TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
-            TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
 
             log.info("성립된 부모자식- 초대코드: {}, 인덱스: {}", parentchild.getInviteCode(), parentchild.getCount());
 
@@ -208,7 +208,6 @@ public class FCMService {
                         parentchild.addCount();
                         Parentchild pc = em.merge(parentchild);
 
-                        transactionManager.commit(transactionStatus);
                         log.info("스케줄링 작업 예약 내 addCount 후 count: {}", pc.getCount());
 
                         QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
@@ -232,6 +231,7 @@ public class FCMService {
                         }
                     }
                 }
+                transactionManager.commit(transactionStatus);
             } catch (PessimisticLockingFailureException | PessimisticLockException e) {
                 transactionManager.rollback(transactionStatus);
             } finally {
