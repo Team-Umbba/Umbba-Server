@@ -31,6 +31,7 @@ public enum ErrorType {
     INVALID_PARENT_CHILD_RELATION(HttpStatus.BAD_REQUEST, "유효하지 않는 부모자식 관계입니다."),
     NOT_MATCH_PARENT_CHILD_RELATION(HttpStatus.BAD_REQUEST, "아직 부모자식 관계 매칭이 이루어지지 않았습니다."),
     ALREADY_EXISTS_PARENT_CHILD_USER(HttpStatus.BAD_REQUEST, "이미 해당 유저의 부모자식 관계가 존재합니다."),
+    ALREADY_QNA_LIST_FULL(HttpStatus.BAD_REQUEST, "이미 QNA 리스트가 가득 찼습니다"),
 
 
     /**
