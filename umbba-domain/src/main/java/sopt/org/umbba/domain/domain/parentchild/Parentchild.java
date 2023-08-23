@@ -2,6 +2,8 @@ package sopt.org.umbba.domain.domain.parentchild;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import sopt.org.umbba.common.exception.ErrorType;
+import sopt.org.umbba.common.exception.model.CustomException;
 import sopt.org.umbba.domain.domain.common.AuditingTimeEntity;
 import sopt.org.umbba.domain.domain.qna.OnboardingAnswer;
 import sopt.org.umbba.domain.domain.qna.QnA;
@@ -75,6 +77,9 @@ public class Parentchild extends AuditingTimeEntity {
     }
 
     public void addQnA(QnA qnA) {
+        if (qnaList.size() >= 7) {
+            throw new CustomException(ErrorType.ALREADY_QNA_LIST_FULL);
+        }
         qnaList.add(qnA);
     }
 
