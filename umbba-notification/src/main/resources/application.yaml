@@ -29,7 +29,7 @@ spring:
       connection-timeout: 30000 # 30초(default: 30초)
       maximum-pool-size: 10  # default: 10개
       max-lifetime: 600000   # 10분(default: 30분)
-      leak-detection-threshold: 60000  # default: 0(이용X)
+      leak-detection-threshold: 2000  # default: 0(이용X)
   jpa:
     show-sql: false
     hibernate:

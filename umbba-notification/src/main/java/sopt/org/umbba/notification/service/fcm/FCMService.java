@@ -186,8 +186,7 @@ public class FCMService {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-//                throw new RuntimeException(e);
+                throw new RuntimeException(e);
             }
 
             TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
