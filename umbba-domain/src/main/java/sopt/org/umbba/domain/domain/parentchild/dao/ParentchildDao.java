@@ -14,10 +14,16 @@ import java.util.Optional;
 
 @Slf4j
 @Repository
-public class ParentchildDao {
+public class ParentchildDao implements AutoCloseable {
 
     @PersistenceContext
     private EntityManager em;
+
+
+    @Override
+    public void close() throws Exception {
+
+    }
 
     public Optional<Parentchild> findByUserId(Long userId) {
 
