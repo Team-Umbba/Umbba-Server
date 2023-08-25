@@ -202,7 +202,7 @@ public class FCMService {
                 if (!parentchild.getQnaList().isEmpty()) {
 
                     QnA currentQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
-                    if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer()) {
+                    if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer() && parentchild.getCount() < 7) {
 
                         log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
                         parentchild.addCount();
