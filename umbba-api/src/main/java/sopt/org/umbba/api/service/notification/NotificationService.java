@@ -54,7 +54,20 @@ public class NotificationService {
         sqsProducer.produce(ScheduleDto.of());
     }
 
+    public void pushOpponentRemind(Long userId) {
+
+        // 상대 측 유저의 FCM 토큰 찾기
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ErrorType.INVALID_USER)
+        );
+
+        log.info("리마인드할 상대방 조회 완료!");
+        sqsProducer.produce(FCMPushRequestDto.sendOpponentRemind(user.getFcmToken(), "REMIND"));
+    }
+
     public void sendExceptionToSlack(Exception e, HttpServletRequest request) {
         sqsProducer.produce(SlackDto.of(e, request.getMethod(), request.getRequestURI()));
     }
+
+
 }

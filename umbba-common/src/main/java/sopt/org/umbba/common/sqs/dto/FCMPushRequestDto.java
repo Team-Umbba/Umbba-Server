@@ -43,4 +43,14 @@ public class FCMPushRequestDto extends MessageDto{
                 .build();
     }
 
+    public static FCMPushRequestDto sendOpponentRemind(String targetToken, String question) {
+
+        return FCMPushRequestDto.builder()
+                .type(MessageType.FIREBASE)
+                .targetToken(targetToken)
+                .title(PushMessage.OPPONENT_REMIND.getTitle())
+                .body("'" + question + PushMessage.OPPONENT_REMIND.getBody())
+                .build();
+    }
+
 }
