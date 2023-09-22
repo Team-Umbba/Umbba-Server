@@ -1,0 +1,137 @@
+spring:
+  profiles:
+    group:
+      "local": "local_setting, common"
+      "local_notification": "local_notification_setting, common"
+      "set1": "set1_setting, common"
+      "set2": "set2_setting, common"
+      "notification": "notification_setting, common"
+    active: local
+
+# common
+---
+spring:
+  config:
+    activate:
+      on-profile: common
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${db-url}
+    username: ${db-user}
+    password: ${db-pwd}
+    hikari:
+      pool-name: Hikari 커넥션 풀  # Pool
+      connection-timeout: 30000 # 30초(default: 30초)
+      maximum-pool-size: 10  # default: 10개
+      max-lifetime: 600000   # 10분(default: 30분)
+      leak-detection-threshold: 3500  # default: 0(이용X)
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+      ejb:
+        naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    properties:
+      hibernate:
+        format_sql: true
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${cloud-access}
+      secretKey: ${cloud-secret}
+    region:
+      static: ${cloud-region}
+    s3:
+      bucket: ${bucket-name}
+    stack:
+      auto: false
+    sqs:
+      notification:
+        name: ${sqs-notification-name}
+        url: ${sqs-notification-url}
+
+kakao:
+  client-id: ${kakao-id}
+  authorization-grant-type: authorization_code
+  redirect-uri: ${kakao-redirect}
+apple:
+  iss: ${apple-iss}
+  client-id: ${apple-id}
+#  nonce:
+
+jwt:
+  secret: ${jwt-secret}
+
+slack:
+  webhook:
+    url: ${slack-url}
+
+fcm:
+  key:
+    path: ${fcm-json-path}
+    scope: ${fcm-scope}
+  #    firebase-create-scoped: "https://www.googleapis.com/auth/firebase.messaging"
+  api:
+    url: ${fcm-api-url}
+  topic:
+    "qna_notification"
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
+
+# local_setting
+---
+spring:
+  config:
+    activate:
+      on-profile: local_setting
+
+server:
+  port: 9091
+
+# local_notification_setting
+---
+spring:
+  config:
+    activate:
+      on-profile: local_notification_setting
+
+server:
+  port: 9092
+
+# set1_setting
+---
+spring:
+  config:
+    activate:
+      on-profile: set1_setting
+
+server:
+  port: 8081
+
+# set2_setting
+---
+spring:
+  config:
+    activate:
+      on-profile: set2_setting
+
+server:
+  port: 8082
+
+# notification_setting
+---
+spring:
+  config:
+    activate:
+      on-profile: notification_setting
+
+server:
+  port: 8083
