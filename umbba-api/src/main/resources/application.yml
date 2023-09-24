@@ -17,9 +17,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DB-URL}
-    username: ${DB-USER}
-    password: ${DB-PWD}
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PWD}
     hikari:
       pool-name: Hikari 커넥션 풀  # Pool
       connection-timeout: 30000 # 30초(default: 30초)
@@ -40,42 +40,42 @@ spring:
 cloud:
   aws:
     credentials:
-      accessKey: ${CLOUD-ACCESS}
-      secretKey: ${CLOUD-SECRET}
+      accessKey: ${CLOUD_ACCESS}
+      secretKey: ${CLOUD_SECRET}
     region:
-      static: ${CLOUD-REGION}
+      static: ${CLOUD_REGION}
     s3:
-      bucket: ${BUCKET-NAME}
+      bucket: ${BUCKET_NAME}
     stack:
       auto: false
     sqs:
       notification:
-        name: ${SQS-NOTIFICATION-NAME}
-        url: ${SQS-NOTIFICATION-URL}
+        name: ${SQS-NOTIFICATION_NAME}
+        url: ${SQS-NOTIFICATION_URL}
 
 kakao:
-  client-id: ${KAKAO-ID}
+  client-id: ${KAKAO_ID}
   authorization-grant-type: authorization_code
-  redirect-uri: ${KAKAO-REDIRECT}
+  redirect-uri: ${KAKAO_REDIRECT}
 apple:
-  iss: ${APPLE-ISS}
-  client-id: ${APPLE-ID}
+  iss: ${APPLE_ISS}
+  client-id: ${APPLE_ID}
 #  nonce:
 
 jwt:
-  secret: ${JWT-SECRET}
+  secret: ${JWT_SECRET}
 
 slack:
   webhook:
-    url: ${SLACK-URL}
+    url: ${SLACK_URL}
 
 fcm:
   key:
-    path: ${FCM-JSON-PATH}
+    path: ${FCM_JSON_PATH}
     scope: ${FCM-SCOPE}
   #    firebase-create-scoped: "https://www.googleapis.com/auth/firebase.messaging"
   api:
-    url: ${FCM-API-URL}
+    url: ${FCM_API_URL}
   topic:
     "qna_notification"
 
