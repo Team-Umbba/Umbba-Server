@@ -50,8 +50,8 @@ cloud:
       auto: false
     sqs:
       notification:
-        name: ${SQS-NOTIFICATION_NAME}
-        url: ${SQS-NOTIFICATION_URL}
+        name: ${SQS_NOTIFICATION_NAME}
+        url: ${SQS_NOTIFICATION_URL}
 
 kakao:
   client-id: ${KAKAO_ID}
@@ -72,7 +72,7 @@ slack:
 fcm:
   key:
     path: ${FCM_JSON_PATH}
-    scope: ${FCM-SCOPE}
+    scope: ${FCM_SCOPE}
   #    firebase-create-scoped: "https://www.googleapis.com/auth/firebase.messaging"
   api:
     url: ${FCM_API_URL}
