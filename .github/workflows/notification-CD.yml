@@ -49,13 +49,13 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
         aws-region: ap-northeast-2
-        secrets: /secret/umbba-dev
+        secrets: /secret/umbba-secret
         parse-json: false
 
     # 4) FCM secret key 파일 생성
     - name: FCM secret key 파일 생성
       run: |
-        cd ./umbba-api/src/main/resources
+        cd ./umbba-notification/src/main/resources
         
         mkdir ./firebase
         cd ./firebase

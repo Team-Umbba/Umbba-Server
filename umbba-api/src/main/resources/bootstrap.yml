@@ -1,6 +1,6 @@
 aws:
   secretsmanager:
-    name: umbba-dev
+    name: umbba-secret
 cloud:
   aws:
     region:
