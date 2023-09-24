@@ -1,0 +1,7 @@
+aws:
+  secretsmanager:
+    name: umbba-dev
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
