@@ -62,7 +62,7 @@ public class NotificationService {
         );
 
         log.info("리마인드할 상대방 조회 완료!");
-        sqsProducer.produce(FCMPushRequestDto.sendOpponentRemind(user.getFcmToken(), "REMIND"));
+        sqsProducer.produce(FCMPushRequestDto.sendOpponentRemind(user.getFcmToken()));
     }
 
     public void sendExceptionToSlack(Exception e, HttpServletRequest request) {
