@@ -17,8 +17,8 @@ public interface ParentchildRepository extends Repository<Parentchild, Long> {
 
     List<Parentchild> findAll();
 
-
     // UPDATE
 
     // DELETE
+    void deleteById(Long id);
 }

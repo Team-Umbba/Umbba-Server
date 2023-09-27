@@ -15,21 +15,27 @@ import sopt.org.umbba.api.service.user.social.apple.AppleLoginService;
 import sopt.org.umbba.api.service.user.social.kakao.KakaoLoginService;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
+import sopt.org.umbba.domain.domain.parentchild.Parentchild;
+import sopt.org.umbba.domain.domain.parentchild.repository.ParentchildRepository;
+import sopt.org.umbba.domain.domain.qna.repository.QnARepository;
 import sopt.org.umbba.domain.domain.user.SocialPlatform;
 import sopt.org.umbba.domain.domain.user.User;
 import sopt.org.umbba.domain.domain.user.repository.UserRepository;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class AuthService { 
+public class AuthService {
 
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
+    private final ParentchildRepository parentchildRepository;
+    private final QnARepository qnARepository;
 
     private final AppleLoginService appleLoginService;
     private final KakaoLoginService kakaoLoginService;
@@ -97,10 +103,21 @@ public class AuthService {
     @Transactional
     public void signout(Long userId) {
         User user = getUserById(userId);
-        user.updateRefreshToken(null);
+
+        userRepository.deleteById(userId);
         jwtProvider.deleteRefreshToken(userId); // 일치하는 ID가 없는 경우에는 아무 동작도 수행하지 않음 (CrudRepository 기본 동작)
-        user.updateFcmToken(null);
-        user.deleteSocialInfo();
+
+        Parentchild parentChild = user.getParentChild();
+        List<User> findUsers = userRepository.findUserByParentChild(parentChild);
+        if (findUsers.size() == 0) {
+            parentchildRepository.deleteById(parentChild.getId());
+            parentChild.getQnaList().forEach(qna -> qnARepository.deleteById(qna.getId()));
+        }
+
+//        user.updateRefreshToken(null);
+//        user.updateFcmToken(null);
+//        user.deleteSocialInfo();
+
     }
 
     private User getUserById(Long userId) {

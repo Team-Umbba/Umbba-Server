@@ -19,6 +19,8 @@ public interface UserRepository extends Repository<User, Long> {
     Optional<User> findBySocialPlatformAndSocialId(SocialPlatform socialPlatform, String socialId);
     Optional<User> findByFcmToken(String fcmToken);
 
+    // DELETE
+    void deleteById(Long id);
 
     /*@Query(value = "select user " +
             "from User user " +
