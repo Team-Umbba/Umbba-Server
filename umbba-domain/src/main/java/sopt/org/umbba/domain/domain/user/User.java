@@ -89,6 +89,10 @@ public class User extends AuditingTimeEntity {
 
     private boolean deleted = Boolean.FALSE;
 
+    public boolean getDeleted() {
+        return deleted;
+    }
+
     // 로그인 새롭게 할 때마다 해당 필드들 업데이트
     public void updateSocialInfo(String socialNickname, String socialProfileImage, String socialAccessToken/*, String socialRefreshToken*/) {
         this.socialNickname = socialNickname;

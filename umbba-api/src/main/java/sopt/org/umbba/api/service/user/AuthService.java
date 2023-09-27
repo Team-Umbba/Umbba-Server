@@ -109,7 +109,15 @@ public class AuthService {
 
         Parentchild parentChild = user.getParentChild();
         List<User> findUsers = userRepository.findUserByParentChild(parentChild);
-        if (findUsers.size() == 0) {
+        boolean allUsersDeleted = true;
+
+        for (User findUser : findUsers) {
+            if (!findUser.getDeleted()) {
+                allUsersDeleted = false;
+                break; // 하나라도 deleted가 false인 경우 반복문 종료
+            }
+        }
+        if (allUsersDeleted) {
             parentchildRepository.deleteById(parentChild.getId());
             parentChild.getQnaList().forEach(qna -> qnARepository.deleteById(qna.getId()));
         }
