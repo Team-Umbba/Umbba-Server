@@ -38,7 +38,12 @@ public class Parentchild extends AuditingTimeEntity {
             this.count += 1;
             log.info("Parentchild - addCount() 호출: {}", this.count);
         }
+        // 미답변 일수 필드 0으로 초기화
+        this.remindCnt = 0;
     }
+
+    @Column(nullable = false)
+    private int remindCnt;
 
     @Column(nullable = false)
     private String inviteCode;

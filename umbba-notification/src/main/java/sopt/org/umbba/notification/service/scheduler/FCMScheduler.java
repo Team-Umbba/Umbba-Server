@@ -50,6 +50,14 @@ public class FCMScheduler {
         return "Today QnA messages were sent successfully";
     }
 
+    @Scheduled(cron = "0 0 0 * * ?", zone = "Asia/Seoul")
+    public String remindQna() {
+
+        log.info("리마인드 알림을 위한 스케줄링 작업 예약");
+
+        parentchildRepository.findAll().stream()
+    }
+
 //    @Scheduled(cron = "0 0 4 * * ?", zone = "Asia/Seoul")
 //    public String drink() {
 //        fcmService.multipleSendByToken(FCMPushRequestDto.sendTodayQna("술이슈", "새벽4시 술 먹을시간"), 3L);

@@ -226,7 +226,7 @@ public class FCMService {
                     else if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer() && parentchild.getCount() < 7) {
 
                         log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
-                        parentchild.addCount();
+                        parentchild.addCount();   // 오늘의 질문 UP & 리마인드 카운트 초기화
                         Parentchild pc = em.merge(parentchild);
 
                         log.info("스케줄링 작업 예약 내 addCount 후 count: {}", pc.getCount());
@@ -273,6 +273,15 @@ public class FCMService {
         }
         log.info("ScheduledFuture: {}", scheduledFuture);
     }
+
+
+    /*public void scheduleRemindAlarm() {
+
+
+        scheduledFuture = taskScheduler.schedule(() -> {
+
+        })
+    }*/
 
 
 
