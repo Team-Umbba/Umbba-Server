@@ -45,6 +45,10 @@ public class Parentchild extends AuditingTimeEntity {
     @Column(nullable = false)
     private int remindCnt;
 
+    public void addRemindCnt() {
+        this.remindCnt += 1;
+    }
+
     @Column(nullable = false)
     private String inviteCode;
 

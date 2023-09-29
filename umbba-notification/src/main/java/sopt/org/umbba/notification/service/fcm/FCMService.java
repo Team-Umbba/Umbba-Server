@@ -198,6 +198,7 @@ public class FCMService {
             );
 
             log.info("성립된 부모자식- 초대코드: {}, 인덱스: {}", parentchild.getInviteCode(), parentchild.getCount());
+            log.info("예약 작업 수행 전 remindCnt: {}", parentchild.getRemindCnt());
 
             try {
                 if (!parentchild.getQnaList().isEmpty()) {
@@ -205,21 +206,29 @@ public class FCMService {
                     QnA currentQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
                     List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
 
+                    parentchild.addRemindCnt();   // 리마인드 카운트는 항상 초기화!
+                    Parentchild pc = em.merge(parentchild);
+                    log.info("스케줄링 작업 내 addRemindCnt 후 remindCnt: {}", pc.getRemindCnt());
+
+
                     // CASE 분류 - 1. 자식만 답변 2. 부모만 답변 3. 둘다 답변 X
                     if (!currentQnA.isParentAnswer() || !currentQnA.isChildAnswer()) {
 
                         log.info("오늘의 질문 아직 답변하지 않은 유저 존재!!! - 부모");
 
-                        parentChildUsers.stream()
-                                .filter(User::isMeChild)
-                                .map(user -> FCMPushRequestDto.sendOpponentRemind(user.getFcmToken()))
-                                .forEach(request -> {
+                        Parentchild checkPc = pc;
+                        parentChildUsers.forEach(user -> {
+                            if (checkPc.getRemindCnt() == 1 || checkPc.getRemindCnt() == 3 || checkPc.getRemindCnt() == 6) {
+                                if ((user.isMeChild() && !currentQnA.isChildAnswer()) ||
+                                        (!user.isMeChild() && !currentQnA.isParentAnswer())) {
                                     try {
-                                        pushAlarm(request);
+                                        pushAlarm(FCMPushRequestDto.sendOpponentRemind(user.getFcmToken()));
                                     } catch (IOException e) {
                                         log.error("❌❌❌ 리마인드 알림 전송 실패");
                                     }
-                                });
+                                }
+                            }
+                        });
                     }
 
                     // 부모와 자식 모두 답변한 경우
@@ -227,7 +236,7 @@ public class FCMService {
 
                         log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
                         parentchild.addCount();   // 오늘의 질문 UP & 리마인드 카운트 초기화
-                        Parentchild pc = em.merge(parentchild);
+                        pc = em.merge(parentchild);
 
                         log.info("스케줄링 작업 예약 내 addCount 후 count: {}", pc.getCount());
 
@@ -273,15 +282,6 @@ public class FCMService {
         }
         log.info("ScheduledFuture: {}", scheduledFuture);
     }
-
-
-    /*public void scheduleRemindAlarm() {
-
-
-        scheduledFuture = taskScheduler.schedule(() -> {
-
-        })
-    }*/
 
 
 
