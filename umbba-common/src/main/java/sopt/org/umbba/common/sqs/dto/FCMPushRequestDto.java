@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
+import sopt.org.umbba.common.exception.ErrorType;
+import sopt.org.umbba.common.exception.model.CustomException;
 import sopt.org.umbba.common.sqs.MessageType;
 
 @Slf4j
@@ -43,14 +45,25 @@ public class FCMPushRequestDto extends MessageDto{
                 .build();
     }
 
-    public static FCMPushRequestDto sendOpponentRemind(String targetToken) {
+    public static FCMPushRequestDto sendOpponentRemind(String targetToken, String topic, int time) {
 
-        return FCMPushRequestDto.builder()
-                .type(MessageType.FIREBASE)
-                .targetToken(targetToken)
-                .title(PushMessage.OPPONENT_REMIND.getTitle())
-                .body(PushMessage.OPPONENT_REMIND.getBody())
-                .build();
+        if (time == 24) {
+            return FCMPushRequestDto.builder()
+                    .type(MessageType.FIREBASE)
+                    .targetToken(targetToken)
+                    .title(PushMessage.OPPONENT_REMIND_24.getTitle())
+                    .body("'" + topic + PushMessage.OPPONENT_REMIND_24.getBody())
+                    .build();
+        } else if (time == 72) {
+            return FCMPushRequestDto.builder()
+                    .type(MessageType.FIREBASE)
+                    .targetToken(targetToken)
+                    .title(PushMessage.OPPONENT_REMIND_72.getTitle())
+                    .body("'" + topic + PushMessage.OPPONENT_REMIND_72.getBody())
+                    .build();
+        }
+
+        throw new CustomException(ErrorType.INVALID_REMIND_TIME);
     }
 
 }

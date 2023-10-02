@@ -19,7 +19,10 @@ public enum PushMessage {
 
 
     // 아직 상대방이 답변하지 않았을 때 (리마인드용)  TODO 기획 측 전달사항 반영
-    OPPONENT_REMIND("📞 상대방이 교신에 응답했어요",
+    OPPONENT_REMIND_24("📞 질문이 당신을 기다리고 있어요",
+            "'에 대한 상대의 답변을 확인해 볼까요? ☺️(수신거부 : 설정 - 푸시알림 off)"),
+
+    OPPONENT_REMIND_72("📞 질문이 당신을 계속 기다리고 있어요",
             "'에 대한 상대의 답변을 확인해 볼까요? ☺️(수신거부 : 설정 - 푸시알림 off)");
 
     private String title;

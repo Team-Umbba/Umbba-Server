@@ -217,12 +217,21 @@ public class FCMService {
                         log.info("오늘의 질문 아직 답변하지 않은 유저 존재!!! - 부모");
 
                         Parentchild checkPc = pc;
+
                         parentChildUsers.forEach(user -> {
                             if (checkPc.getRemindCnt() == 1 || checkPc.getRemindCnt() == 3 || checkPc.getRemindCnt() == 6) {
                                 if ((user.isMeChild() && !currentQnA.isChildAnswer()) ||
                                         (!user.isMeChild() && !currentQnA.isParentAnswer())) {
                                     try {
-                                        pushAlarm(FCMPushRequestDto.sendOpponentRemind(user.getFcmToken()));
+                                        if (checkPc.getRemindCnt() == 1) {
+                                            pushAlarm(FCMPushRequestDto.sendOpponentRemind(user.getFcmToken(), currentQnA.getQuestion().getTopic(), 24));
+                                        } else if (checkPc.getRemindCnt() == 3) {
+                                            pushAlarm(FCMPushRequestDto.sendOpponentRemind(user.getFcmToken(), currentQnA.getQuestion().getTopic(), 72));
+                                        } else if (checkPc.getRemindCnt() == 6) {
+                                            pushAlarm(FCMPushRequestDto.sendTodayQna(
+                                                    currentQnA.getQuestion().getSection().getValue(),
+                                                    currentQnA.getQuestion().getTopic()));
+                                        }
                                     } catch (IOException e) {
                                         log.error("❌❌❌ 리마인드 알림 전송 실패");
                                     }

@@ -99,8 +99,10 @@ public class QnAService {
         User myUser = getUserById(userId);
         Parentchild parentchild = getParentchildByUser(myUser);
         User opponentUser = getOpponentByParentchild(parentchild, userId);
+        QnA todayQnA = getTodayQnAByParentchild(parentchild);
 
-        notificationService.pushOpponentRemind(opponentUser.getId());
+
+        notificationService.pushOpponentRemind(opponentUser.getId(), todayQnA.getQuestion().getTopic());
     }
 
     public List<QnAListResponseDto> getQnaList(Long userId, Long sectionId) {

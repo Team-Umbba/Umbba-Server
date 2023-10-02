@@ -24,6 +24,7 @@ public enum ErrorType {
     INVALID_ONBOARDING_ANSWER(HttpStatus.BAD_REQUEST, "유효하지 않은 선택질문 답변값입니다."),
     INVALID_ONBOARDING_ANSWER_SIZE(HttpStatus.BAD_REQUEST, "유효한 선택질문 답변 개수는 5개입니다."),
     INVALID_SOCIALPLATFORM(HttpStatus.BAD_REQUEST, "유효하지 않은 소셜 플랫폼 문자열"),
+    INVALID_REMIND_TIME(HttpStatus.BAD_REQUEST, "유효하지 않은 리마인드 시간입니다."),
 
     // ParentChild - Onboarding
     INVALID_PARENT_CHILD_RELATION_INFO(HttpStatus.BAD_REQUEST, "부모자식 관계를 정의할 수 없는 요청값입니다."),
