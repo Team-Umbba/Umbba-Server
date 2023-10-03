@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
+import sopt.org.umbba.common.exception.ErrorType;
+import sopt.org.umbba.common.exception.model.CustomException;
 import sopt.org.umbba.common.sqs.MessageType;
 
 @Slf4j
@@ -32,6 +34,16 @@ public class FCMPushRequestDto extends MessageDto{
                 .build();
     }
 
+    public static FCMPushRequestDto sendTodayQna(String targetToken, String section, String topic) {
+
+        return FCMPushRequestDto.builder()
+                .type(MessageType.FIREBASE)
+                .targetToken(targetToken)
+                .title("📞" + section + PushMessage.TODAY_QNA.getTitle())
+                .body("'" + topic + PushMessage.TODAY_QNA.getBody())
+                .build();
+    }
+
     // QnAService or QnAController에서 특정 유저의 답변 입력 시 관계에 속한 상대 측 유저의 fcm 토큰으로 푸시 전송
     public static FCMPushRequestDto sendOpponentReply(String targetToken, String question) {
 
@@ -41,6 +53,27 @@ public class FCMPushRequestDto extends MessageDto{
                 .title(PushMessage.OPPONENT_REPLY.getTitle())
                 .body("'" + question + PushMessage.OPPONENT_REPLY.getBody())
                 .build();
+    }
+
+    public static FCMPushRequestDto sendOpponentRemind(String targetToken, String topic, int time) {
+
+        if (time == 24) {
+            return FCMPushRequestDto.builder()
+                    .type(MessageType.FIREBASE)
+                    .targetToken(targetToken)
+                    .title(PushMessage.OPPONENT_REMIND_24.getTitle())
+                    .body("'" + topic + PushMessage.OPPONENT_REMIND_24.getBody())
+                    .build();
+        } else if (time == 72) {
+            return FCMPushRequestDto.builder()
+                    .type(MessageType.FIREBASE)
+                    .targetToken(targetToken)
+                    .title(PushMessage.OPPONENT_REMIND_72.getTitle())
+                    .body("'" + topic + PushMessage.OPPONENT_REMIND_72.getBody())
+                    .build();
+        }
+
+        throw new CustomException(ErrorType.INVALID_REMIND_TIME);
     }
 
 }

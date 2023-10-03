@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
+import sopt.org.umbba.common.sqs.dto.PushMessage;
 import sopt.org.umbba.domain.domain.parentchild.Parentchild;
 import sopt.org.umbba.domain.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbba.domain.domain.parentchild.repository.ParentchildRepository;
@@ -197,21 +198,60 @@ public class FCMService {
             );
 
             log.info("성립된 부모자식- 초대코드: {}, 인덱스: {}", parentchild.getInviteCode(), parentchild.getCount());
+            log.info("예약 작업 수행 전 remindCnt: {}", parentchild.getRemindCnt());
 
             try {
                 if (!parentchild.getQnaList().isEmpty()) {
 
                     QnA currentQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
-                    if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer() && parentchild.getCount() < 7) {
+                    List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
+
+                    parentchild.addRemindCnt();   // 리마인드 카운트는 항상 초기화!
+                    Parentchild pc = em.merge(parentchild);
+                    log.info("스케줄링 작업 내 addRemindCnt 후 remindCnt: {}", pc.getRemindCnt());
+
+
+                    // CASE 분류 - 1. 자식만 답변 2. 부모만 답변 3. 둘다 답변 X
+                    if (!currentQnA.isParentAnswer() || !currentQnA.isChildAnswer()) {
+
+                        log.info("오늘의 질문 아직 답변하지 않은 유저 존재!!! - 부모");
+
+                        Parentchild checkPc = pc;
+                        int remindCnt = checkPc.getRemindCnt();
+                        String currentTopic = currentQnA.getQuestion().getTopic();
+
+                        parentChildUsers.forEach(user -> {
+                            if ((remindCnt == 1 || remindCnt == 3 || remindCnt == 6) &&
+                                ((user.isMeChild() && !currentQnA.isChildAnswer()) ||
+                                        (!user.isMeChild() && !currentQnA.isParentAnswer()))) {
+                                    try {
+                                        if (remindCnt == 1) {
+                                            pushAlarm(FCMPushRequestDto.sendOpponentRemind(user.getFcmToken(), currentTopic, 24));
+                                        } else if (remindCnt == 3) {
+                                            pushAlarm(FCMPushRequestDto.sendOpponentRemind(user.getFcmToken(), currentTopic, 72));
+                                        } else if (remindCnt == 6) {
+                                            pushAlarm(FCMPushRequestDto.sendTodayQna(
+                                                    user.getFcmToken(),
+                                                    currentQnA.getQuestion().getSection().getValue(),
+                                                    currentTopic));
+                                        }
+                                    } catch (IOException e) {
+                                        log.error("❌❌❌ 리마인드 알림 전송 실패");
+                                    }
+                                }
+                            });
+                    }
+
+                    // 부모와 자식 모두 답변한 경우
+                    else if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer() && parentchild.getCount() < 7) {
 
                         log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
-                        parentchild.addCount();
-                        Parentchild pc = em.merge(parentchild);
+                        parentchild.addCount();   // 오늘의 질문 UP & 리마인드 카운트 초기화
+                        pc = em.merge(parentchild);
 
                         log.info("스케줄링 작업 예약 내 addCount 후 count: {}", pc.getCount());
 
                         QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
-//                        em.close();
 
                         log.info("\n  Current QnA: {}  \n  Today QnA: {}", currentQnA.getId(), todayQnA.getId());
                         if (todayQnA == null) {
@@ -219,7 +259,6 @@ public class FCMService {
                         }
 
 
-                        List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
                         if (parentChildUsers.stream().
                                 allMatch(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))) {
 
@@ -230,6 +269,8 @@ public class FCMService {
                                     todayQnA.getQuestion().getTopic()), parentchild.getId());
                         }
                     }
+
+
                 }
                 transactionManager.commit(transactionStatus);
             } catch (PessimisticLockingFailureException | PessimisticLockException e) {

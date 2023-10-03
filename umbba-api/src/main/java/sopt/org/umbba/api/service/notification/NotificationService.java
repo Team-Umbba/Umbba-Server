@@ -54,7 +54,21 @@ public class NotificationService {
         sqsProducer.produce(ScheduleDto.of());
     }
 
+    // 콕찌르기 기능 추가 시 사용
+    public void pushOpponentRemind(Long userId, String topic) {
+
+        // 상대 측 유저의 FCM 토큰 찾기
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ErrorType.INVALID_USER)
+        );
+
+        log.info("리마인드할 상대방 조회 완료!");
+        sqsProducer.produce(FCMPushRequestDto.sendOpponentRemind(user.getFcmToken(), topic, 24));
+    }
+
     public void sendExceptionToSlack(Exception e, HttpServletRequest request) {
         sqsProducer.produce(SlackDto.of(e, request.getMethod(), request.getRequestURI()));
     }
+
+
 }

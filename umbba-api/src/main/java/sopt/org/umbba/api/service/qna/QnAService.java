@@ -93,6 +93,18 @@ public class QnAService {
         }
     }
 
+    // 콕찌르기와 같이 특정 이벤트로 리마인드 알림을 발신할 경우
+    @Transactional
+    public void remindQuestion(Long userId) {
+        User myUser = getUserById(userId);
+        Parentchild parentchild = getParentchildByUser(myUser);
+        User opponentUser = getOpponentByParentchild(parentchild, userId);
+        QnA todayQnA = getTodayQnAByParentchild(parentchild);
+
+
+        notificationService.pushOpponentRemind(opponentUser.getId(), todayQnA.getQuestion().getTopic());
+    }
+
     public List<QnAListResponseDto> getQnaList(Long userId, Long sectionId) {
         User myUser = getUserById(userId);
         if (sectionId < 1L || sectionId > 5L) {
