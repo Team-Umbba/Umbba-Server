@@ -93,6 +93,18 @@ public class QnAService {
         }
     }
 
+    // 콕찌르기와 같이 특정 이벤트로 리마인드 알림을 발신할 경우
+    @Transactional
+    public void remindQuestion(Long userId) {
+        User myUser = getUserById(userId);
+        Parentchild parentchild = getParentchildByUser(myUser);
+        User opponentUser = getOpponentByParentchild(parentchild, userId);
+        QnA todayQnA = getTodayQnAByParentchild(parentchild);
+
+
+        notificationService.pushOpponentRemind(opponentUser.getId(), todayQnA.getQuestion().getTopic());
+    }
+
     public List<QnAListResponseDto> getQnaList(Long userId, Long sectionId) {
         User myUser = getUserById(userId);
         if (sectionId < 1L || sectionId > 5L) {
@@ -102,8 +114,14 @@ public class QnAService {
         Parentchild parentchild = getParentchildByUser(myUser);
         List<QnA> qnaList = getQnAListByParentchild(parentchild);
 
+        QnA todayQnA = getTodayQnAByParentchild(parentchild);
+        int doneIndex = parentchild.getCount() - 1;
+        if (todayQnA.isChildAnswer() && todayQnA.isParentAnswer()) {
+            doneIndex += 1;
+        }
+
         return qnaList.stream()
-                .limit(parentchild.getCount() - 1)  // index까지만 요소를 처리
+                .limit(doneIndex)  // 현재 답변 완료된 index까지 보이도록
                 .filter(qna -> Objects.equals(qna.getQuestion().getSection().getSectionId(), sectionId))
                 .map(qna -> {
                     return QnAListResponseDto.builder()
