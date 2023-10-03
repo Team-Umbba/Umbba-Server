@@ -39,6 +39,17 @@ public class QnAController {
         return ApiResponse.success(SuccessType.ANSWER_TODAY_QUESTION_SUCCESS);
     }
 
+    // 사용자가 직접 리마인드를 유도할 경우
+    @GetMapping("/qna/answer/remind")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse remindQuestion(
+            Principal principal) {
+
+        qnAService.remindQuestion(JwtProvider.getUserFromPrincial(principal));
+
+        return ApiResponse.success(SuccessType.REMIND_QUESTION_SUCCESS);
+    }
+
     @GetMapping("/qna/list/{sectionId}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<List<QnAListResponseDto>> getQnaList(
