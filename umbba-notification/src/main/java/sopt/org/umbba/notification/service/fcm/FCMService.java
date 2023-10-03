@@ -231,6 +231,7 @@ public class FCMService {
                                             pushAlarm(FCMPushRequestDto.sendOpponentRemind(user.getFcmToken(), currentTopic, 72));
                                         } else if (remindCnt == 6) {
                                             pushAlarm(FCMPushRequestDto.sendTodayQna(
+                                                    user.getFcmToken(),
                                                     currentQnA.getQuestion().getSection().getValue(),
                                                     currentTopic));
                                         }

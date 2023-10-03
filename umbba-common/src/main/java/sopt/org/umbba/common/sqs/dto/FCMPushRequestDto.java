@@ -34,6 +34,16 @@ public class FCMPushRequestDto extends MessageDto{
                 .build();
     }
 
+    public static FCMPushRequestDto sendTodayQna(String targetToken, String section, String topic) {
+
+        return FCMPushRequestDto.builder()
+                .type(MessageType.FIREBASE)
+                .targetToken(targetToken)
+                .title("📞" + section + PushMessage.TODAY_QNA.getTitle())
+                .body("'" + topic + PushMessage.TODAY_QNA.getBody())
+                .build();
+    }
+
     // QnAService or QnAController에서 특정 유저의 답변 입력 시 관계에 속한 상대 측 유저의 fcm 토큰으로 푸시 전송
     public static FCMPushRequestDto sendOpponentReply(String targetToken, String question) {
 
