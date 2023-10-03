@@ -119,6 +119,7 @@ public class AuthService {
             }
         }
         if (allUsersDeleted) {
+            log.info("삭제된 부모자식: {} X {}", findUsers.get(0).getUsername(), findUsers.get(1).getUsername());
             findUsers.forEach(u -> userRepository.deleteById(u.getId()));
             parentchildRepository.deleteById(parentChild.getId());
             parentChild.getQnaList().forEach(qna -> qnARepository.deleteById(qna.getId()));
