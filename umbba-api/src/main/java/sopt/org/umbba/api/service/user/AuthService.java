@@ -114,7 +114,11 @@ public class AuthService {
         boolean allUsersDeleted = findUsers.stream()
                 .allMatch(u -> u.getSocialPlatform().equals(SocialPlatform.WITHDRAW));
         if (allUsersDeleted) {
-            log.info("삭제된 부모자식: {} X {}", findUsers.get(0).getUsername(), findUsers.get(1).getUsername());
+            if (findUsers.size() == 1) {
+                log.info("삭제된 유저: {}", findUsers.get(0).getUsername());
+            } else if (findUsers.size() == 2) {
+                log.info("삭제된 부모자식: {} X {}", findUsers.get(0).getUsername(), findUsers.get(1).getUsername());
+            }
             parentChild.getQnaList().forEach(qna -> qnARepository.deleteById(qna.getId()));
             parentchildRepository.deleteById(parentChild.getId());
             findUsers.forEach(u -> userRepository.deleteById(u.getId()));
