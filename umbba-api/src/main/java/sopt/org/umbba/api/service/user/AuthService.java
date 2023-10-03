@@ -103,29 +103,26 @@ public class AuthService {
     @Transactional
     public void signout(Long userId) {
         User user = getUserById(userId);
-
-        userRepository.deleteById(userId);
+        user.updateRefreshToken(null);
+        user.updateFcmToken(null);
+        user.deleteSocialInfo();
         jwtProvider.deleteRefreshToken(userId); // 일치하는 ID가 없는 경우에는 아무 동작도 수행하지 않음 (CrudRepository 기본 동작)
 
         Parentchild parentChild = user.getParentChild();
         List<User> findUsers = userRepository.findUserByParentChild(parentChild);
-        boolean allUsersDeleted = true;
 
+        boolean allUsersDeleted = true;
         for (User findUser : findUsers) {
-            if (!findUser.getDeleted()) {
+            if (!(findUser.getSocialPlatform().equals(SocialPlatform.WITHDRAW))){
                 allUsersDeleted = false;
-                break; // 하나라도 deleted가 false인 경우 반복문 종료
+                break;
             }
         }
         if (allUsersDeleted) {
+            findUsers.forEach(u -> userRepository.deleteById(u.getId()));
             parentchildRepository.deleteById(parentChild.getId());
             parentChild.getQnaList().forEach(qna -> qnARepository.deleteById(qna.getId()));
         }
-
-//        user.updateRefreshToken(null);
-//        user.updateFcmToken(null);
-//        user.deleteSocialInfo();
-
     }
 
     private User getUserById(Long userId) {
