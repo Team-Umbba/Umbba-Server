@@ -1,9 +1,13 @@
 package sopt.org.umbba.domain.domain.parentchild.dao;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import sopt.org.umbba.domain.domain.parentchild.Parentchild;
 import sopt.org.umbba.domain.domain.user.User;
+
+import com.querydsl.jpa.impl.JPAQuery;
+
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;

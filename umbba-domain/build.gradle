@@ -1,3 +1,8 @@
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0"
+    }
+}
 plugins {
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
@@ -23,8 +28,9 @@ dependencies {
     implementation group: "io.jsonwebtoken", name: "jjwt-jackson", version: "0.11.2"
 
     // querydsl
-    compile('com.querydsl:querydsl-jpa')
-    implementation "com.querydsl:querydsl-core"
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+    compile("com.querydsl:querydsl-core")
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties["querydsl.version"]}:jpa"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api:2.2.3"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api:1.3.5"
@@ -54,6 +60,7 @@ querydsl {
 sourceSets {
     main.java.srcDir querydslDir
 }
+
 configurations {
     querydsl.extendsFrom compileClasspath
 }
