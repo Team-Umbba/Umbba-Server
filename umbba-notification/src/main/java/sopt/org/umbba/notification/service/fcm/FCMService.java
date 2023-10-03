@@ -217,27 +217,28 @@ public class FCMService {
                         log.info("오늘의 질문 아직 답변하지 않은 유저 존재!!! - 부모");
 
                         Parentchild checkPc = pc;
+                        int remindCnt = checkPc.getRemindCnt();
+                        String currentTopic = currentQnA.getQuestion().getTopic();
 
                         parentChildUsers.forEach(user -> {
-                            if (checkPc.getRemindCnt() == 1 || checkPc.getRemindCnt() == 3 || checkPc.getRemindCnt() == 6) {
-                                if ((user.isMeChild() && !currentQnA.isChildAnswer()) ||
-                                        (!user.isMeChild() && !currentQnA.isParentAnswer())) {
+                            if ((remindCnt == 1 || remindCnt == 3 || remindCnt == 6) &&
+                                ((user.isMeChild() && !currentQnA.isChildAnswer()) ||
+                                        (!user.isMeChild() && !currentQnA.isParentAnswer()))) {
                                     try {
-                                        if (checkPc.getRemindCnt() == 1) {
-                                            pushAlarm(FCMPushRequestDto.sendOpponentRemind(user.getFcmToken(), currentQnA.getQuestion().getTopic(), 24));
-                                        } else if (checkPc.getRemindCnt() == 3) {
-                                            pushAlarm(FCMPushRequestDto.sendOpponentRemind(user.getFcmToken(), currentQnA.getQuestion().getTopic(), 72));
-                                        } else if (checkPc.getRemindCnt() == 6) {
+                                        if (remindCnt == 1) {
+                                            pushAlarm(FCMPushRequestDto.sendOpponentRemind(user.getFcmToken(), currentTopic, 24));
+                                        } else if (remindCnt == 3) {
+                                            pushAlarm(FCMPushRequestDto.sendOpponentRemind(user.getFcmToken(), currentTopic, 72));
+                                        } else if (remindCnt == 6) {
                                             pushAlarm(FCMPushRequestDto.sendTodayQna(
                                                     currentQnA.getQuestion().getSection().getValue(),
-                                                    currentQnA.getQuestion().getTopic()));
+                                                    currentTopic));
                                         }
                                     } catch (IOException e) {
                                         log.error("❌❌❌ 리마인드 알림 전송 실패");
                                     }
                                 }
-                            }
-                        });
+                            });
                     }
 
                     // 부모와 자식 모두 답변한 경우
