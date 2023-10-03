@@ -114,8 +114,14 @@ public class QnAService {
         Parentchild parentchild = getParentchildByUser(myUser);
         List<QnA> qnaList = getQnAListByParentchild(parentchild);
 
+        QnA todayQnA = getTodayQnAByParentchild(parentchild);
+        int doneIndex = parentchild.getCount() - 1;
+        if (todayQnA.isChildAnswer() && todayQnA.isParentAnswer()) {
+            doneIndex += 1;
+        }
+
         return qnaList.stream()
-                .limit(parentchild.getCount() - 1)  // index까지만 요소를 처리
+                .limit(doneIndex)  // 현재 답변 완료된 index까지 보이도록
                 .filter(qna -> Objects.equals(qna.getQuestion().getSection().getSectionId(), sectionId))
                 .map(qna -> {
                     return QnAListResponseDto.builder()

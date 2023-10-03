@@ -2,6 +2,8 @@ package sopt.org.umbba.domain.domain.user;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import sopt.org.umbba.domain.domain.common.AuditingTimeEntity;
 import sopt.org.umbba.domain.domain.parentchild.Parentchild;
 
@@ -15,6 +17,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
+@SQLDelete(sql = "UPDATE user SET deleted=true WHERE user_id=?")
+@Where(clause = "deleted=false")
 public class User extends AuditingTimeEntity {
 
     @Id
@@ -82,7 +86,8 @@ public class User extends AuditingTimeEntity {
     private String socialAccessToken;
 
 //    private String socialRefreshToken;
-    //
+
+    private boolean deleted = Boolean.FALSE;
 
     // 로그인 새롭게 할 때마다 해당 필드들 업데이트
     public void updateSocialInfo(String socialNickname, String socialProfileImage, String socialAccessToken/*, String socialRefreshToken*/) {

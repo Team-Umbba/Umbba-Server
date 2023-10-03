@@ -15,21 +15,27 @@ import sopt.org.umbba.api.service.user.social.apple.AppleLoginService;
 import sopt.org.umbba.api.service.user.social.kakao.KakaoLoginService;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
+import sopt.org.umbba.domain.domain.parentchild.Parentchild;
+import sopt.org.umbba.domain.domain.parentchild.repository.ParentchildRepository;
+import sopt.org.umbba.domain.domain.qna.repository.QnARepository;
 import sopt.org.umbba.domain.domain.user.SocialPlatform;
 import sopt.org.umbba.domain.domain.user.User;
 import sopt.org.umbba.domain.domain.user.repository.UserRepository;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class AuthService { 
+public class AuthService {
 
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
+    private final ParentchildRepository parentchildRepository;
+    private final QnARepository qnARepository;
 
     private final AppleLoginService appleLoginService;
     private final KakaoLoginService kakaoLoginService;
@@ -98,9 +104,21 @@ public class AuthService {
     public void signout(Long userId) {
         User user = getUserById(userId);
         user.updateRefreshToken(null);
-        jwtProvider.deleteRefreshToken(userId); // 일치하는 ID가 없는 경우에는 아무 동작도 수행하지 않음 (CrudRepository 기본 동작)
         user.updateFcmToken(null);
         user.deleteSocialInfo();
+        jwtProvider.deleteRefreshToken(userId); // 일치하는 ID가 없는 경우에는 아무 동작도 수행하지 않음 (CrudRepository 기본 동작)
+
+        Parentchild parentChild = user.getParentChild();
+        List<User> findUsers = userRepository.findUserByParentChild(parentChild);
+
+        boolean allUsersDeleted = findUsers.stream()
+                .allMatch(u -> u.getSocialPlatform().equals(SocialPlatform.WITHDRAW));
+        if (allUsersDeleted) {
+            log.info("삭제된 부모자식: {} X {}", findUsers.get(0).getUsername(), findUsers.get(1).getUsername());
+            parentChild.getQnaList().forEach(qna -> qnARepository.deleteById(qna.getId()));
+            parentchildRepository.deleteById(parentChild.getId());
+            findUsers.forEach(u -> userRepository.deleteById(u.getId()));
+        }
     }
 
     private User getUserById(Long userId) {

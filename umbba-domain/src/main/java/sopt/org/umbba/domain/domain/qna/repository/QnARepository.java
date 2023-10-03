@@ -10,4 +10,6 @@ public interface QnARepository extends Repository<QnA, Long> {
     void save(QnA qnA);
 
     Optional<QnA> findQnAById(Long id);
+
+    void deleteById(Long id);
 }

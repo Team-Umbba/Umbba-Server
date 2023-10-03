@@ -1,6 +1,8 @@
 package sopt.org.umbba.domain.domain.qna;
 
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import sopt.org.umbba.domain.domain.common.AuditingTimeEntity;
 
 import javax.persistence.*;
@@ -10,6 +12,8 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
+@SQLDelete(sql = "UPDATE qna SET deleted=true WHERE qna_id=?")
+@Where(clause = "deleted=false")
 public class QnA extends AuditingTimeEntity {
 
     @Id
@@ -31,6 +35,7 @@ public class QnA extends AuditingTimeEntity {
     @Column(nullable = false)
     private boolean isChildAnswer;
 
+    private boolean deleted = Boolean.FALSE;
 
     public boolean isParentAnswer() {
         return isParentAnswer;

@@ -2,6 +2,8 @@ package sopt.org.umbba.domain.domain.parentchild;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
 import sopt.org.umbba.domain.domain.common.AuditingTimeEntity;
@@ -19,6 +21,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
+@SQLDelete(sql = "UPDATE parentchild SET deleted=true WHERE parentchild_id=?")
+@Where(clause = "deleted=false")
 public class Parentchild extends AuditingTimeEntity {
 
     @Id
@@ -80,6 +84,8 @@ public class Parentchild extends AuditingTimeEntity {
 
     @Column(nullable = false)
     private LocalTime pushTime;  // default: 오후 11시(클라이언트)
+
+    private boolean deleted = Boolean.FALSE;
 
     public void initQnA() {
         qnaList = new ArrayList<>();
