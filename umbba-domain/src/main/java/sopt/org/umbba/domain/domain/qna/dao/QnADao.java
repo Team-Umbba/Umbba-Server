@@ -1,5 +1,8 @@
 package sopt.org.umbba.domain.domain.qna.dao;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import sopt.org.umbba.domain.domain.qna.QnA;
@@ -11,19 +14,25 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
+import static sopt.org.umbba.domain.domain.parentchild.QParentchild.parentchild;
+import static sopt.org.umbba.domain.domain.user.QUser.user;
+
 @Slf4j
 @Repository
+@RequiredArgsConstructor
 public class QnADao {
 
     @PersistenceContext
     private EntityManager em;
 
+    private final JPAQueryFactory queryFactory;
+
 
     // READ
 
     // 유저 아이디로 QnA 리스트 조회하기
-    public Optional<List<QnA>> findQnASByUserId(Long userId) {
-        log.info("jpql 실행 전");
+    public List<QnA> findQnASByUserId(Long userId) {
+        /*log.info("jpql 실행 전");
         String jpql = "SELECT q FROM Parentchild pc " +
                 "JOIN pc.qnaList q " +
                 "LEFT JOIN User u ON u.parentChild.id = pc.id " +
@@ -44,7 +53,18 @@ public class QnADao {
             return Optional.empty();
         } finally {
             em.close();
-        }
+        }*/
+
+        return queryFactory
+                .select(parentchild.qnaList)
+                .from(parentchild)
+                .leftJoin(user.parentChild, parentchild)
+                .where(userIdEq(userId))
+                .fetchOne();
+    }
+
+    private BooleanExpression userIdEq(Long userId) {
+        return userId != null ? user.id.eq(userId) : null;
     }
 
 }
