@@ -206,24 +206,27 @@ public class FCMService {
                     QnA currentQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
                     List<User> parentChildUsers = userRepository.findUserByParentChild(parentchild);
 
-                    parentchild.addRemindCnt();   // 리마인드 카운트는 항상 초기화!
-                    Parentchild pc = em.merge(parentchild);
-                    log.info("스케줄링 작업 내 addRemindCnt 후 remindCnt: {}", pc.getRemindCnt());
+                    if (parentChildUsers.stream().
+                            allMatch(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))) {
+
+                        parentchild.addRemindCnt();   // 리마인드 카운트는 항상 초기화!
+                        Parentchild pc = em.merge(parentchild);
+                        log.info("스케줄링 작업 내 addRemindCnt 후 remindCnt: {}", pc.getRemindCnt());
 
 
-                    // CASE 분류 - 1. 자식만 답변 2. 부모만 답변 3. 둘다 답변 X
-                    if (!currentQnA.isParentAnswer() || !currentQnA.isChildAnswer()) {
+                        // CASE 분류 - 1. 자식만 답변 2. 부모만 답변 3. 둘다 답변 X
+                        if (!currentQnA.isParentAnswer() || !currentQnA.isChildAnswer()) {
 
-                        log.info("오늘의 질문 아직 답변하지 않은 유저 존재!!! - 부모");
+                            log.info("오늘의 질문 아직 답변하지 않은 유저 존재!!! - 부모");
 
-                        Parentchild checkPc = pc;
-                        int remindCnt = checkPc.getRemindCnt();
-                        String currentTopic = currentQnA.getQuestion().getTopic();
+                            Parentchild checkPc = pc;
+                            int remindCnt = checkPc.getRemindCnt();
+                            String currentTopic = currentQnA.getQuestion().getTopic();
 
-                        parentChildUsers.forEach(user -> {
-                            if ((remindCnt == 1 || remindCnt == 3 || remindCnt == 6) &&
-                                ((user.isMeChild() && !currentQnA.isChildAnswer()) ||
-                                        (!user.isMeChild() && !currentQnA.isParentAnswer()))) {
+                            parentChildUsers.forEach(user -> {
+                                if ((remindCnt == 1 || remindCnt == 3 || remindCnt == 6) &&
+                                        ((user.isMeChild() && !currentQnA.isChildAnswer()) ||
+                                                (!user.isMeChild() && !currentQnA.isParentAnswer()))) {
                                     try {
                                         if (remindCnt == 1) {
                                             pushAlarm(FCMPushRequestDto.sendOpponentRemind(user.getFcmToken(), currentTopic, 24));
@@ -240,27 +243,23 @@ public class FCMService {
                                     }
                                 }
                             });
-                    }
-
-                    // 부모와 자식 모두 답변한 경우
-                    else if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer() && parentchild.getCount() < 7) {
-
-                        log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
-                        parentchild.addCount();   // 오늘의 질문 UP & 리마인드 카운트 초기화
-                        pc = em.merge(parentchild);
-
-                        log.info("스케줄링 작업 예약 내 addCount 후 count: {}", pc.getCount());
-
-                        QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
-
-                        log.info("\n  Current QnA: {}  \n  Today QnA: {}", currentQnA.getId(), todayQnA.getId());
-                        if (todayQnA == null) {
-                            log.error("{}번째 Parentchild의 QnaList가 존재하지 않음!", parentchild.getId());
                         }
 
+                        // 부모와 자식 모두 답변한 경우
+                        else if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer() && parentchild.getCount() < 7) {
 
-                        if (parentChildUsers.stream().
-                                allMatch(user -> user.validateParentchild(parentChildUsers) && !user.getSocialPlatform().equals(SocialPlatform.WITHDRAW))) {
+                            log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
+                            parentchild.addCount();   // 오늘의 질문 UP & 리마인드 카운트 초기화
+                            pc = em.merge(parentchild);
+
+                            log.info("스케줄링 작업 예약 내 addCount 후 count: {}", pc.getCount());
+
+                            QnA todayQnA = parentchild.getQnaList().get(parentchild.getCount() - 1);
+
+                            log.info("\n  Current QnA: {}  \n  Today QnA: {}", currentQnA.getId(), todayQnA.getId());
+                            if (todayQnA == null) {
+                                log.error("{}번째 Parentchild의 QnaList가 존재하지 않음!", parentchild.getId());
+                            }
 
                             log.info("FCMService - schedulePushAlarm() 실행");
                             log.info("FCMService-schedulePushAlarm() topic: {}", todayQnA.getQuestion().getTopic());
