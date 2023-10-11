@@ -42,8 +42,8 @@ public class FCMScheduler {
                 })
                 .forEach(pc -> {
                 log.info(pc.getId() + "번째 Parentchild");
-                String cronExpression = String.format("0 %s %s * * ?", pc.getPushTime().getMinute(), pc.getPushTime().getHour());
-//                String cronExpression = String.format("*/20 * * * * *");
+//                String cronExpression = String.format("0 %s %s * * ?", pc.getPushTime().getMinute(), pc.getPushTime().getHour());
+                String cronExpression = String.format("*/20 * * * * *");
                 log.info("cron: {}", cronExpression);
                 fcmService.schedulePushAlarm(cronExpression, pc.getId());
             });

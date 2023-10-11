@@ -73,7 +73,17 @@ public class ParentchildDao {
             em.close();
         }*/
 
-        QUser userSub = new QUser("userSub");
+        QUser uc = new QUser("uc");
+
+        return Optional.ofNullable(queryFactory
+                .select(user)
+                .from(user)
+                .join(uc).on(uc.parentChild.eq(user.parentChild))
+                .where(uc.id.eq(userId).and(uc.id.ne(user.id)))
+                .fetchOne());
+
+
+        /*QUser userSub = new QUser("userSub");
 
         return Optional.ofNullable(queryFactory
                 .selectFrom(user)
@@ -84,7 +94,7 @@ public class ParentchildDao {
                                         .fetchOne()),
                         userIdEq(userId)
                 )
-                .fetchOne());
+                .fetchOne());*/
     }
 
     public List<String> findFcmTokensById(Long parentchildId) {
