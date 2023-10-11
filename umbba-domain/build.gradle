@@ -1,11 +1,11 @@
-buildscript {
+/*buildscript {
     ext {
         queryDslVersion = "5.0.0"
     }
 }
 plugins {
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
-}
+}*/
 bootJar { enabled = false }
 jar { enabled = true }
 
@@ -28,44 +28,58 @@ dependencies {
     implementation group: "io.jsonwebtoken", name: "jjwt-jackson", version: "0.11.2"
 
     // querydsl
-    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
-    compile("com.querydsl:querydsl-core")
-    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties["querydsl.version"]}:jpa"
-    annotationProcessor "jakarta.persistence:jakarta.persistence-api:2.2.3"
-    annotationProcessor "jakarta.annotation:jakarta.annotation-api:1.3.5"
+//    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+//    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+//    compile("com.querydsl:querydsl-core")
+//    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties["querydsl.version"]}:jpa"
+//    annotationProcessor "jakarta.persistence:jakarta.persistence-api:2.2.3"
+//    annotationProcessor "jakarta.annotation:jakarta.annotation-api:1.3.5"
+
+    // querydsl
+    // queryDSL 설정
+    implementation "com.querydsl:querydsl-jpa"
+    implementation "com.querydsl:querydsl-core"
+    implementation "com.querydsl:querydsl-collections"
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa" // querydsl JPAAnnotationProcessor 사용 지정
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api" // java.lang.NoClassDefFoundError (javax.annotation.Generated) 대응 코드
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api" // java.lang.NoClassDefFoundError (javax.annotation.Entity) 대응 코드
+
 }
 
-//def queryDslDir = "build/querydsl/generated"
-//
-//sourceSets {
-//    main.java.srcDirs += [queryDslDir]
-//}
-//
-//tasks.withType(JavaCompile) {
-//    options.annotationProcessorGeneratedSourcesDirectory = file(queryDslDir)
-//}
-//
-//clean.doLast {
-//    file(queryDslDir).deleteDir()
-//}
-
-def querydslDir = "$buildDir/generated/querydsl"  // Q클래스 생성 위치
-
-querydsl {
-    jpa = true
-    querydslSourcesDir = querydslDir
-}
+def queryDslDir = "build/querydsl/generated"
 
 sourceSets {
-    main.java.srcDir querydslDir
+    main.java.srcDirs += [queryDslDir]
 }
 
-configurations {
-    querydsl.extendsFrom compileClasspath
+tasks.withType(JavaCompile) {
+    options.getGeneratedSourceOutputDirectory().set(file(queryDslDir))
 }
 
-compileQuerydsl {
-    options.annotationProcessorPath = configurations.querydsl
+clean.doLast {
+    file(queryDslDir).deleteDir()
 }
+
+//def querydslDir = "$buildDir/generated/querydsl"  // Q클래스 생성 위치
+//
+//clean {
+//    delete file(querydslDir)
+//}
+//
+//querydsl {
+//    jpa = true
+//    querydslSourcesDir = querydslDir
+//}
+//
+//sourceSets {
+//    main.java.srcDir querydslDir
+//}
+//
+//configurations {
+//    querydsl.extendsFrom compileClasspath
+//}
+//
+//compileQuerydsl {
+//    options.annotationProcessorPath = configurations.querydsl
+//}
 
