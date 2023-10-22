@@ -184,6 +184,7 @@ public class FCMService {
 
         scheduledFuture = taskScheduler.schedule(() -> {
 
+
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
