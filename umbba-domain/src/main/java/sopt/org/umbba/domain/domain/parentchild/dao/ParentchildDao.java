@@ -41,13 +41,18 @@ public class ParentchildDao {
 
     public Optional<User> findMatchUserByUserId(Long userId) {
 
+        QUser user = QUser.user;
         QUser uc = new QUser("uc");
 
         return Optional.ofNullable(queryFactory
                 .select(user)
                 .from(user)
-                .join(uc).on(uc.parentChild.eq(user.parentChild))
-                .where(uc.id.eq(userId).and(uc.id.ne(user.id)))
+                .where(user.id.ne(userId)
+                        .and(user.parentChild.eq(
+                                JPAExpressions.select(uc.parentChild)
+                                        .from(uc)
+                                        .where(uc.id.eq(userId))
+                        )))
                 .fetchOne());
     }
 
