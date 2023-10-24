@@ -2,8 +2,7 @@ package sopt.org.umbba.api.controller.user.dto.request;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import sopt.org.umbba.domain.domain.user.User;
 
 import javax.validation.constraints.NotBlank;
@@ -12,6 +11,8 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserInfoDto {
 
     private Long userId;

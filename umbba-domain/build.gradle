@@ -20,24 +20,25 @@ dependencies {
     implementation group: "io.jsonwebtoken", name: "jjwt-jackson", version: "0.11.2"
 
     // querydsl
-//    implementation "com.querydsl:querydsl-jpa"
-//    implementation "com.querydsl:querydsl-core"
-//    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties["querydsl.version"]}:jpa"
-//    annotationProcessor "jakarta.persistence:jakarta.persistence-api:2.2.3"
-//    annotationProcessor "jakarta.annotation:jakarta.annotation-api:1.3.5"
+    implementation "com.querydsl:querydsl-jpa"
+    implementation "com.querydsl:querydsl-core"
+    implementation "com.querydsl:querydsl-collections"
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa" // querydsl JPAAnnotationProcessor 사용 지정
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api" // java.lang.NoClassDefFoundError (javax.annotation.Generated) 대응 코드
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api" // java.lang.NoClassDefFoundError (javax.annotation.Entity) 대응 코드
+
 }
 
-//def queryDslDir = "build/querydsl/generated"
-//
-//sourceSets {
-//    main.java.srcDirs += [queryDslDir]
-//}
-//
-//tasks.withType(JavaCompile) {
-//    options.annotationProcessorGeneratedSourcesDirectory = file(queryDslDir)
-//}
-//
-//clean.doLast {
-//    file(queryDslDir).deleteDir()
-//}
+def queryDslDir = "build/querydsl/generated"
 
+sourceSets {
+    main.java.srcDirs += [queryDslDir]
+}
+
+tasks.withType(JavaCompile) {
+    options.getGeneratedSourceOutputDirectory().set(file(queryDslDir))
+}
+
+clean.doLast {
+    file(queryDslDir).deleteDir()
+}
