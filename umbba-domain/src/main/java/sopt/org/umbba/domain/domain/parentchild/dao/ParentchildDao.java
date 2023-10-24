@@ -13,6 +13,7 @@ import sopt.org.umbba.domain.domain.user.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,13 +32,29 @@ public class ParentchildDao {
 
     public Optional<Parentchild> findByUserId(Long userId) {
 
-        return Optional.ofNullable(queryFactory
-                .selectFrom(parentchild)
-                .leftJoin(user.parentChild, parentchild)
-                .where(
-                        userIdEq(userId)
-                )
-                .fetchOne());
+//        return Optional.ofNullable(queryFactory
+//                .selectFrom(parentchild)
+//                .leftJoin(user.parentChild, parentchild)
+//                .where(
+//                        userIdEq(userId)
+//                )
+//                .fetchOne());
+
+        String jpql = "SELECT pc FROM Parentchild pc " +
+                "JOIN User u ON u.parentChild = pc " +
+                "WHERE u.id = :id";
+
+        try {
+            Parentchild parentchild = em.createQuery(jpql, Parentchild.class)
+                    .setParameter("id", userId)
+                    .getSingleResult();
+            return Optional.ofNullable(parentchild);
+
+        } catch (NoResultException e) {
+            return Optional.empty();
+        } finally {
+            em.close();
+        }
     }
 
     public Optional<User> findMatchUserByUserId(Long userId) {
@@ -74,16 +91,29 @@ public class ParentchildDao {
 
     public List<String> findFcmTokensById(Long parentchildId) {
 
-        return queryFactory
-                .select(user.fcmToken)
-                .from(user)
-                .leftJoin(user.parentChild, parentchild)
-                .where(
-                        parentchildIdEq(parentchildId)
-                )
-                .fetch();
-    }
+//        return queryFactory
+//                .select(user.fcmToken)
+//                .from(user)
+//                .leftJoin(user.parentChild, parentchild)
+//                .where(
+//                        parentchildIdEq(parentchildId)
+//                )
+//                .fetch();
 
+        String jpql = "SELECT u.fcmToken FROM User u " +
+                "JOIN Parentchild pc ON pc.id = u.parentChild.id " +
+                "WHERE pc.id = :id";
+
+        try {
+            return em.createQuery(jpql, String.class)
+                    .setParameter("id", parentchildId)
+                    .getResultList();
+        } catch (NoResultException e) {
+            return new ArrayList<>();
+        } finally {
+            em.close();
+        }
+    }
 
     private BooleanExpression userIdEq(Long userId) {
         return userId != null ? user.id.eq(userId) : null;
