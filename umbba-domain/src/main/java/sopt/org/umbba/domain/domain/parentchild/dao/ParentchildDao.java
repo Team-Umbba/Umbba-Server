@@ -3,6 +3,7 @@ package sopt.org.umbba.domain.domain.parentchild.dao;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.JPAExpressions;
+import javax.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -41,7 +42,7 @@ public class ParentchildDao {
 
     public Optional<User> findMatchUserByUserId(Long userId) {
 
-        QUser user = QUser.user;
+        /*QUser user = QUser.user;
         QUser uc = new QUser("uc");
 
         return Optional.ofNullable(queryFactory
@@ -53,7 +54,22 @@ public class ParentchildDao {
                                         .from(uc)
                                         .where(uc.id.eq(userId))
                         )))
-                .fetchOne());
+                .fetchOne());*/
+
+        String jpql = "SELECT u FROM User u " +
+                "JOIN User uc ON uc.parentChild = u.parentChild " +
+                "WHERE uc.id = :id AND uc.id != u.id";
+
+        try {
+            User user = em.createQuery(jpql, User.class)
+                    .setParameter("id", userId)
+                    .getSingleResult();
+            return Optional.ofNullable(user);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        } finally {
+            em.close();
+        }
     }
 
     public List<String> findFcmTokensById(Long parentchildId) {
