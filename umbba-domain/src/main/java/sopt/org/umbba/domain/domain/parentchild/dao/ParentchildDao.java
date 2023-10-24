@@ -41,13 +41,6 @@ public class ParentchildDao {
 
     public Optional<User> findMatchUserByUserId(Long userId) {
 
-        /*QUser user = QUser.user; // 기존 user 엔티티에 대한 Querydsl 패스
-
-        return Optional.ofNullable(queryFactory
-                .selectFrom(user)
-                .where(user.id.eq(userId)
-                        .and(user.id.ne(user.id))) // 같은 엔티티는 제외하고 다른 유저를 조회
-                .fetchOne());*/
         QUser user = QUser.user;
         QUser uc = new QUser("uc");
 
