@@ -16,7 +16,7 @@ public interface UserRepository extends Repository<User, Long> {
     // READ
     Optional<User> findById(Long id);
     boolean existsBySocialPlatformAndSocialId(SocialPlatform socialPlatform, String socialId);
-    Optional<User> findBySocialPlatformAndSocialId(SocialPlatform socialPlatform, String socialId);
+    List<User> findBySocialPlatformAndSocialId(SocialPlatform socialPlatform, String socialId);
     Optional<User> findByFcmToken(String fcmToken);
 
     // DELETE

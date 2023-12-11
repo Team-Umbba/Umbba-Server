@@ -131,8 +131,12 @@ public class AuthService {
     }
 
     private User getUserBySocialAndSocialId(SocialPlatform socialPlatform, String socialId) {
-        return userRepository.findBySocialPlatformAndSocialId(socialPlatform, socialId)
-                .orElseThrow(() -> new CustomException(ErrorType.INVALID_USER));
+        List<User> users = userRepository.findBySocialPlatformAndSocialId(socialPlatform, socialId);
+        if (users.isEmpty()) {
+            throw new CustomException(ErrorType.INVALID_USER);
+        }
+
+        return users.get(0);
     }
 
     private boolean isUserBySocialAndSocialId(SocialPlatform socialPlatform, String socialId) {
