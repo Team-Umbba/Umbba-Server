@@ -9,7 +9,7 @@ on:
       - umbba-common/**
       - umbba-external/**
   pull_request:
-    branches: [ "main" ]
+    branches: [ "develop" ]
     paths:
       - umbba-api/**
       - umbba-domain/**
