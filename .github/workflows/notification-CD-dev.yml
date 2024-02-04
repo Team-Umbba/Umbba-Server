@@ -89,7 +89,7 @@ jobs:
         shell: bash
 
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./umbba-notification.zip s3://$S3_DEVELOP_BUCKET_NAME/
+        run: aws s3 cp --region ap-northeast-2 ./umbba-notification.zip s3://$S3_BUCKET_NAME/
 
       # Deploy
       - name: Deploy
