@@ -82,7 +82,7 @@ jobs:
 
       # appspec.yml, script files 파일 복사
       - name: Copy files
-        run: cp ./scripts/umbba-notification/* ./deploy
+        run: cp ./scripts/umbba-notification-dev/* ./deploy
 
       - name: Make zip file
         run: zip -r ./umbba-notification.zip ./deploy
