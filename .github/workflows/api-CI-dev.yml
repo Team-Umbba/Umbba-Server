@@ -1,0 +1,55 @@
+name: Umbba API Server CI (Develop)
+
+on:
+  push:
+    branches: [ "develop" ]
+    paths:
+      - umbba-api/**
+      - umbba-domain/**
+      - umbba-common/**
+      - umbba-external/**
+  pull_request:
+    branches: [ "develop" ]
+    paths:
+      - umbba-api/**
+      - umbba-domain/**
+      - umbba-common/**
+      - umbba-external/**
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    # 1) 워크플로우 실행 전 기본적으로 체크아웃 필요
+    - name: checkout
+      uses: actions/checkout@v3
+
+    # 2) JDK 11버전 설치, 다른 JDK 버전을 사용하다면 수정
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+
+    # 3) AWS Secrets Manger 환경변수 사용
+    - name: Read secrets from AWS Secrets Manager into environment variables
+      uses: abhilash1in/aws-secrets-manager-action@v1.1.0
+      with:
+        aws-access-key-id: ${{ secrets.AWS_DEVELOP_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_DEVELOP_SECRET_KEY }}
+        aws-region: ap-northeast-2
+        secrets: /secret/umbba-secret
+        parse-json: false
+
+    # 이 워크플로우는 gradle build
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build with Gradle # 실제 application build(-x 옵션을 통해 test는 제외)
+      run: ./gradlew umbba-api:bootJar -x test

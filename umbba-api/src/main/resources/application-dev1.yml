@@ -1,7 +1,7 @@
 spring:
   config:
     activate:
-      on-profile: set2
+      on-profile: dev1
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -42,7 +42,7 @@ cloud:
         url: ${SQS_URL_DEV}
 
 server:
-  port: 8082
+  port: 8081
 
 kakao:
   client-id: ${KAKAO_ID}

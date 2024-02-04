@@ -1,0 +1,54 @@
+spring:
+  config:
+    activate:
+      on-profile: prod1
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL_PROD}
+    username: ${DB_USER_PROD}
+    password: ${DB_PWD_PROD}
+    hikari:
+      pool-name: Hikari 커넥션 풀  # Pool
+      connection-timeout: 30000 # 30초(default: 30초)
+      maximum-pool-size: 10  # default: 10개
+      max-lifetime: 600000   # 10분(default: 30분)
+      leak-detection-threshold: 3500  # default: 0(이용X)
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+      ejb:
+        naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    properties:
+      hibernate:
+        format_sql: true
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${CLOUD_ACCESS_PROD}
+      secretKey: ${CLOUD_SECRET_PROD}
+    region:
+      static: ${CLOUD_REGION_PROD}
+    s3:
+      bucket: ${BUCKET_NAME_PROD}
+    stack:
+      auto: false
+    sqs:
+      notification:
+        name: ${SQS_NAME_PROD}
+        url: ${SQS_URL_PROD}
+
+server:
+  port: 8081
+
+kakao:
+  client-id: ${KAKAO_ID}
+  authorization-grant-type: authorization_code
+  redirect-uri: ${KAKAO_REDIRECT_PROD}
+
+slack:
+  webhook:
+    url: ${SLACK_URL_PROD}

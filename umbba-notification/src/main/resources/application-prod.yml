@@ -1,13 +1,13 @@
 spring:
   config:
     activate:
-      on-profile: set1
+      on-profile: prod
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DB_URL_DEV}
-    username: ${DB_USER_DEV}
-    password: ${DB_PWD_DEV}
+    url: ${DB_URL_PROD}
+    username: ${DB_USER_PROD}
+    password: ${DB_PWD_PROD}
     hikari:
       pool-name: Hikari 커넥션 풀  # Pool
       connection-timeout: 30000 # 30초(default: 30초)
@@ -28,27 +28,27 @@ spring:
 cloud:
   aws:
     credentials:
-      accessKey: ${CLOUD_ACCESS_DEV}
-      secretKey: ${CLOUD_SECRET_DEV}
+      accessKey: ${CLOUD_ACCESS_PROD}
+      secretKey: ${CLOUD_SECRET_PROD}
     region:
-      static: ${CLOUD_REGION_DEV}
+      static: ${CLOUD_REGION_PROD}
     s3:
-      bucket: ${BUCKET_NAME_DEV}
+      bucket: ${BUCKET_NAME_PROD}
     stack:
       auto: false
     sqs:
       notification:
-        name: ${SQS_NAME_DEV}
-        url: ${SQS_URL_DEV}
+        name: ${SQS_NAME_PROD}
+        url: ${SQS_URL_PROD}
 
 server:
-  port: 8081
+  port: 8083
 
 kakao:
   client-id: ${KAKAO_ID}
   authorization-grant-type: authorization_code
-  redirect-uri: ${KAKAO_REDIRECT_DEV}
+  redirect-uri: ${KAKAO_REDIRECT_PROD}
 
 slack:
   webhook:
-    url: ${SLACK_URL_DEV}
+    url: ${SLACK_URL_PROD}
