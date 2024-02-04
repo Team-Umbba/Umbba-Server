@@ -101,5 +101,5 @@ jobs:
         --application-name umbba-develop-server-codedeploy
         --deployment-group-name umbba-api-server-codedeploy-group
         --file-exists-behavior OVERWRITE
-        --s3-location bucket=umbba-storage,bundleType=zip,key=umbba-api.zip
+        --s3-location bucket=umbba-develop-storage,bundleType=zip,key=umbba-api.zip
         --region ap-northeast-2
