@@ -26,10 +26,10 @@ public class MyUserInfoResponseDto {
 	private Boolean isMeChild;
 
 	private String section;
-	private Integer qnaDate;
+	private Long matchedDate;
 	private Integer qnaCnt;
 
-	public static MyUserInfoResponseDto of(User myUser, User opponentUser, Parentchild parentchild, QnA qnA, int qnaCnt) {
+	public static MyUserInfoResponseDto of(User myUser, User opponentUser, Parentchild parentchild, QnA qnA, long date, int qnaCnt) {
 
 		return MyUserInfoResponseDto.builder()
 			.myUsername(myUser.getUsername())
@@ -39,7 +39,7 @@ public class MyUserInfoResponseDto {
 			.parentchildRelation(parentchild.getRelation().getValue())
 			.isMeChild(myUser.isMeChild())
 			.section(qnA.getQuestion().getSection().getValue())
-			.qnaDate(parentchild.getCount())  // 일수와 문답 수는 다를 수 있음
+			.matchedDate(date)  // 일수와 문답 수는 다를 수 있음
 			.qnaCnt(qnaCnt).build();
 	}
 }

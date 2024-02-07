@@ -23,6 +23,9 @@ import sopt.org.umbba.domain.domain.user.User;
 import sopt.org.umbba.domain.domain.user.repository.UserRepository;
 
 import javax.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -218,7 +221,10 @@ public class QnAService {
             qnaCnt -= 1;
         }
 
-        return MyUserInfoResponseDto.of(myUser, opponentUser, parentchild, todayQnA, qnaCnt);
+        LocalDateTime firstQnADate = parentchild.getQnaList().get(0).getCreatedAt();
+        long qnaDate = ChronoUnit.DAYS.between(firstQnADate, LocalDateTime.now());
+
+        return MyUserInfoResponseDto.of(myUser, opponentUser, parentchild, todayQnA, qnaDate, qnaCnt);
     }
 
     /*
