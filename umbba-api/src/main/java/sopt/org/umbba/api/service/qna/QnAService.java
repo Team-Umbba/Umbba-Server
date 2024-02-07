@@ -324,9 +324,8 @@ public class QnAService {
         log.info("getCount(): {}", parentchild.getCount());
 
         if (parentchild.getCount() == 7 && (currentQnA.isParentAnswer() && currentQnA.isChildAnswer())) {
-            return GetMainViewResponseDto.of(currentQnA, parentchild.getCount()+1);  // 유효하지 않은 8로 반환 시 엔딩이벤트
+            return GetMainViewResponseDto.of(currentQnA, -1);  // 유효하지 않은 -1로 반환 시 엔딩이벤트
         }
-
 
         return GetMainViewResponseDto.of(currentQnA, parentchild.getCount());
     }
