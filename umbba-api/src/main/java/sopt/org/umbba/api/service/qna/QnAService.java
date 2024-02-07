@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sopt.org.umbba.api.config.sqs.producer.SqsProducer;
+
+import sopt.org.umbba.api.controller.qna.dto.response.MyUserInfoResponseDto;
 import sopt.org.umbba.api.controller.qna.dto.request.TodayAnswerRequestDto;
 import sopt.org.umbba.api.controller.qna.dto.response.*;
 import sopt.org.umbba.api.service.notification.NotificationService;
@@ -204,6 +205,22 @@ public class QnAService {
         }
     }
 
+    // 마이페이지 - 부모자식 관계 정보 조회
+    public MyUserInfoResponseDto getUserInfo(final Long userId) {
+
+        User myUser = getUserById(userId);
+        Parentchild parentchild = getParentchildByUser(myUser);
+        QnA todayQnA = getTodayQnAByParentchild(parentchild);
+        User opponentUser = getOpponentByParentchild(parentchild, userId);
+
+        int qnaCnt = parentchild.getCount();
+        if (!todayQnA.isChildAnswer() || !todayQnA.isParentAnswer()) {
+            qnaCnt -= 1;
+        }
+
+        return MyUserInfoResponseDto.of(myUser, opponentUser, parentchild, todayQnA, qnaCnt);
+    }
+
     /*
     리팩토링을 위해 아래로 뺀 메서드들
      */
@@ -231,7 +248,7 @@ public class QnAService {
         return qnaList;
     }
 
-    private QnA getTodayQnAByParentchild(Parentchild parentchild) {
+    protected QnA getTodayQnAByParentchild(Parentchild parentchild) {
         List<QnA> qnaList = parentchild.getQnaList();
         if (qnaList == null || qnaList.isEmpty()) {
             throw new CustomException(ErrorType.PARENTCHILD_HAVE_NO_QNALIST);

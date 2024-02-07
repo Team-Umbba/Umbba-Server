@@ -1,5 +1,7 @@
 package sopt.org.umbba.api.controller.qna;
 
+import static sopt.org.umbba.api.config.jwt.JwtProvider.*;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -82,6 +84,12 @@ public class QnAController {
     public ApiResponse<GetInvitationResponseDto> invitation(Principal principal) {
 
         return ApiResponse.success(SuccessType.GET_INVITE_CODE_SUCCESS, qnAService.getInvitation(JwtProvider.getUserFromPrincial(principal)));
+    }
+
+    @GetMapping("/user/me")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<MyUserInfoResponseDto> getMyUserInfo(Principal principal) {
+        return ApiResponse.success(SuccessType.GET_MY_USER_INFO_SUCCESS, qnAService.getUserInfo(getUserFromPrincial(principal)));
     }
 
 }
