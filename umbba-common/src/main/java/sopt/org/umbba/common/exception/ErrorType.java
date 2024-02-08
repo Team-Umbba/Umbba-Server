@@ -61,7 +61,7 @@ public enum ErrorType {
     PARENTCHILD_HAVE_NO_QNALIST(HttpStatus.NOT_FOUND, "부모자식 관계가 가지고 있는 QnA 데이터가 없습니다."),
     PARENTCHILD_HAVE_NO_OPPONENT(HttpStatus.NOT_FOUND, "부모자식 관계에 1명만 참여하고 있습니다."),
     NOT_FOUND_SECTION(HttpStatus.NOT_FOUND, "해당 아이디와 일치하는 섹션이 없습니다."),
-
+    QUESTION_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "새로운 질문을 불러올 수 없습니다."),
 
     /**
      * About Apple (HttpStatus 고민)
@@ -82,7 +82,6 @@ public enum ErrorType {
     FIREBASE_CONNECTION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파이어베이스 서버와의 연결에 실패했습니다."),
     FAIL_TO_SEND_PUSH_ALARM(HttpStatus.INTERNAL_SERVER_ERROR, "푸시 알림 메세지 전송에 실패했습니다."),
 
-
     // ETC
     INDEX_OUT_OF_BOUNDS(HttpStatus.INTERNAL_SERVER_ERROR, "인덱스 범위를 초과했습니다."),
     JWT_SERIALIZE(HttpStatus.INTERNAL_SERVER_ERROR, "JWT 라이브러리 직렬화에 실패했습니다."),
@@ -92,7 +91,6 @@ public enum ErrorType {
     NO_ENUM_TYPE(HttpStatus.INTERNAL_SERVER_ERROR, "해당 Enum 타입이 데이터베이스 엔티티와 매핑될 수 없습니다."),
     DATA_INTEGRITY_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "데이터 무결성 제약조건을 위반했습니다."),
     NULL_POINTER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "NULL 포인터를 참조했습니다."),
-
 
 
     ;

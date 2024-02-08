@@ -26,6 +26,7 @@ public enum SuccessType {
     PUSH_ALARM_PERIODIC_SUCCESS(HttpStatus.OK, "오늘의 질문 푸시알림 활성에 성공했습니다."),
     REMIND_QUESTION_SUCCESS(HttpStatus.OK, "상대방에게 질문을 리마인드 하는 데 성공했습니다."),
     TEST_SUCCESS(HttpStatus.OK, "데모데이 테스트용 API 호출에 성공했습니다."),
+    RESTART_QNA_SUCCESS(HttpStatus.OK, "7일 이후 문답이 정상적으로 시작되었습니다."),
 
 
     /**
