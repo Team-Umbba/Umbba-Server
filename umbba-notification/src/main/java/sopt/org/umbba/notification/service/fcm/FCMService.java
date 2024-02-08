@@ -46,7 +46,7 @@ import java.util.Random;
 import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
 
-import static sopt.org.umbba.common.exception.ErrorType.QUESTION_NOT_FOUND_ERROR;
+import static sopt.org.umbba.common.exception.ErrorType.NEED_MORE_QUESTION;
 import static sopt.org.umbba.domain.domain.qna.QuestionType.MAIN;
 import static sopt.org.umbba.domain.domain.qna.QuestionType.YET;
 
@@ -322,7 +322,8 @@ public class FCMService {
         // 5. 이 경우 아예 추가될 질문이 없으므로 예외 발생시킴
         List<Question> targetQuestions = questionRepository.findByTypeInAndIdNotIn(types, doneQuestionIds);
         if (targetQuestions.isEmpty()) {
-            throw new CustomException(QUESTION_NOT_FOUND_ERROR);
+            // 충실한 유저가 추가될 수 있는 질문을 모두 수행했을 경우, 기획 측에서 알 수 있도록 500 에러로 처리
+            throw new CustomException(NEED_MORE_QUESTION);
         }
 
         QuestionSection section = qnaList.get(parentchild.getCount() - 1).getQuestion().getSection();

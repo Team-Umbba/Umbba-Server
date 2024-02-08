@@ -81,6 +81,7 @@ public enum ErrorType {
     DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "데이터베이스 관련 에러가 발생했습니다."),
     FIREBASE_CONNECTION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파이어베이스 서버와의 연결에 실패했습니다."),
     FAIL_TO_SEND_PUSH_ALARM(HttpStatus.INTERNAL_SERVER_ERROR, "푸시 알림 메세지 전송에 실패했습니다."),
+    NEED_MORE_QUESTION(HttpStatus.INTERNAL_SERVER_ERROR, "7일 이후에 더이상 추가될 질문이 없습니다. 질문을 추가해주세요."),
 
     // ETC
     INDEX_OUT_OF_BOUNDS(HttpStatus.INTERNAL_SERVER_ERROR, "인덱스 범위를 초과했습니다."),
