@@ -17,6 +17,8 @@ public interface QuestionRepository extends Repository<Question, Long> {
 
     List<Question> findByType(QuestionType type);
 
+    List<Question> findByTypeInAndIdNotIn(List<QuestionType> types, List<Long> doneQuestionIds);
+
     default List<Question> findBySectionAndTypeRandom(QuestionSection section, QuestionType type, int size) {
         List<Question> matchingQuestions = findBySectionAndType(section, type);
         List<Question> selectedQuestions = new ArrayList<>();

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import sopt.org.umbba.common.exception.SuccessType;
 import sopt.org.umbba.common.exception.dto.ApiResponse;
 import sopt.org.umbba.common.sqs.dto.FCMPushRequestDto;
-import sopt.org.umbba.notification.service.fcm.FCMService;
+import sopt.org.umbba.notification.config.ScheduleConfig;
 import sopt.org.umbba.notification.service.scheduler.FCMScheduler;
 
 import java.io.IOException;
@@ -28,6 +28,7 @@ public class FCMController {
     @PostMapping("/qna")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse sendTopicScheduledTest() {
+        ScheduleConfig.resetScheduler();
         return ApiResponse.success(SuccessType.PUSH_ALARM_PERIODIC_SUCCESS, fcmScheduler.pushTodayQna());
     }
 
