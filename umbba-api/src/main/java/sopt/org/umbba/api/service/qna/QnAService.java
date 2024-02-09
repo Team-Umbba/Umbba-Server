@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static sopt.org.umbba.common.exception.ErrorType.QUESTION_NOT_FOUND_ERROR;
+import static sopt.org.umbba.common.exception.ErrorType.NEED_MORE_QUESTION;
 import static sopt.org.umbba.domain.domain.qna.OnboardingAnswer.NO;
 import static sopt.org.umbba.domain.domain.qna.OnboardingAnswer.YES;
 import static sopt.org.umbba.domain.domain.qna.QuestionSection.*;
@@ -348,7 +348,7 @@ public class QnAService {
         // 5. 이 경우 아예 추가될 질문이 없으므로 예외 발생시킴
         List<Question> targetQuestions = questionRepository.findByTypeInAndIdNotIn(types, doneQuestionIds);
         if (targetQuestions.isEmpty()) {
-            throw new CustomException(QUESTION_NOT_FOUND_ERROR);
+            throw new CustomException(NEED_MORE_QUESTION);
         }
 
         QuestionSection section = qnaList.get(parentchild.getCount() - 1).getQuestion().getSection();
