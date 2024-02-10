@@ -213,28 +213,28 @@ public class QnAService {
 
         User myUser = getUserById(userId);
         Parentchild parentchild = getParentchildByUser(myUser);
-        User opponentUser = getOpponentByParentchild(parentchild, userId);
-        // TODO 상대 미연결인 부분에 대한 반환값 추가 예정
-        /*List<User> opponentUserList = userRepository.findUserByParentChild(parentchild)
+        List<User> opponentUserList = userRepository.findUserByParentChild(parentchild)
             .stream()
             .filter(user -> !user.getId().equals(userId))
             .collect(Collectors.toList());
 
+        // 매칭된 상대 유저가 없는 경우
         if (opponentUserList.isEmpty()) {
-            return MyUserInfoResponseDto.of(myUser, opponentUser, parentchild, todayQnA, 0, 0);
-        }*/
+            return MyUserInfoResponseDto.of(myUser);
+        }
 
+        User opponentUser = getOpponentByParentchild(parentchild, userId);
         QnA todayQnA = getTodayQnAByParentchild(parentchild);
-        List<QnA> qnaList = getQnAListByParentchild(parentchild);
 
-        long qnaCnt = qnaList.stream()
-            .filter(qnA -> qnA.isChildAnswer() && qnA.isParentAnswer())
-            .count();
+        int qnaCnt = parentchild.getCount();
+        if (!todayQnA.isChildAnswer() || !todayQnA.isParentAnswer()) {
+            qnaCnt -= 1;
+        }
 
         LocalDateTime firstQnADate = parentchild.getQnaList().get(0).getCreatedAt();
         long qnaDate = ChronoUnit.DAYS.between(firstQnADate, LocalDateTime.now());
 
-        return MyUserInfoResponseDto.of(myUser, opponentUser, parentchild, todayQnA, qnaDate, (int)qnaCnt);
+        return MyUserInfoResponseDto.of(myUser, opponentUser, parentchild, todayQnA, qnaDate, qnaCnt);
     }
 
     /*
@@ -264,7 +264,7 @@ public class QnAService {
         return qnaList;
     }
 
-    protected QnA getTodayQnAByParentchild(Parentchild parentchild) {
+    private QnA getTodayQnAByParentchild(Parentchild parentchild) {
         List<QnA> qnaList = parentchild.getQnaList();
         if (qnaList == null || qnaList.isEmpty()) {
             throw new CustomException(ErrorType.PARENTCHILD_HAVE_NO_QNALIST);
