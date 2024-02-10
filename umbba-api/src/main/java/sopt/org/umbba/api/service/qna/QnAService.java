@@ -213,18 +213,28 @@ public class QnAService {
 
         User myUser = getUserById(userId);
         Parentchild parentchild = getParentchildByUser(myUser);
-        QnA todayQnA = getTodayQnAByParentchild(parentchild);
         User opponentUser = getOpponentByParentchild(parentchild, userId);
+        // TODO 상대 미연결인 부분에 대한 반환값 추가 예정
+        /*List<User> opponentUserList = userRepository.findUserByParentChild(parentchild)
+            .stream()
+            .filter(user -> !user.getId().equals(userId))
+            .collect(Collectors.toList());
 
-        int qnaCnt = parentchild.getCount();
-        if (!todayQnA.isChildAnswer() || !todayQnA.isParentAnswer()) {
-            qnaCnt -= 1;
-        }
+        if (opponentUserList.isEmpty()) {
+            return MyUserInfoResponseDto.of(myUser, opponentUser, parentchild, todayQnA, 0, 0);
+        }*/
+
+        QnA todayQnA = getTodayQnAByParentchild(parentchild);
+        List<QnA> qnaList = getQnAListByParentchild(parentchild);
+
+        long qnaCnt = qnaList.stream()
+            .filter(qnA -> qnA.isChildAnswer() && qnA.isParentAnswer())
+            .count();
 
         LocalDateTime firstQnADate = parentchild.getQnaList().get(0).getCreatedAt();
         long qnaDate = ChronoUnit.DAYS.between(firstQnADate, LocalDateTime.now());
 
-        return MyUserInfoResponseDto.of(myUser, opponentUser, parentchild, todayQnA, qnaDate, qnaCnt);
+        return MyUserInfoResponseDto.of(myUser, opponentUser, parentchild, todayQnA, qnaDate, (int)qnaCnt);
     }
 
     /*
@@ -331,10 +341,6 @@ public class QnAService {
         }
     }
 
-
-    /*
-    리팩토링을 위해 아래로 뺀 메서드들 끝
-     */
 
     // 메인페이지 정보
     public GetMainViewResponseDto getMainInfo(Long userId) {
