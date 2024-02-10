@@ -13,9 +13,7 @@ import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
 import sopt.org.umbba.domain.domain.parentchild.Parentchild;
 import sopt.org.umbba.domain.domain.parentchild.dao.ParentchildDao;
-import sopt.org.umbba.domain.domain.qna.OnboardingAnswer;
-import sopt.org.umbba.domain.domain.qna.QnA;
-import sopt.org.umbba.domain.domain.qna.Question;
+import sopt.org.umbba.domain.domain.qna.*;
 import sopt.org.umbba.domain.domain.qna.repository.QnARepository;
 import sopt.org.umbba.domain.domain.qna.repository.QuestionRepository;
 import sopt.org.umbba.domain.domain.user.SocialPlatform;
@@ -29,8 +27,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static sopt.org.umbba.common.exception.ErrorType.NEED_MORE_QUESTION;
 import static sopt.org.umbba.domain.domain.qna.OnboardingAnswer.NO;
 import static sopt.org.umbba.domain.domain.qna.OnboardingAnswer.YES;
 import static sopt.org.umbba.domain.domain.qna.QuestionSection.*;
@@ -167,8 +167,8 @@ public class QnAService {
                 .build();
         qnARepository.save(newQnA);
 
-        parentchild.initQnA();
-        parentchild.addQnA(newQnA);
+        parentchild.initQna();
+        parentchild.setQna(newQnA);
     }
 
     @Transactional
@@ -192,7 +192,7 @@ public class QnAService {
                         .isChildAnswer(false)
                         .build();
                 qnARepository.save(newQnA);
-                parentchild.addQnA(newQnA);
+                parentchild.setQna(newQnA);
             }
         }
 
@@ -347,11 +347,64 @@ public class QnAService {
         log.info("getCount(): {}", parentchild.getCount());
 
         if (parentchild.getCount() == 7 && (currentQnA.isParentAnswer() && currentQnA.isChildAnswer())) {
-            return GetMainViewResponseDto.of(currentQnA, parentchild.getCount()+1);  // 유효하지 않은 8로 반환 시 엔딩이벤트
+            return GetMainViewResponseDto.of(currentQnA, -1);  // 유효하지 않은 -1로 반환 시 엔딩이벤트
         }
 
-
         return GetMainViewResponseDto.of(currentQnA, parentchild.getCount());
+    }
+
+    @Transactional
+    public void restartQna(Long userId) {
+        Parentchild parentchild = getParentchild(userId);
+
+        if (parentchild.getCount() == 8) {
+            // 상대측이 이미 답변 이어가기를 호출했다면 실행할 필요 X
+            return;
+        }
+
+        List<QnA> qnaList = getQnAListByParentchild(parentchild);
+
+        // 1. 메인 타입과 미사용 타입에 대해서 불러오기
+        List<QuestionType> types = Arrays.asList(MAIN, YET);
+
+        // 2. 내가 이미 주고받은 질문 제외하기
+        List<Long> doneQuestionIds = qnaList.stream()
+                .map(qna -> qna.getQuestion().getId())
+                .collect(Collectors.toList());
+
+        // 5. 이 경우 아예 추가될 질문이 없으므로 예외 발생시킴
+        List<Question> targetQuestions = questionRepository.findByTypeInAndIdNotIn(types, doneQuestionIds);
+        if (targetQuestions.isEmpty()) {
+            throw new CustomException(NEED_MORE_QUESTION);
+        }
+
+        QuestionSection section = qnaList.get(parentchild.getCount() - 1).getQuestion().getSection();
+        List<Question> differentSectionQuestions = targetQuestions.stream()
+                .filter(question -> !question.getSection().equals(section))
+                .collect(Collectors.toList());
+
+        Random random = new Random();
+        Question randomQuestion;
+        if (!differentSectionQuestions.isEmpty()) {
+            // 3. 최근에 주고받은 질문의 section과 다른 질문들 중에서 랜덤하게 추출
+            randomQuestion = differentSectionQuestions.get(random.nextInt(differentSectionQuestions.size()));
+        } else {
+            // 4. 없다면 동일한 section의 질문 중에서라도 랜덤하게 추출
+            List<Question> equalSectionQuestions = targetQuestions.stream()
+                    .filter(question -> !question.getSection().equals(section))
+                    .collect(Collectors.toList());
+            randomQuestion = equalSectionQuestions.get(random.nextInt(equalSectionQuestions.size()));
+        }
+
+        // 새로운 질문 추가!
+        QnA newQnA = QnA.builder()
+                .question(randomQuestion)
+                .isParentAnswer(false)
+                .isChildAnswer(false)
+                .build();
+        qnARepository.save(newQnA);
+        parentchild.addQna(newQnA);
+        parentchild.addCount();
     }
 
     @NotNull
