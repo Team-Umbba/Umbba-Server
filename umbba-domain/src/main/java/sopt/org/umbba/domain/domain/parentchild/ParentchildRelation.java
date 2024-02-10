@@ -61,12 +61,10 @@ public enum ParentchildRelation {
 
     // 아들 | 딸 | 엄마 | 아빠 구분
     public static String getUserType(ParentchildRelation relation, boolean isChild) {
-        if (relation.childGender.equals("여자")) {
-            if (isChild) return "딸";
-            else return "엄마";
+        if (isChild) {
+            return relation.childGender.equals("남자") ? "아들" : "딸";
         } else {
-            if (isChild) return "아들";
-            else return "아빠";
+            return relation.parentGender.equals("남자") ? "아빠" : "엄마";
         }
     }
 
