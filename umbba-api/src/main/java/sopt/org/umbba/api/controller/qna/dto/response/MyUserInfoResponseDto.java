@@ -2,14 +2,12 @@ package sopt.org.umbba.api.controller.qna.dto.response;
 
 import static sopt.org.umbba.domain.domain.parentchild.ParentchildRelation.*;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.Builder;
 import lombok.Getter;
 import sopt.org.umbba.domain.domain.parentchild.Parentchild;
-import sopt.org.umbba.domain.domain.parentchild.ParentchildRelation;
 import sopt.org.umbba.domain.domain.qna.QnA;
 import sopt.org.umbba.domain.domain.qna.QuestionSection;
 import sopt.org.umbba.domain.domain.user.User;
@@ -17,7 +15,6 @@ import sopt.org.umbba.domain.domain.user.User;
 @Getter
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MyUserInfoResponseDto {
 
 	private String myUsername;
