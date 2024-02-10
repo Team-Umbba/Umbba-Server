@@ -192,11 +192,17 @@ public class ControllerExceptionAdvice {
      * CUSTOM_ERROR
      */
     @ExceptionHandler(CustomException.class)
-    protected ResponseEntity<ApiResponse> handleCustomException(CustomException e) {
+    protected ResponseEntity<ApiResponse> handleCustomException(CustomException e, final HttpServletRequest request) {
 
         log.error("CustomException occured: {}", e.getMessage(), e);
 
-        return ResponseEntity.status(e.getHttpStatus())
-                .body(ApiResponse.error(e.getErrorType(), e.getMessage()));
+        if (e.getHttpStatus() == 501) {
+            notificationService.sendExceptionToSlack(e, request);
+            return ResponseEntity.status(e.getHttpStatus())
+                    .body(ApiResponse.error(ErrorType.NEED_MORE_QUESTION));
+        } else {
+            return ResponseEntity.status(e.getHttpStatus())
+                    .body(ApiResponse.error(e.getErrorType(), e.getMessage()));
+        }
     }
 }

@@ -21,11 +21,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
-import sopt.org.umbba.common.sqs.dto.PushMessage;
 import sopt.org.umbba.domain.domain.parentchild.Parentchild;
 import sopt.org.umbba.domain.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbba.domain.domain.parentchild.repository.ParentchildRepository;
 import sopt.org.umbba.domain.domain.qna.QnA;
+import sopt.org.umbba.domain.domain.qna.Question;
+import sopt.org.umbba.domain.domain.qna.QuestionSection;
+import sopt.org.umbba.domain.domain.qna.QuestionType;
+import sopt.org.umbba.domain.domain.qna.repository.QnARepository;
+import sopt.org.umbba.domain.domain.qna.repository.QuestionRepository;
 import sopt.org.umbba.domain.domain.user.SocialPlatform;
 import sopt.org.umbba.domain.domain.user.User;
 import sopt.org.umbba.domain.domain.user.repository.UserRepository;
@@ -38,7 +42,13 @@ import javax.persistence.PessimisticLockException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ScheduledFuture;
+import java.util.stream.Collectors;
+
+import static sopt.org.umbba.common.exception.ErrorType.NEED_MORE_QUESTION;
+import static sopt.org.umbba.domain.domain.qna.QuestionType.MAIN;
+import static sopt.org.umbba.domain.domain.qna.QuestionType.YET;
 
 /**
  * 서버에서 파이어베이스로 전송이 잘 이루어지는지 테스트하기 위한 컨트롤러
@@ -59,6 +69,8 @@ public class FCMService {
 
     private final UserRepository userRepository;
     private final ParentchildRepository parentchildRepository;
+    private final QnARepository qnARepository;
+    private final QuestionRepository questionRepository;
     private final ParentchildDao parentchildDao;
     private final ObjectMapper objectMapper;
     private final TaskScheduler taskScheduler;
@@ -184,7 +196,6 @@ public class FCMService {
 
         scheduledFuture = taskScheduler.schedule(() -> {
 
-
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -247,7 +258,12 @@ public class FCMService {
                         }
 
                         // 부모와 자식 모두 답변한 경우
-                        else if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer() && parentchild.getCount() < 7) {
+                        else if (currentQnA.isParentAnswer() && currentQnA.isChildAnswer() && parentchild.getCount() != 7) {
+
+                            // 8일 이후 (7일 + 엔딩페이지 API 통신으로 추가된 1일) 에는 스케줄링을 돌며 QnA 직접 추가
+                            if (parentchild.getCount() >= 8) {
+                                appendQna(parentchild);
+                            }
 
                             log.info("둘 다 답변함 다음 질문으로 ㄱ {}", parentchild.getCount());
                             parentchild.addCount();   // 오늘의 질문 UP & 리마인드 카운트 초기화
@@ -269,8 +285,6 @@ public class FCMService {
                                     todayQnA.getQuestion().getTopic()), parentchild.getId());
                         }
                     }
-
-
                 }
                 transactionManager.commit(transactionStatus);
             } catch (PessimisticLockingFailureException | PessimisticLockException e) {
@@ -294,7 +308,60 @@ public class FCMService {
         log.info("ScheduledFuture: {}", scheduledFuture);
     }
 
+    private void appendQna(Parentchild parentchild) {
+        List<QnA> qnaList = getQnAListByParentchild(parentchild);
 
+        // 1. 메인 타입과 미사용 타입에 대해서 불러오기
+        List<QuestionType> types = Arrays.asList(MAIN, YET);
+
+        // 2. 내가 이미 주고받은 질문 제외하기
+        List<Long> doneQuestionIds = qnaList.stream()
+                .map(qna -> qna.getQuestion().getId())
+                .collect(Collectors.toList());
+
+        // 5. 이 경우 아예 추가될 질문이 없으므로 예외 발생시킴
+        List<Question> targetQuestions = questionRepository.findByTypeInAndIdNotIn(types, doneQuestionIds);
+        if (targetQuestions.isEmpty()) {
+            // 충실한 유저가 추가될 수 있는 질문을 모두 수행했을 경우, 기획 측에서 알 수 있도록 500 에러로 처리
+            throw new CustomException(NEED_MORE_QUESTION);
+        }
+
+        QuestionSection section = qnaList.get(parentchild.getCount() - 1).getQuestion().getSection();
+        List<Question> differentSectionQuestions = targetQuestions.stream()
+                .filter(question -> !question.getSection().equals(section))
+                .collect(Collectors.toList());
+
+        Random random = new Random();
+        Question randomQuestion;
+        if (!differentSectionQuestions.isEmpty()) {
+            // 3. 최근에 주고받은 질문의 section과 다른 질문들 중에서 랜덤하게 추출
+            randomQuestion = differentSectionQuestions.get(random.nextInt(differentSectionQuestions.size()));
+        } else {
+            // 4. 없다면 동일한 section의 질문 중에서라도 랜덤하게 추출
+            List<Question> equalSectionQuestions = targetQuestions.stream()
+                    .filter(question -> !question.getSection().equals(section))
+                    .collect(Collectors.toList());
+            randomQuestion = equalSectionQuestions.get(random.nextInt(equalSectionQuestions.size()));
+        }
+
+        QnA newQnA = QnA.builder()
+                .question(randomQuestion)
+                .isParentAnswer(false)
+                .isChildAnswer(false)
+                .build();
+
+        qnARepository.save(newQnA);
+        parentchild.addQna(newQnA);
+    }
+
+    private List<QnA> getQnAListByParentchild(Parentchild parentchild) {
+        List<QnA> qnaList = parentchild.getQnaList();
+        if (qnaList == null || qnaList.isEmpty()) {
+            throw new CustomException(ErrorType.PARENTCHILD_HAVE_NO_QNALIST);
+        }
+
+        return qnaList;
+    }
 
     /**
      * 사용 안하는 함수들

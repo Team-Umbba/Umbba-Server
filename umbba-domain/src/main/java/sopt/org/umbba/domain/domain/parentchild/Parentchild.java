@@ -38,10 +38,8 @@ public class Parentchild extends AuditingTimeEntity {
     private int count;
 
     public void addCount() {
-        if (this.count < 7) {
-            this.count += 1;
-            log.info("Parentchild - addCount() 호출: {}", this.count);
-        }
+        this.count += 1;
+        log.info("Parentchild - addCount() 호출: {}", this.count);
         // 미답변 일수 필드 0으로 초기화
         this.remindCnt = 0;
     }
@@ -87,14 +85,18 @@ public class Parentchild extends AuditingTimeEntity {
 
     private boolean deleted = Boolean.FALSE;
 
-    public void initQnA() {
+    public void initQna() {
         qnaList = new ArrayList<>();
     }
 
-    public void addQnA(QnA qnA) {
+    public void setQna(QnA qnA) {
         if (qnaList.size() >= 7) {
             throw new CustomException(ErrorType.ALREADY_QNA_LIST_FULL);
         }
+        qnaList.add(qnA);
+    }
+
+    public void addQna(QnA qnA) {
         qnaList.add(qnA);
     }
 

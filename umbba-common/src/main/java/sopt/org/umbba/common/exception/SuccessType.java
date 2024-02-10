@@ -27,6 +27,7 @@ public enum SuccessType {
     REMIND_QUESTION_SUCCESS(HttpStatus.OK, "상대방에게 질문을 리마인드 하는 데 성공했습니다."),
     GET_MY_USER_INFO_SUCCESS(HttpStatus.OK, "마이페이지 내 정보 조회에 성공했습니다."),
     TEST_SUCCESS(HttpStatus.OK, "데모데이 테스트용 API 호출에 성공했습니다."),
+    RESTART_QNA_SUCCESS(HttpStatus.OK, "7일 이후 문답이 정상적으로 시작되었습니다."),
 
 
     /**

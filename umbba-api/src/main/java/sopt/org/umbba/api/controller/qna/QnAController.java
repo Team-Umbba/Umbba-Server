@@ -72,6 +72,14 @@ public class QnAController {
                 qnAService.getSingleQna(JwtProvider.getUserFromPrincial(principal), qnaId));
     }
 
+    @PatchMapping("/qna/restart")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse restartQna(Principal principal) {
+
+        qnAService.restartQna(JwtProvider.getUserFromPrincial(principal));
+        return ApiResponse.success(SuccessType.RESTART_QNA_SUCCESS);
+    }
+
     @GetMapping("/home")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<GetMainViewResponseDto> home(Principal principal) {
