@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import sopt.org.umbba.api.controller.qna.dto.response.MyUserInfoResponseDto;
 import sopt.org.umbba.api.controller.qna.dto.request.TodayAnswerRequestDto;
 import sopt.org.umbba.api.controller.qna.dto.response.*;
 import sopt.org.umbba.api.service.notification.NotificationService;
@@ -19,6 +21,12 @@ import sopt.org.umbba.domain.domain.user.User;
 import sopt.org.umbba.domain.domain.user.repository.UserRepository;
 
 import javax.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -200,6 +208,35 @@ public class QnAService {
         }
     }
 
+    // 마이페이지 - 부모자식 관계 정보 조회
+    public MyUserInfoResponseDto getUserInfo(final Long userId) {
+
+        User myUser = getUserById(userId);
+        Parentchild parentchild = getParentchildByUser(myUser);
+        List<User> opponentUserList = userRepository.findUserByParentChild(parentchild)
+            .stream()
+            .filter(user -> !user.getId().equals(userId))
+            .collect(Collectors.toList());
+
+        // 매칭된 상대 유저가 없는 경우
+        if (opponentUserList.isEmpty()) {
+            return MyUserInfoResponseDto.of(myUser);
+        }
+
+        User opponentUser = getOpponentByParentchild(parentchild, userId);
+        QnA todayQnA = getTodayQnAByParentchild(parentchild);
+
+        int qnaCnt = parentchild.getCount();
+        if (!todayQnA.isChildAnswer() || !todayQnA.isParentAnswer()) {
+            qnaCnt -= 1;
+        }
+
+        LocalDateTime firstQnADate = parentchild.getQnaList().get(0).getCreatedAt();
+        long qnaDate = ChronoUnit.DAYS.between(firstQnADate, LocalDateTime.now());
+
+        return MyUserInfoResponseDto.of(myUser, opponentUser, parentchild, todayQnA, qnaDate, qnaCnt);
+    }
+
     /*
     리팩토링을 위해 아래로 뺀 메서드들
      */
@@ -304,10 +341,6 @@ public class QnAService {
         }
     }
 
-
-    /*
-    리팩토링을 위해 아래로 뺀 메서드들 끝
-     */
 
     // 메인페이지 정보
     public GetMainViewResponseDto getMainInfo(Long userId) {

@@ -7,6 +7,8 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+umbba-test.http
+
 ## Querydsl
 umbba-domain/src/main/generated
 

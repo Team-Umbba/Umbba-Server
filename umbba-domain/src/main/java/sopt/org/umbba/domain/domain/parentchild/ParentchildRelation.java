@@ -59,6 +59,15 @@ public enum ParentchildRelation {
         throw new CustomException(ErrorType.INVALID_PARENT_CHILD_RELATION_INFO);
     }
 
+    // 아들 | 딸 | 엄마 | 아빠 구분
+    public static String getUserType(ParentchildRelation relation, boolean isChild) {
+        if (isChild) {
+            return relation.childGender.equals("남자") ? "아들" : "딸";
+        } else {
+            return relation.parentGender.equals("남자") ? "아빠" : "엄마";
+        }
+    }
+
 
     // 자식 유저와 부모 유저의 gender와 isMeChild 필드를 통해 ParentchildRelation을 구분하는 로직
     public static boolean validate(List<User> parentChildUsers, ParentchildRelation relation) {
