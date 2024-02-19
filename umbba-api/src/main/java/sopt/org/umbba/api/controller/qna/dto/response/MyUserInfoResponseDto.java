@@ -44,10 +44,14 @@ public class MyUserInfoResponseDto {
 	}
 
 	// 아직 매칭된 유저가 없는 경우
-	public static MyUserInfoResponseDto of(User myUser) {
+	public static MyUserInfoResponseDto of(User myUser, Parentchild parentchild) {
 
 		return MyUserInfoResponseDto.builder()
 			.myUsername(myUser.getUsername())
+			.myUserType(getUserType(parentchild.getRelation(), myUser.isMeChild()))
+			.opponentUserType(getUserType(parentchild.getRelation(), !myUser.isMeChild()))
+			.parentchildRelation(parentchild.getRelation().getValue())
+			.isMeChild(myUser.isMeChild())
 			.section(QuestionSection.YOUNG.getValue())
 			.matchedDate(0L)
 			.qnaCnt(0).build();
