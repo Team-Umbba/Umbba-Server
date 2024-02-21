@@ -220,7 +220,7 @@ public class QnAService {
 
         // 매칭된 상대 유저가 없는 경우
         if (opponentUserList.isEmpty()) {
-            return MyUserInfoResponseDto.of(myUser);
+            return MyUserInfoResponseDto.of(myUser, parentchild);
         }
 
         User opponentUser = getOpponentByParentchild(parentchild, userId);
