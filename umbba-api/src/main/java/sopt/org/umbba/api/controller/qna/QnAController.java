@@ -100,7 +100,7 @@ public class QnAController {
         return ApiResponse.success(SuccessType.GET_MY_USER_INFO_SUCCESS, qnAService.getUserInfo(getUserFromPrincial(principal)));
     }
 
-    @PatchMapping("/user/first")
+    @PatchMapping("/home/first")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<FirstEntryResponseDto> firstEntry(Principal principal) {
         return ApiResponse.success(SuccessType.GET_USER_FIRST_ENTRY_SUCCESS, qnAService.updateUserFirstEntry(getUserFromPrincial(principal)));

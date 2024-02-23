@@ -14,9 +14,9 @@ public class FirstEntryResponseDto {
 
 	private Boolean isFirstEntry;
 
-	public static FirstEntryResponseDto of(User user) {
+	public static FirstEntryResponseDto of(boolean isFirstEntry) {
 		return FirstEntryResponseDto.builder()
-			.isFirstEntry(user.isFirstEntry())
+			.isFirstEntry(isFirstEntry)
 			.build();
 	}
 }

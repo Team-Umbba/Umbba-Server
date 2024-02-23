@@ -378,10 +378,11 @@ public class QnAService {
     @Transactional
     public FirstEntryResponseDto updateUserFirstEntry(Long userId) {
         User user = getUserById(userId);
-        if (user.isFirstEntry()) {
-            user.updateIsFirstEntry();
+        if (!user.isFirstEntry()) {
+            return FirstEntryResponseDto.of(false);
         }
-        return FirstEntryResponseDto.of(user);
+        user.updateIsFirstEntry();
+        return FirstEntryResponseDto.of(true);
     }
 
     @Transactional
