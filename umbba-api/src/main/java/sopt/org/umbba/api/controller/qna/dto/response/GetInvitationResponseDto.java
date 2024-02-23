@@ -10,7 +10,7 @@ import lombok.Getter;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class GetInvitationResponseDto {
 
-    private int responseCase;  // case를 1,2,3으로 구분 (Client)
+    private int responseCase;  // case를 1,2,3,4으로 구분 (Client)
 
     // 예외상황에 따른 필드
     private String inviteCode;
@@ -19,12 +19,15 @@ public class GetInvitationResponseDto {
 
     private Boolean relativeUserActive;
 
+    private Boolean isUserFirstAnswer;
+
 
     // 1. 오늘의 질문을 조회한 일반적인 경우
     public static GetInvitationResponseDto of () {
         return GetInvitationResponseDto.builder()
                 .responseCase(1)
                 .relativeUserActive(true)
+                .isUserFirstAnswer(true)
                 .build();
     }
 
@@ -36,6 +39,7 @@ public class GetInvitationResponseDto {
                 .inviteUsername(inviteUsername)
                 .installUrl(installUrl)
                 .relativeUserActive(true)
+                .isUserFirstAnswer(true)
                 .build();
     }
 
@@ -44,6 +48,16 @@ public class GetInvitationResponseDto {
         return GetInvitationResponseDto.builder()
                 .responseCase(3)
                 .relativeUserActive(relativeUserActive)
+                .isUserFirstAnswer(true)
+                .build();
+    }
+
+    // 4. 아직 첫 질문에 답변하지 않은 경우
+    public static GetInvitationResponseDto ofFirst (boolean isUserFirstAnswer) {
+        return GetInvitationResponseDto.builder()
+                .responseCase(4)
+                .relativeUserActive(true)
+                .isUserFirstAnswer(isUserFirstAnswer)
                 .build();
     }
 }
