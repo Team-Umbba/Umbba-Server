@@ -89,6 +89,8 @@ public class User extends AuditingTimeEntity {
 
     private boolean deleted = Boolean.FALSE;
 
+    private boolean isFirstEntry = Boolean.TRUE;
+
     // 로그인 새롭게 할 때마다 해당 필드들 업데이트
     public void updateSocialInfo(String socialNickname, String socialProfileImage, String socialAccessToken/*, String socialRefreshToken*/) {
         this.socialNickname = socialNickname;
@@ -101,6 +103,10 @@ public class User extends AuditingTimeEntity {
         this.username = name;
         this.gender = gender;
         this.bornYear = bornYear;
+    }
+
+    public void updateIsFirstEntry() {
+        this.isFirstEntry = false;
     }
 
     public void deleteSocialInfo() {

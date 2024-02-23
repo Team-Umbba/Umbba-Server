@@ -345,6 +345,8 @@ public class QnAService {
     // 메인페이지 정보
     public GetMainViewResponseDto getMainInfo(Long userId) {
 
+        // updateUserFirstEntry(userId);
+
         Parentchild parentchild = getParentchild(userId);
 
         List<QnA> qnaList = getQnAListByParentchild(parentchild);
@@ -357,6 +359,15 @@ public class QnAService {
         }
 
         return GetMainViewResponseDto.of(currentQnA, parentchild.getCount());
+    }
+
+    @Transactional
+    public FirstEntryResponseDto updateUserFirstEntry(Long userId) {
+        User user = getUserById(userId);
+        if (user.isFirstEntry()) {
+            user.updateIsFirstEntry();
+        }
+        return FirstEntryResponseDto.of(user);
     }
 
     @Transactional
