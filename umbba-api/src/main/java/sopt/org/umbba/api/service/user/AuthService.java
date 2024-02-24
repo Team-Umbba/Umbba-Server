@@ -56,6 +56,7 @@ public class AuthService {
                     .isMeChild(true)
                     .isMatchFinish(false)
                     .fcmToken(request.getFcmToken())
+                    .isFirstEntry(true)
                     .build();
 
             userRepository.save(user);
