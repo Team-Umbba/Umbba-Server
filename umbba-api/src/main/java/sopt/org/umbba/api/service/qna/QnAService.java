@@ -66,7 +66,10 @@ public class QnAService {
         log.info("matchUser: {} -> parentchildDao.findMatchUserByUserId()의 결과", matchUser);
 
         // 유저의 상태에 따른 분기처리
-        if (matchUser.isEmpty()) {
+        if (!checkFirstAnswerCompleted(userId)) {
+            return firstTutorialQnA();
+        }
+        else if (matchUser.isEmpty()) {
             return invitation(userId);
         }
         else if (matchUser.get().getUsername() == null) {
@@ -77,6 +80,17 @@ public class QnAService {
         }
 
         return GetInvitationResponseDto.of();
+    }
+    private boolean checkFirstAnswerCompleted(Long userId) {
+        User user = getUserById(userId);
+        QnA firstQnA = user.getParentChild().getQnaList().get(0);
+
+        if (user.isMeChild() && firstQnA.isChildAnswer()) {
+            return true;
+        } else if (!user.isMeChild() && firstQnA.isParentAnswer()) {
+            return true;
+        }
+        return false;
     }
 
     @Transactional
@@ -345,6 +359,8 @@ public class QnAService {
     // 메인페이지 정보
     public GetMainViewResponseDto getMainInfo(Long userId) {
 
+        // updateUserFirstEntry(userId);
+
         Parentchild parentchild = getParentchild(userId);
 
         List<QnA> qnaList = getQnAListByParentchild(parentchild);
@@ -357,6 +373,16 @@ public class QnAService {
         }
 
         return GetMainViewResponseDto.of(currentQnA, parentchild.getCount());
+    }
+
+    @Transactional
+    public FirstEntryResponseDto updateUserFirstEntry(Long userId) {
+        User user = getUserById(userId);
+        if (!user.isFirstEntry()) {
+            return FirstEntryResponseDto.of(false);
+        }
+        user.updateIsFirstEntry();
+        return FirstEntryResponseDto.of(true);
     }
 
     @Transactional
@@ -434,6 +460,10 @@ public class QnAService {
 
     private GetInvitationResponseDto withdrawUser() {
         return GetInvitationResponseDto.of(false);
+    }
+
+    private GetInvitationResponseDto firstTutorialQnA() {
+        return GetInvitationResponseDto.ofFirst(false);
     }
 
 
