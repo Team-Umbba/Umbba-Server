@@ -29,6 +29,8 @@ public class MyUserInfoResponseDto {
 	private Long matchedDate;
 	private Integer qnaCnt;
 
+	private String inviteCode;
+
 	public static MyUserInfoResponseDto of(User myUser, User opponentUser, Parentchild parentchild, QnA qnA, long date, int qnaCnt) {
 
 		return MyUserInfoResponseDto.builder()
@@ -54,6 +56,7 @@ public class MyUserInfoResponseDto {
 			.isMeChild(myUser.isMeChild())
 			.section(QuestionSection.YOUNG.getValue())
 			.matchedDate(0L)
-			.qnaCnt(0).build();
+			.qnaCnt(0)
+			.inviteCode(parentchild.getInviteCode()).build();
 	}
 }
