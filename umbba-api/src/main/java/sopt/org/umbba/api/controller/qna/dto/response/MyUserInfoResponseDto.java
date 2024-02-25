@@ -30,6 +30,7 @@ public class MyUserInfoResponseDto {
 	private Integer qnaCnt;
 
 	private String inviteCode;
+	private String installUrl;
 
 	public static MyUserInfoResponseDto of(User myUser, User opponentUser, Parentchild parentchild, QnA qnA, long date, int qnaCnt) {
 
@@ -57,6 +58,8 @@ public class MyUserInfoResponseDto {
 			.section(QuestionSection.YOUNG.getValue())
 			.matchedDate(0L)
 			.qnaCnt(0)
-			.inviteCode(parentchild.getInviteCode()).build();
+			.inviteCode(parentchild.getInviteCode())
+			.installUrl("http://umbba.site/")
+			.build();
 	}
 }
