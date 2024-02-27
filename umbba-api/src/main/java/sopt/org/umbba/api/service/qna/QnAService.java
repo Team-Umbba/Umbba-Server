@@ -55,9 +55,18 @@ public class QnAService {
         Parentchild parentchild = getParentchildByUser(myUser);
         QnA todayQnA = getTodayQnAByParentchild(parentchild);
         Question todayQuestion = todayQnA.getQuestion();
-        User opponentUser = getOpponentByParentchild(parentchild, userId);
 
-        return TodayQnAResponseDto.of(myUser, opponentUser, parentchild.getCount(), todayQnA, todayQuestion);
+        User opponentUser;
+        List<User> opponentUserList = userRepository.findUserByParentChild(parentchild)
+                .stream()
+                .filter(user -> !user.getId().equals(userId))
+                .collect(Collectors.toList());
+        if (opponentUserList.isEmpty()) {
+            return TodayQnAResponseDto.of(myUser, null, parentchild.getCount(), todayQnA, todayQuestion);
+        } else {
+            opponentUser = opponentUserList.get(0);
+            return TodayQnAResponseDto.of(myUser, opponentUser, parentchild.getCount(), todayQnA, todayQuestion);
+        }
     }
 
     public GetInvitationResponseDto getInvitation(Long userId) {

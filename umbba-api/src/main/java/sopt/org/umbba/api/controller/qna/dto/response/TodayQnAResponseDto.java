@@ -54,20 +54,37 @@ public class TodayQnAResponseDto {
             isMyAnswer = todayQnA.isParentAnswer();
         }
 
-        return TodayQnAResponseDto.builder()
-                .qnaId(todayQnA.getId())
-                .index(count)
-                .section(todayQuestion.getSection().getValue())
-                .topic(todayQuestion.getTopic())
-                .opponentQuestion(opponentQuestion)
-                .myQuestion(myQuestion)
-                .opponentAnswer(opponentAnswer)
-                .myAnswer(myAnswer)
-                .isOpponentAnswer(isOpponentAnswer)
-                .isMyAnswer(isMyAnswer)
-                .opponentUsername(opponentUser.getUsername())
-                .myUsername(myUser.getUsername())
-                .build();
+        if (opponentUser != null) {
+            return TodayQnAResponseDto.builder()
+                    .qnaId(todayQnA.getId())
+                    .index(count)
+                    .section(todayQuestion.getSection().getValue())
+                    .topic(todayQuestion.getTopic())
+                    .opponentQuestion(opponentQuestion)
+                    .myQuestion(myQuestion)
+                    .opponentAnswer(opponentAnswer)
+                    .myAnswer(myAnswer)
+                    .isOpponentAnswer(isOpponentAnswer)
+                    .isMyAnswer(isMyAnswer)
+                    .opponentUsername(opponentUser.getUsername())
+                    .myUsername(myUser.getUsername())
+                    .build();
+        } else {
+            return TodayQnAResponseDto.builder()
+                    .qnaId(todayQnA.getId())
+                    .index(count)
+                    .section(todayQuestion.getSection().getValue())
+                    .topic(todayQuestion.getTopic())
+                    .opponentQuestion(null)
+                    .myQuestion(myQuestion)
+                    .opponentAnswer(null)
+                    .myAnswer(myAnswer)
+                    .isOpponentAnswer(null)
+                    .isMyAnswer(isMyAnswer)
+                    .opponentUsername(null)
+                    .myUsername(myUser.getUsername())
+                    .build();
+        }
     }
 }
 
