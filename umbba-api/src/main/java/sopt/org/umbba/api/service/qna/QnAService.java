@@ -107,16 +107,30 @@ public class QnAService {
         User myUser = getUserById(userId);
         Parentchild parentchild = getParentchildByUser(myUser);
         QnA todayQnA = getTodayQnAByParentchild(parentchild);
-        User opponentUser = getOpponentByParentchild(parentchild, userId);
 
-        if (myUser.isMeChild()) {
-            todayQnA.saveChildAnswer(request.getAnswer());
-            notificationService.pushOpponentReply(todayQnA.getQuestion().getChildQuestion(), opponentUser.getId());
-//            fcmService.pushOpponentReply(todayQnA.getQuestion().getChildQuestion(), opponentUser.getId());
+        List<User> opponentUserList = userRepository.findUserByParentChild(parentchild)
+                .stream()
+                .filter(user -> !user.getId().equals(userId))
+                .collect(Collectors.toList());
+
+        if (opponentUserList.isEmpty()) {
+            if (myUser.isMeChild()) {
+                todayQnA.saveChildAnswer(request.getAnswer());
+            } else {
+                todayQnA.saveParentAnswer(request.getAnswer());
+            }
         } else {
-            todayQnA.saveParentAnswer(request.getAnswer());
-            notificationService.pushOpponentReply(todayQnA.getQuestion().getParentQuestion(), opponentUser.getId());
+            User opponentUser = opponentUserList.get(0);
+
+            if (myUser.isMeChild()) {
+                todayQnA.saveChildAnswer(request.getAnswer());
+                notificationService.pushOpponentReply(todayQnA.getQuestion().getChildQuestion(), opponentUser.getId());
+//            fcmService.pushOpponentReply(todayQnA.getQuestion().getChildQuestion(), opponentUser.getId());
+            } else {
+                todayQnA.saveParentAnswer(request.getAnswer());
+                notificationService.pushOpponentReply(todayQnA.getQuestion().getParentQuestion(), opponentUser.getId());
 //            fcmService.pushOpponentReply(todayQnA.getQuestion().getParentQuestion(), opponentUser.getId());
+            }
         }
     }
 
