@@ -75,13 +75,13 @@ public class TodayQnAResponseDto {
                     .index(count)
                     .section(todayQuestion.getSection().getValue())
                     .topic(todayQuestion.getTopic())
-                    .opponentQuestion(null)
+                    .opponentQuestion(opponentQuestion)
                     .myQuestion(myQuestion)
-                    .opponentAnswer(null)
+                    .opponentAnswer(opponentAnswer)
                     .myAnswer(myAnswer)
-                    .isOpponentAnswer(null)
+                    .isOpponentAnswer(isOpponentAnswer)
                     .isMyAnswer(isMyAnswer)
-                    .opponentUsername(null)
+                    .opponentUsername("상대방")
                     .myUsername(myUser.getUsername())
                     .build();
         }
