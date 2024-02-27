@@ -369,16 +369,20 @@ public class QnAService {
     public GetMainViewResponseDto getMainInfo(Long userId) {
 
         // updateUserFirstEntry(userId);
-
-        Parentchild parentchild = getParentchild(userId);
-
+        User user = getUserById(userId);
+        Parentchild parentchild = user.getParentChild();
         List<QnA> qnaList = getQnAListByParentchild(parentchild);
 
         QnA currentQnA = qnaList.get(parentchild.getCount()-1);
         log.info("getCount(): {}", parentchild.getCount());
 
-        if (parentchild.getCount() == 7 && (currentQnA.isParentAnswer() && currentQnA.isChildAnswer())) {
+        if (parentchild.getCount() == 7 && (currentQnA.isParentAnswer() && currentQnA.isChildAnswer()) && !user.isEndingDone()) {
             return GetMainViewResponseDto.of(currentQnA, -1);  // 유효하지 않은 -1로 반환 시 엔딩이벤트
+        } else if (parentchild.getCount() == 8) {
+            QnA lastQnA = qnaList.get(6);
+            if ((lastQnA.isParentAnswer() && lastQnA.isChildAnswer()) && !user.isEndingDone()) {
+                return GetMainViewResponseDto.of(currentQnA, -1);
+            }
         }
 
         return GetMainViewResponseDto.of(currentQnA, parentchild.getCount());
@@ -396,7 +400,9 @@ public class QnAService {
 
     @Transactional
     public void restartQna(Long userId) {
-        Parentchild parentchild = getParentchild(userId);
+        User user = getUserById(userId);
+        user.updateIsEndingDone();
+        Parentchild parentchild = user.getParentChild();
 
         if (parentchild.getCount() == 8) {
             // 상대측이 이미 답변 이어가기를 호출했다면 실행할 필요 X
