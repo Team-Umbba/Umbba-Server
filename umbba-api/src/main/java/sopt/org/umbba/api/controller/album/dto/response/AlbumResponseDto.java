@@ -11,7 +11,8 @@ import sopt.org.umbba.domain.domain.album.Album;
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class AlbumResponseDto {
-	
+
+	private Long albumId;
 	private String title;
 	private String content;
 	private String writer;
@@ -19,6 +20,7 @@ public class AlbumResponseDto {
 
 	public static AlbumResponseDto of(Album album) {
 		return AlbumResponseDto.builder()
+			.albumId(album.getId())
 			.title(album.getTitle())
 			.content(album.getContent())
 			.writer(album.getWriter())
