@@ -2,6 +2,7 @@ package sopt.org.umbba.api.controller.album;
 
 import static sopt.org.umbba.api.config.jwt.JwtProvider.*;
 import static sopt.org.umbba.common.exception.SuccessType.*;
+import static sopt.org.umbba.external.s3.S3BucketPrefix.*;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import sopt.org.umbba.api.controller.album.dto.request.AlbumImgUrlRequestDto;
 import sopt.org.umbba.api.controller.album.dto.request.CreateAlbumRequestDto;
 import sopt.org.umbba.api.service.album.AlbumService;
 import sopt.org.umbba.common.exception.dto.ApiResponse;
@@ -38,20 +40,22 @@ public class AlbumController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ApiResponse createAlbum(@Valid @RequestBody final CreateAlbumRequestDto request, final Principal principal, HttpServletResponse response) {
-		Long albumId = albumService.createAlbum(request, getUserFromPrincial(principal));
+		String imgUrl = s3Service.getS3ImgUrl(ALBUM_PREFIX.getValue(), request.getImgFileName());
+		Long albumId = albumService.createAlbum(request, imgUrl, getUserFromPrincial(principal));
 		response.setHeader("Location", "/album/" + albumId);
 		return ApiResponse.success(CREATE_ALBUM_SUCCESS);
 	}
 
 	// PreSigned Url 이용 (클라이언트에서 해당 URL로 업로드)
 	@PatchMapping("/image")
-	public ApiResponse<PreSignedUrlDto> getImgPreSignedUrl(@RequestParam("img_prefix") String imgPrefix) throws IOException {
-		return ApiResponse.success(GET_PRE_SIGNED_URL_SUCCESS, s3Service.getPreSignedUrl(S3BucketPrefix.valueOf(imgPrefix)));
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<PreSignedUrlDto> getImgPreSignedUrl(@RequestBody final AlbumImgUrlRequestDto request) {
+		return ApiResponse.success(GET_PRE_SIGNED_URL_SUCCESS, s3Service.getPreSignedUrl(S3BucketPrefix.of(request.getImgPrefix())));
 	}
 
 	// 버킷에서 이미지 삭제  TODO 내부 로직으로 뺄 예정
 	@DeleteMapping("/image")
-	public ApiResponse deleteImage(@RequestParam("img_prefix") String imgPrefix) throws IOException {
+	public ApiResponse deleteImage(@RequestParam("img_prefix") String imgPrefix) {
 		s3Service.deleteImage(imgPrefix);
 		return ApiResponse.success(IMAGE_S3_DELETE_SUCCESS);
 	}

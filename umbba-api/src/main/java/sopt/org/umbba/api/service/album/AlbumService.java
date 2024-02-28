@@ -21,14 +21,14 @@ public class AlbumService {
 	private final AlbumRepository albumRepository;
 	private final UserRepository userRepository;
 
-	public Long createAlbum(final CreateAlbumRequestDto request, Long userId) {
+	public Long createAlbum(final CreateAlbumRequestDto request, String imgUrl, Long userId) {
 
 		User user = getByUser(userId);
 		Parentchild parentchild = user.getParentChild();
 		Album album = Album.builder()
 			.title(request.getTitle())
 			.content(request.getContent())
-			.imgUrl(request.getImgFileName())
+			.imgUrl(imgUrl)
 			.username(user.getUsername())
 			.parentchild(parentchild)
 			.build();
