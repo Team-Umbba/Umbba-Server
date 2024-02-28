@@ -69,11 +69,4 @@ public class AlbumController {
 	public ApiResponse<List<AlbumResponseDto>> getAlbumList(final Principal principal) {
 		return ApiResponse.success(GET_ALBUM_LIST_SUCCESS, albumService.getAlbumList(getUserFromPrincial(principal)));
 	}
-
-	// 버킷에서 이미지 삭제  TODO 내부 로직으로 뺄 예정
-	@DeleteMapping("/image")
-	public ApiResponse deleteImage(@RequestParam("img_url") String imgUrl) {
-		s3Service.deleteS3Image(imgUrl);
-		return ApiResponse.success(IMAGE_S3_DELETE_SUCCESS);
-	}
 }
