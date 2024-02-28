@@ -29,7 +29,8 @@ public class AlbumService {
 	public Long createAlbum(final CreateAlbumRequestDto request, final String imgUrl, final Long userId) {
 
 		User user = getUserById(userId);
-		Parentchild parentchild = user.getParentChild();
+		Parentchild parentchild = getParentchildByUser(user);
+
 		Album album = Album.builder()
 			.title(request.getTitle())
 			.content(request.getContent())
@@ -48,10 +49,11 @@ public class AlbumService {
 	public String deleteAlbum(final Long albumId, final Long userId) {
 
 		User user = getUserById(userId);
+		Parentchild parentchild = getParentchildByUser(user);
 		Album album = getAlbumById(albumId);
 
 		album.deleteParentchild();
-		user.getParentChild().deleteAlbum(album);
+		parentchild.deleteAlbum(album);
 		albumRepository.delete(album);
 
 		return album.getImgUrl();
@@ -59,8 +61,9 @@ public class AlbumService {
 
 	public List<AlbumResponseDto> getAlbumList(final Long userId) {
 		User user = getUserById(userId);
+		Parentchild parentchild = getParentchildByUser(user);
 		List<Album> albumList = albumRepository.findAllByParentchildOrderByCreatedAtDesc(
-			user.getParentChild());
+			parentchild);
 
 		return albumList.stream()
 			.map(AlbumResponseDto::of)
@@ -77,5 +80,14 @@ public class AlbumService {
 		return albumRepository.findById(albumId).orElseThrow(
 			() -> new CustomException(ErrorType.NOT_FOUND_ALBUM)
 		);
+	}
+
+	private Parentchild getParentchildByUser(User user) {
+		Parentchild parentchild = user.getParentChild();
+		if (parentchild == null) {
+			throw new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD);
+		}
+
+		return parentchild;
 	}
 }

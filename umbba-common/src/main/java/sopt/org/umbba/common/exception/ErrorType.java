@@ -85,7 +85,7 @@ public enum ErrorType {
     FAIL_TO_SEND_PUSH_ALARM(HttpStatus.INTERNAL_SERVER_ERROR, "푸시 알림 메세지 전송에 실패했습니다."),
     FAIL_TO_GET_IMAGE_PRE_SIGNED_URL(HttpStatus.INTERNAL_SERVER_ERROR, "PreSigned Url을 가져오는 데 실패했습니다."),
     FAIL_TO_DELETE_IMAGE(HttpStatus.INTERNAL_SERVER_ERROR, "S3 버킷에서 이미지를 삭제하는 데 실패했습니다."),
-    S3_BUCKET_GET_IMAGE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "이미지를 불러오는 데 실패했습니다."),
+    S3_BUCKET_GET_IMAGE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "S3 버킷에서 이미지를 불러오는 데 실패했습니다."),
 
     // ETC
     INDEX_OUT_OF_BOUNDS(HttpStatus.INTERNAL_SERVER_ERROR, "인덱스 범위를 초과했습니다."),
