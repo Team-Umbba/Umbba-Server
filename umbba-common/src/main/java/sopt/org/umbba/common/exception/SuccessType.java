@@ -29,6 +29,8 @@ public enum SuccessType {
     TEST_SUCCESS(HttpStatus.OK, "데모데이 테스트용 API 호출에 성공했습니다."),
     RESTART_QNA_SUCCESS(HttpStatus.OK, "7일 이후 문답이 정상적으로 시작되었습니다."),
     GET_USER_FIRST_ENTRY_SUCCESS(HttpStatus.OK, "유저의 첫 진입여부 조회에 성공했습니다."),
+    GET_PRE_SIGNED_URL_SUCCESS(HttpStatus.OK, "PreSigned Url 조회에 성공했습니다."),
+    IMAGE_S3_DELETE_SUCCESS(HttpStatus.OK, "S3 버킷에서 이미지를 삭제하는 데 성공했습니다."),
 
 
     /**
