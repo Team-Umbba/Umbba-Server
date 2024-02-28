@@ -4,14 +4,15 @@ import static sopt.org.umbba.api.config.jwt.JwtProvider.*;
 import static sopt.org.umbba.common.exception.SuccessType.*;
 import static sopt.org.umbba.external.s3.S3BucketPrefix.*;
 
-import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import sopt.org.umbba.api.controller.album.dto.request.AlbumImgUrlRequestDto;
 import sopt.org.umbba.api.controller.album.dto.request.CreateAlbumRequestDto;
+import sopt.org.umbba.api.controller.album.dto.response.AlbumResponseDto;
 import sopt.org.umbba.api.service.album.AlbumService;
 import sopt.org.umbba.common.exception.dto.ApiResponse;
 import sopt.org.umbba.external.s3.PreSignedUrlDto;
@@ -54,12 +56,18 @@ public class AlbumController {
 		return ApiResponse.success(GET_PRE_SIGNED_URL_SUCCESS, s3Service.getPreSignedUrl(S3BucketPrefix.of(request.getImgPrefix())));
 	}
 
-	@DeleteMapping
+	@DeleteMapping("/{albumId}")
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResponse deleteAlbum(@PathVariable final Long albumId, final Principal principal) {
 		String imgUrl = albumService.deleteAlbum(albumId, getUserFromPrincial(principal));
 		s3Service.deleteS3Image(imgUrl);
 		return ApiResponse.success(DELETE_ALBUM_SUCCESS);
+	}
+
+	@GetMapping
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<List<AlbumResponseDto>> getAlbumList(final Principal principal) {
+		return ApiResponse.success(GET_ALBUM_LIST_SUCCESS, albumService.getAlbumList(getUserFromPrincial(principal)));
 	}
 
 	// 버킷에서 이미지 삭제  TODO 내부 로직으로 뺄 예정

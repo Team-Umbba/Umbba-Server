@@ -32,6 +32,7 @@ public enum SuccessType {
     GET_PRE_SIGNED_URL_SUCCESS(HttpStatus.OK, "PreSigned Url 조회에 성공했습니다."),
     IMAGE_S3_DELETE_SUCCESS(HttpStatus.OK, "S3 버킷에서 이미지를 삭제하는 데 성공했습니다."),
     DELETE_ALBUM_SUCCESS(HttpStatus.OK, "앨범의 기록 삭제에 성공했습니다."),
+    GET_ALBUM_LIST_SUCCESS(HttpStatus.OK, "앨범의 기록 목록 조회에 성공했습니다."),
 
 
     /**

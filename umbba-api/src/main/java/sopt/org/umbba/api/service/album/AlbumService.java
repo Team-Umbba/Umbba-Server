@@ -1,10 +1,14 @@
 package sopt.org.umbba.api.service.album;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import sopt.org.umbba.api.controller.album.dto.request.CreateAlbumRequestDto;
+import sopt.org.umbba.api.controller.album.dto.response.AlbumResponseDto;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
 import sopt.org.umbba.domain.domain.album.Album;
@@ -30,7 +34,7 @@ public class AlbumService {
 			.title(request.getTitle())
 			.content(request.getContent())
 			.imgUrl(imgUrl)
-			.username(user.getUsername())
+			.writer(user.getUsername())
 			.parentchild(parentchild)
 			.build();
 		albumRepository.save(album);
@@ -53,7 +57,17 @@ public class AlbumService {
 		return album.getImgUrl();
 	}
 
-	private User getUserById(Long userId) {
+	public List<AlbumResponseDto> getAlbumList(final Long userId) {
+		User user = getUserById(userId);
+		List<Album> albumList = albumRepository.findAllByParentchildOrderByCreatedAtDesc(
+			user.getParentChild());
+
+		return albumList.stream()
+			.map(AlbumResponseDto::of)
+			.collect(Collectors.toList());
+	}
+
+	private User getUserById(Long userId) {  // TODO userId -> Parentchild 한번에 가져오기
 		return userRepository.findById(userId).orElseThrow(
 			() -> new CustomException(ErrorType.INVALID_USER)
 		);

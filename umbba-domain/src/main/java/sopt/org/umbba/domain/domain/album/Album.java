@@ -37,18 +37,18 @@ public class Album extends AuditingTimeEntity {
 	private String imgUrl;
 
 	@Column(nullable = false)
-	private String username;
+	private String writer;
 
 	@ManyToOne
 	@JoinColumn(name = "parentchild_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Parentchild parentchild;
 
 	@Builder
-	private Album(String title, String content, String imgUrl, String username, Parentchild parentchild) {
+	private Album(String title, String content, String imgUrl, String writer, Parentchild parentchild) {
 		this.title = title;
 		this.content = content;
 		this.imgUrl = imgUrl;
-		this.username = username;
+		this.writer = writer;
 		this.parentchild = parentchild;
 	}
 
