@@ -25,6 +25,7 @@ public class S3Service {
 
 	private static final Long PRE_SIGNED_URL_EXPIRE_MINUTE = 1L;  // 만료시간 1분
 	private static final String IMAGE_EXTENSION = ".jpg";
+	private static final String AWS_DOMAIN = "amazonaws.com/";
 
 	private final String bucketName;
 
@@ -63,7 +64,8 @@ public class S3Service {
 	}
 
 	// S3 버킷으로부터 이미지 삭제
-	public void deleteImage(String key) {
+	public void deleteS3Image(String url) {
+		String key = getKeyByUrl(url);
 		try {
 			s3Client.deleteObject((DeleteObjectRequest.Builder builder) ->
 				builder.bucket(bucketName)
@@ -97,7 +99,17 @@ public class S3Service {
 		}
 	}
 
-	private String getUrlByFileName(String prefix, String fileName) {
-		return "https://"+bucketName+".s3.ap-northeast-2.amazonaws.com/"+prefix+fileName;
+	private String getKeyByUrl(String imgUrl) {
+
+		int index = imgUrl.indexOf(AWS_DOMAIN);
+		String imageKey = "";
+		if (index != -1) {
+			imageKey = imgUrl.substring(index + AWS_DOMAIN.length());
+			log.info("imageKey substring으로 가져옴: {}", imageKey);
+		} else {
+			log.error("imageKey substring으로 가져오기 실패");
+		}
+
+		return imageKey;
 	}
 }

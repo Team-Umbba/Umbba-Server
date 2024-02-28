@@ -59,4 +59,8 @@ public class Album extends AuditingTimeEntity {
 			parentchild.getAlbumList().add(this);
 		}
 	}
+
+	public void deleteParentchild() {
+		this.parentchild = null;
+	}
 }

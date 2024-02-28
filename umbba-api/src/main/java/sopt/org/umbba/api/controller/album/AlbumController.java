@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,10 +54,18 @@ public class AlbumController {
 		return ApiResponse.success(GET_PRE_SIGNED_URL_SUCCESS, s3Service.getPreSignedUrl(S3BucketPrefix.of(request.getImgPrefix())));
 	}
 
+	@DeleteMapping
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse deleteAlbum(@PathVariable final Long albumId, final Principal principal) {
+		String imgUrl = albumService.deleteAlbum(albumId, getUserFromPrincial(principal));
+		s3Service.deleteS3Image(imgUrl);
+		return ApiResponse.success(DELETE_ALBUM_SUCCESS);
+	}
+
 	// 버킷에서 이미지 삭제  TODO 내부 로직으로 뺄 예정
 	@DeleteMapping("/image")
-	public ApiResponse deleteImage(@RequestParam("img_prefix") String imgPrefix) {
-		s3Service.deleteImage(imgPrefix);
+	public ApiResponse deleteImage(@RequestParam("img_url") String imgUrl) {
+		s3Service.deleteS3Image(imgUrl);
 		return ApiResponse.success(IMAGE_S3_DELETE_SUCCESS);
 	}
 }

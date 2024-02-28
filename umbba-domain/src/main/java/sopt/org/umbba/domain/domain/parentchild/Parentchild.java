@@ -111,4 +111,10 @@ public class Parentchild extends AuditingTimeEntity {
         }
     }
 
+    public void deleteAlbum(Album album) {
+        if (this.albumList.contains(album)) {
+            this.albumList.remove(album);
+        }
+    }
+
 }

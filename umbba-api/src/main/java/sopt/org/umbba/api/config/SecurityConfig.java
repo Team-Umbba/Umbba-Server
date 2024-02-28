@@ -25,7 +25,8 @@ public class SecurityConfig {
 //          "/log-out",
             "/test", "/profile", "/health", "/actuator/health",
             "/alarm/qna", "/alarm/drink",
-            "/demo/**"
+            "/demo/**",
+            "/album/image"
     };
 
     @Bean
