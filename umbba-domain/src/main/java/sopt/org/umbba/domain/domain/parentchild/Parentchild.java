@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
+import sopt.org.umbba.domain.domain.closer.CloserQnA;
 import sopt.org.umbba.domain.domain.common.AuditingTimeEntity;
 import sopt.org.umbba.domain.domain.qna.OnboardingAnswer;
 import sopt.org.umbba.domain.domain.qna.QnA;
@@ -49,6 +50,25 @@ public class Parentchild extends AuditingTimeEntity {
 
     public void addRemindCnt() {
         this.remindCnt += 1;
+    }
+
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "parentchild_id")
+    private List<CloserQnA> closerQnaList;
+
+    @Column(nullable = false)
+    private int closerParentCount;
+
+    @Column(nullable = false)
+    private int closerChildCount;
+
+    public void addCloserParentCount() {
+        this.closerParentCount += 1;
+    }
+
+    public void addCloserChildCount() {
+        this.closerChildCount += 1;
     }
 
     @Column(nullable = false)

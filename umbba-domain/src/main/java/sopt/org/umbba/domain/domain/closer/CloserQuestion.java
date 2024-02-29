@@ -1,4 +1,4 @@
-package sopt.org.umbba.domain.domain.closerqna;
+package sopt.org.umbba.domain.domain.closer;
 
 import lombok.*;
 import sopt.org.umbba.domain.domain.common.AuditingTimeEntity;
