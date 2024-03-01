@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
+import sopt.org.umbba.domain.domain.album.Album;
 import sopt.org.umbba.domain.domain.common.AuditingTimeEntity;
 import sopt.org.umbba.domain.domain.qna.OnboardingAnswer;
 import sopt.org.umbba.domain.domain.qna.QnA;
@@ -33,6 +34,9 @@ public class Parentchild extends AuditingTimeEntity {
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "parentchild_id")
     private List<QnA> qnaList;
+
+    @OneToMany(mappedBy = "parentchild", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private final List<Album> albumList = new ArrayList<>();
 
     @Column(nullable = false)
     private int count;
@@ -98,6 +102,19 @@ public class Parentchild extends AuditingTimeEntity {
 
     public void addQna(QnA qnA) {
         qnaList.add(qnA);
+    }
+
+    public void addAlbum(Album album) {
+        this.albumList.add(album);
+        if (album.getParentchild() != this) {
+            album.setParentchild(this);
+        }
+    }
+
+    public void deleteAlbum(Album album) {
+        if (this.albumList.contains(album)) {
+            this.albumList.remove(album);
+        }
     }
 
 }
