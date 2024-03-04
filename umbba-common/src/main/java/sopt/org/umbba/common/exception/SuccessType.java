@@ -29,6 +29,10 @@ public enum SuccessType {
     TEST_SUCCESS(HttpStatus.OK, "데모데이 테스트용 API 호출에 성공했습니다."),
     RESTART_QNA_SUCCESS(HttpStatus.OK, "7일 이후 문답이 정상적으로 시작되었습니다."),
     GET_USER_FIRST_ENTRY_SUCCESS(HttpStatus.OK, "유저의 첫 진입여부 조회에 성공했습니다."),
+    GET_PRE_SIGNED_URL_SUCCESS(HttpStatus.OK, "PreSigned Url 조회에 성공했습니다."),
+    IMAGE_S3_DELETE_SUCCESS(HttpStatus.OK, "S3 버킷에서 이미지를 삭제하는 데 성공했습니다."),
+    DELETE_ALBUM_SUCCESS(HttpStatus.OK, "앨범의 기록 삭제에 성공했습니다."),
+    GET_ALBUM_LIST_SUCCESS(HttpStatus.OK, "앨범의 기록 목록 조회에 성공했습니다."),
 
 
     /**
@@ -37,6 +41,7 @@ public enum SuccessType {
     CREATE_PARENT_CHILD_SUCCESS(HttpStatus.CREATED, "온보딩 정보를 입력받아 부모자식 관계를 생성하는 데 성공했습니다."),
     MATCH_PARENT_CHILD_SUCCESS(HttpStatus.CREATED, "부모자식 관계 매칭에 성공했습니다."),
     ANSWER_TODAY_QUESTION_SUCCESS(HttpStatus.CREATED, "오늘의 일일문답에 답변을 완료하였습니다."),
+    CREATE_ALBUM_SUCCESS(HttpStatus.CREATED, "앨범의 기록 등록에 성공했습니다."),
 
     ;
 

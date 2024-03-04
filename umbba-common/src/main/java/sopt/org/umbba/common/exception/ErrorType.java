@@ -34,6 +34,8 @@ public enum ErrorType {
     ALREADY_EXISTS_PARENT_CHILD_USER(HttpStatus.BAD_REQUEST, "이미 해당 유저의 부모자식 관계가 존재합니다."),
     ALREADY_QNA_LIST_FULL(HttpStatus.BAD_REQUEST, "이미 QNA 리스트가 가득 찼습니다"),
 
+    // Album
+    INVALID_BUCKET_PREFIX(HttpStatus.BAD_REQUEST, "유효하지 않은 S3 버킷 디렉토리명입니다."),
 
     /**
      * 401 UNAUTHORIZED
@@ -61,6 +63,7 @@ public enum ErrorType {
     PARENTCHILD_HAVE_NO_QNALIST(HttpStatus.NOT_FOUND, "부모자식 관계가 가지고 있는 QnA 데이터가 없습니다."),
     PARENTCHILD_HAVE_NO_OPPONENT(HttpStatus.NOT_FOUND, "부모자식 관계에 1명만 참여하고 있습니다."),
     NOT_FOUND_SECTION(HttpStatus.NOT_FOUND, "해당 아이디와 일치하는 섹션이 없습니다."),
+    NOT_FOUND_ALBUM(HttpStatus.NOT_FOUND, "존재하지 않는 앨범입니다."),
 
     /**
      * About Apple (HttpStatus 고민)
@@ -80,6 +83,9 @@ public enum ErrorType {
     DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "데이터베이스 관련 에러가 발생했습니다."),
     FIREBASE_CONNECTION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파이어베이스 서버와의 연결에 실패했습니다."),
     FAIL_TO_SEND_PUSH_ALARM(HttpStatus.INTERNAL_SERVER_ERROR, "푸시 알림 메세지 전송에 실패했습니다."),
+    FAIL_TO_GET_IMAGE_PRE_SIGNED_URL(HttpStatus.INTERNAL_SERVER_ERROR, "PreSigned Url을 가져오는 데 실패했습니다."),
+    FAIL_TO_DELETE_IMAGE(HttpStatus.INTERNAL_SERVER_ERROR, "S3 버킷에서 이미지를 삭제하는 데 실패했습니다."),
+    S3_BUCKET_GET_IMAGE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "S3 버킷에서 이미지를 불러오는 데 실패했습니다."),
 
     // ETC
     INDEX_OUT_OF_BOUNDS(HttpStatus.INTERNAL_SERVER_ERROR, "인덱스 범위를 초과했습니다."),
