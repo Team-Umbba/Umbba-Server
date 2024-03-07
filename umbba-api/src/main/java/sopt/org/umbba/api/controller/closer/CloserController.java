@@ -18,7 +18,8 @@ import static sopt.org.umbba.common.exception.SuccessType.ANSWER_TODAY_CLOSER_QU
 import static sopt.org.umbba.common.exception.SuccessType.PASS_TO_NEXT_CLOSER_QUESTION_SUCCESS;
 
 @Slf4j
-@RestController("/closer")
+@RestController
+@RequestMapping("/closer")
 @RequiredArgsConstructor
 public class CloserController {
 

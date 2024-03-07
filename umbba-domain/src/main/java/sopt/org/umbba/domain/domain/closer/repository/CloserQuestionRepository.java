@@ -1,6 +1,8 @@
 package sopt.org.umbba.domain.domain.closer.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import sopt.org.umbba.common.exception.ErrorType;
+import sopt.org.umbba.common.exception.model.CustomException;
 import sopt.org.umbba.domain.domain.closer.CloserQuestion;
 
 import java.util.List;
@@ -15,6 +17,9 @@ public interface CloserQuestionRepository extends JpaRepository<CloserQuestion, 
         Random random = new Random();
         List<CloserQuestion> allQuestions = findAll();
 
+        if (allQuestions.isEmpty()) {
+            throw new CustomException(ErrorType.NOT_FOUND_CLOSER_QUESTION);
+        }
         if (ids.isEmpty()) {
             int randomIndex = random.nextInt(allQuestions.size());
             return Optional.ofNullable(allQuestions.get(randomIndex));
