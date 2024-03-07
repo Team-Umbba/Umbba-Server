@@ -33,6 +33,7 @@ public enum SuccessType {
     IMAGE_S3_DELETE_SUCCESS(HttpStatus.OK, "S3 버킷에서 이미지를 삭제하는 데 성공했습니다."),
     DELETE_ALBUM_SUCCESS(HttpStatus.OK, "앨범의 기록 삭제에 성공했습니다."),
     GET_ALBUM_LIST_SUCCESS(HttpStatus.OK, "앨범의 기록 목록 조회에 성공했습니다."),
+    GET_TODAY_CLOSER_QNA_SUCCESS(HttpStatus.OK, "오늘의 가까워지기 문답 조회에 성공했습니다."),
 
 
     /**
