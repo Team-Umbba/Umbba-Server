@@ -56,10 +56,17 @@ public class Parentchild extends AuditingTimeEntity {
         this.remindCnt += 1;
     }
 
-
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "parentchild_id")
     private List<CloserQnA> closerQnaList;
+
+    public void initCloserQna() {
+        closerQnaList = new ArrayList<>();
+    }
+
+    public void addCloserQna(CloserQnA closerQnA) {
+        closerQnaList.add(closerQnA);
+    }
 
     @Column(nullable = false)
     private int closerParentCount;

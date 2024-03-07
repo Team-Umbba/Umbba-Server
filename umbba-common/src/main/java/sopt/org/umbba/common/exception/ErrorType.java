@@ -64,6 +64,7 @@ public enum ErrorType {
     PARENTCHILD_HAVE_NO_OPPONENT(HttpStatus.NOT_FOUND, "부모자식 관계에 1명만 참여하고 있습니다."),
     NOT_FOUND_SECTION(HttpStatus.NOT_FOUND, "해당 아이디와 일치하는 섹션이 없습니다."),
     NOT_FOUND_ALBUM(HttpStatus.NOT_FOUND, "존재하지 않는 앨범입니다."),
+    NOT_FOUND_CLOSER_QUESTION(HttpStatus.NOT_FOUND, "일치하는 가까워지기 질문이 없습니다."),
 
     /**
      * About Apple (HttpStatus 고민)
