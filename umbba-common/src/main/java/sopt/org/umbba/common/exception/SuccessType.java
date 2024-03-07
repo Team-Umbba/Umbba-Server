@@ -34,7 +34,8 @@ public enum SuccessType {
     DELETE_ALBUM_SUCCESS(HttpStatus.OK, "앨범의 기록 삭제에 성공했습니다."),
     GET_ALBUM_LIST_SUCCESS(HttpStatus.OK, "앨범의 기록 목록 조회에 성공했습니다."),
     GET_TODAY_CLOSER_QNA_SUCCESS(HttpStatus.OK, "오늘의 가까워지기 문답 조회에 성공했습니다."),
-    ANSWER_TODAY_CLOSER_QUESTION_SUCCESS(HttpStatus.CREATED, "오늘의 가까워지기 문답에 답변을 완료하였습니다."),
+    ANSWER_TODAY_CLOSER_QUESTION_SUCCESS(HttpStatus.OK, "오늘의 가까워지기 문답에 답변을 완료하였습니다."),
+    PASS_TO_NEXT_CLOSER_QUESTION_SUCCESS(HttpStatus.OK, "다음 가까워지기 문답으로 넘어가는 데에 성공했습니다."),
 
     /**
      * 201 CREATED

@@ -37,6 +37,9 @@ public enum ErrorType {
     // Album
     INVALID_BUCKET_PREFIX(HttpStatus.BAD_REQUEST, "유효하지 않은 S3 버킷 디렉토리명입니다."),
 
+    // Closer
+    INVALID_COUNT_STATUS(HttpStatus.BAD_REQUEST, "count 조건으로 인해 다음 가까워지기 질문으로 넘어갈 수 없습니다."),
+
     /**
      * 401 UNAUTHORIZED
      */

@@ -9,10 +9,16 @@ import sopt.org.umbba.api.controller.closer.dto.response.TodayCloserQnAResponseD
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
 import sopt.org.umbba.domain.domain.closer.CloserQnA;
+import sopt.org.umbba.domain.domain.closer.CloserQuestion;
 import sopt.org.umbba.domain.domain.closer.repository.CloserQnARepository;
+import sopt.org.umbba.domain.domain.closer.repository.CloserQuestionRepository;
 import sopt.org.umbba.domain.domain.parentchild.Parentchild;
 import sopt.org.umbba.domain.domain.user.User;
 import sopt.org.umbba.domain.domain.user.repository.UserRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -21,6 +27,8 @@ import sopt.org.umbba.domain.domain.user.repository.UserRepository;
 public class CloserService {
 
     private final UserRepository userRepository;
+    private final CloserQuestionRepository closerQuestionRepository;
+    private final CloserQnARepository closerQnARepository;
 
     public TodayCloserQnAResponseDto getTodayCloserQnA(Long userId) {
         User user = getUserById(userId);
@@ -74,6 +82,57 @@ public class CloserService {
 
             todayQnA.saveParentAnswer(request.getAnswer());
         }
+    }
+
+    @Transactional
+    public void passToNextCloserQnA(Long userId) {
+        User user = getUserById(userId);
+        Parentchild parentchild = user.getParentChild();
+        if (parentchild == null) {
+            throw new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD);
+        }
+
+        if (user.isMeChild()) {
+            if (parentchild.getCloserChildCount() < parentchild.getCloserParentCount()) {
+                parentchild.addCloserChildCount();
+            } else if (parentchild.getCloserChildCount() == parentchild.getCloserParentCount()) {
+                parentchild.addCloserChildCount();
+                CloserQuestion newCloserQuestion = closerQuestionRepository.findRandomExceptIds(getCloserQuestionIds(parentchild))
+                        .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_CLOSER_QUESTION));
+                CloserQnA newCloserQnA = CloserQnA.builder()
+                        .closerQuestion(newCloserQuestion)
+                        .isParentAnswer(false)
+                        .isChildAnswer(false)
+                        .build();
+                closerQnARepository.save(newCloserQnA);
+                parentchild.addCloserQna(newCloserQnA);
+            } else {
+                throw new CustomException(ErrorType.INVALID_COUNT_STATUS);
+            }
+        } else {
+            if (parentchild.getCloserParentCount() < parentchild.getCloserChildCount()) {
+                parentchild.addCloserParentCount();
+            } else if (parentchild.getCloserParentCount() == parentchild.getCloserChildCount()) {
+                parentchild.addCloserParentCount();
+                CloserQuestion newCloserQuestion = closerQuestionRepository.findRandomExceptIds(getCloserQuestionIds(parentchild))
+                        .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_CLOSER_QUESTION));
+                CloserQnA newCloserQnA = CloserQnA.builder()
+                        .closerQuestion(newCloserQuestion)
+                        .isParentAnswer(false)
+                        .isChildAnswer(false)
+                        .build();
+                closerQnARepository.save(newCloserQnA);
+                parentchild.addCloserQna(newCloserQnA);
+            } else {
+                throw new CustomException(ErrorType.INVALID_COUNT_STATUS);
+            }
+        }
+    }
+
+    private static List<Long> getCloserQuestionIds(Parentchild parentchild) {
+        return parentchild.getCloserQnaList().stream()
+                .map(closerQnA -> closerQnA.getCloserQuestion().getId())
+                .collect(Collectors.toList());
     }
 
     private User getUserById(Long userId) {

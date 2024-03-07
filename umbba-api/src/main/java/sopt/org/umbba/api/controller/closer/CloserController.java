@@ -15,6 +15,7 @@ import javax.validation.Valid;
 import java.security.Principal;
 
 import static sopt.org.umbba.common.exception.SuccessType.ANSWER_TODAY_CLOSER_QUESTION_SUCCESS;
+import static sopt.org.umbba.common.exception.SuccessType.PASS_TO_NEXT_CLOSER_QUESTION_SUCCESS;
 
 @Slf4j
 @RestController("/closer")
@@ -34,5 +35,12 @@ public class CloserController {
     public ApiResponse<?> answerTodayCloserQnA(Principal principal, @Valid @RequestBody final TodayCloserAnswerRequestDto request) {
         closerService.answerTodayCloserQnA(JwtProvider.getUserFromPrincial(principal), request);
         return ApiResponse.success(ANSWER_TODAY_CLOSER_QUESTION_SUCCESS);
+    }
+
+    @PatchMapping("/next")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<?> passToNextCloserQnA(Principal principal) {
+        closerService.passToNextCloserQnA(JwtProvider.getUserFromPrincial(principal));
+        return ApiResponse.success(PASS_TO_NEXT_CLOSER_QUESTION_SUCCESS);
     }
 }
