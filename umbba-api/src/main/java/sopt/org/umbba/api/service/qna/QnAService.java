@@ -210,11 +210,7 @@ public class QnAService {
                 .build();
         qnARepository.save(newQnA);
 
-        parentchild.initQna();
-        parentchild.setQna(newQnA);
-
-        // 가까워지기 QnA 리스트도 초기화
-        parentchild.initCloserQna();
+경        parentchild.setQna(newQnA);
     }
 
     @Transactional

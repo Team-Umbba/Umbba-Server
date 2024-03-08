@@ -34,7 +34,7 @@ public class Parentchild extends AuditingTimeEntity {
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "parentchild_id")
-    private List<QnA> qnaList;
+    private final List<QnA> qnaList = new ArrayList<>();
 
     @OneToMany(mappedBy = "parentchild", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private final List<Album> albumList = new ArrayList<>();
@@ -58,11 +58,7 @@ public class Parentchild extends AuditingTimeEntity {
 
     @OneToMany
     @JoinColumn(name = "parentchild_id")
-    private List<CloserQnA> closerQnaList;
-
-    public void initCloserQna() {
-        closerQnaList = new ArrayList<>();
-    }
+    private final List<CloserQnA> closerQnaList = new ArrayList<>();
 
     public void addCloserQna(CloserQnA closerQnA) {
         closerQnaList.add(closerQnA);
@@ -115,10 +111,6 @@ public class Parentchild extends AuditingTimeEntity {
     private LocalTime pushTime;  // default: 오후 11시(클라이언트)
 
     private boolean deleted = Boolean.FALSE;
-
-    public void initQna() {
-        qnaList = new ArrayList<>();
-    }
 
     public void setQna(QnA qnA) {
         if (qnaList.size() >= 7) {
