@@ -210,7 +210,7 @@ public class QnAService {
                 .build();
         qnARepository.save(newQnA);
 
-경        parentchild.setQna(newQnA);
+        parentchild.setQna(newQnA);
     }
 
     @Transactional
