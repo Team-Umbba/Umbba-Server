@@ -112,6 +112,12 @@ public class Parentchild extends AuditingTimeEntity {
 
     private boolean deleted = Boolean.FALSE;
 
+    private boolean isFirstAlbumUpload = false;
+
+    public void updateFirstAlbumUpload() {
+        this.isFirstAlbumUpload = true;
+    }
+
     public void setQna(QnA qnA) {
         if (qnaList.size() >= 7) {
             throw new CustomException(ErrorType.ALREADY_QNA_LIST_FULL);

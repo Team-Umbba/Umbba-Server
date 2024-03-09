@@ -35,6 +35,11 @@ public class AlbumService {
 			throw new CustomException(ErrorType.MAX_LIMIT_ALBUM_UPLOAD);
 		}
 
+		// 앨범을 처음 등록하는 경우
+		if (parentchild.getAlbumList().isEmpty() && !parentchild.isFirstAlbumUpload()) {
+			parentchild.updateFirstAlbumUpload();
+		}
+
 		Album album = Album.builder()
 			.title(request.getTitle())
 			.content(request.getContent())
@@ -69,9 +74,24 @@ public class AlbumService {
 		List<Album> albumList = albumRepository.findAllByParentchildOrderByCreatedAtDesc(
 			parentchild);
 
+		// Album을 아직 한번도 등록하지 않은 경우
+		if (albumList.isEmpty() && !parentchild.isFirstAlbumUpload()) {
+			return List.of(AlbumResponseDto.of(createAlbumExample(parentchild)));
+		}
+
 		return albumList.stream()
 			.map(AlbumResponseDto::of)
 			.collect(Collectors.toList());
+	}
+
+	private Album createAlbumExample(Parentchild parentchild) {
+		return Album.builder()
+			.title("사진의 제목을 입력할 수 있어요")
+			.content("사진에 대해 소개해요")
+			.imgUrl("imgUrl")
+			.writer("직성자")
+			.parentchild(parentchild)
+			.build();
 	}
 
 	private User getUserById(Long userId) {  // TODO userId -> Parentchild 한번에 가져오기
