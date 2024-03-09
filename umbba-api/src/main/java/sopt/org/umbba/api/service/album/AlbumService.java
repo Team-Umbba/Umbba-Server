@@ -25,6 +25,8 @@ public class AlbumService {
 	private final AlbumRepository albumRepository;
 	private final UserRepository userRepository;
 
+	public static final String ALBUM_EXAMPLE = "example";
+
 	@Transactional
 	public Long createAlbum(final CreateAlbumRequestDto request, final String imgUrl, final Long userId) {
 
@@ -63,6 +65,7 @@ public class AlbumService {
 		// Sample Album을 삭제할 경우
 		if (albumId.equals(0L)) {
 			parentchild.updateDeleteSampleAlbum();
+			return ALBUM_EXAMPLE;
 		}
 
 		Album album = getAlbumById(albumId);
