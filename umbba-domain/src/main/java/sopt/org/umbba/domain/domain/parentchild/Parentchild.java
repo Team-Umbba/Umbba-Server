@@ -136,4 +136,8 @@ public class Parentchild extends AuditingTimeEntity {
         }
     }
 
+    public boolean isOverMaxAlbumLimit() {
+        return getAlbumList().size() >= 15;
+    }
+
 }

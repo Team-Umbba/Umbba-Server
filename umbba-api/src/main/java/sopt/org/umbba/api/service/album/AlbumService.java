@@ -31,6 +31,10 @@ public class AlbumService {
 		User user = getUserById(userId);
 		Parentchild parentchild = getParentchildByUser(user);
 
+		if (parentchild.isOverMaxAlbumLimit()) {
+			throw new CustomException(ErrorType.MAX_LIMIT_ALBUM_UPLOAD);
+		}
+
 		Album album = Album.builder()
 			.title(request.getTitle())
 			.content(request.getContent())
