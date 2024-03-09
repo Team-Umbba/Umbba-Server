@@ -114,9 +114,15 @@ public class Parentchild extends AuditingTimeEntity {
 
     private boolean isFirstAlbumUpload = false;
 
+    private boolean isDeleteSampleAlbum = false;
+
     public void updateFirstAlbumUpload() {
         this.isFirstAlbumUpload = true;
     }
+    public void updateDeleteSampleAlbum() {
+        this.isDeleteSampleAlbum = true;
+    }
+
 
     public void setQna(QnA qnA) {
         if (qnaList.size() >= 7) {
