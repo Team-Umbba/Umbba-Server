@@ -7,6 +7,7 @@ import org.hibernate.annotations.Where;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
 import sopt.org.umbba.domain.domain.album.Album;
+import sopt.org.umbba.domain.domain.closer.CloserQnA;
 import sopt.org.umbba.domain.domain.common.AuditingTimeEntity;
 import sopt.org.umbba.domain.domain.qna.OnboardingAnswer;
 import sopt.org.umbba.domain.domain.qna.QnA;
@@ -33,7 +34,7 @@ public class Parentchild extends AuditingTimeEntity {
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "parentchild_id")
-    private List<QnA> qnaList;
+    private final List<QnA> qnaList = new ArrayList<>();
 
     @OneToMany(mappedBy = "parentchild", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private final List<Album> albumList = new ArrayList<>();
@@ -53,6 +54,28 @@ public class Parentchild extends AuditingTimeEntity {
 
     public void addRemindCnt() {
         this.remindCnt += 1;
+    }
+
+    @OneToMany
+    @JoinColumn(name = "parentchild_id")
+    private final List<CloserQnA> closerQnaList = new ArrayList<>();
+
+    public void addCloserQna(CloserQnA closerQnA) {
+        closerQnaList.add(closerQnA);
+    }
+
+    @Column(nullable = false)
+    private int closerParentCount;
+
+    @Column(nullable = false)
+    private int closerChildCount;
+
+    public void addCloserParentCount() {
+        this.closerParentCount += 1;
+    }
+
+    public void addCloserChildCount() {
+        this.closerChildCount += 1;
     }
 
     @Column(nullable = false)
@@ -88,10 +111,6 @@ public class Parentchild extends AuditingTimeEntity {
     private LocalTime pushTime;  // default: 오후 11시(클라이언트)
 
     private boolean deleted = Boolean.FALSE;
-
-    public void initQna() {
-        qnaList = new ArrayList<>();
-    }
 
     public void setQna(QnA qnA) {
         if (qnaList.size() >= 7) {

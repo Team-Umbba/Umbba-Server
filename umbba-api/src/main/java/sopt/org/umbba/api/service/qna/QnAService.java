@@ -11,6 +11,10 @@ import sopt.org.umbba.api.controller.qna.dto.response.*;
 import sopt.org.umbba.api.service.notification.NotificationService;
 import sopt.org.umbba.common.exception.ErrorType;
 import sopt.org.umbba.common.exception.model.CustomException;
+import sopt.org.umbba.domain.domain.closer.CloserQnA;
+import sopt.org.umbba.domain.domain.closer.CloserQuestion;
+import sopt.org.umbba.domain.domain.closer.repository.CloserQnARepository;
+import sopt.org.umbba.domain.domain.closer.repository.CloserQuestionRepository;
 import sopt.org.umbba.domain.domain.parentchild.Parentchild;
 import sopt.org.umbba.domain.domain.parentchild.dao.ParentchildDao;
 import sopt.org.umbba.domain.domain.qna.*;
@@ -48,6 +52,9 @@ public class QnAService {
     private final UserRepository userRepository;
     private final ParentchildDao parentchildDao;
     private final NotificationService notificationService;
+
+    private final CloserQuestionRepository closerQuestionRepository;
+    private final CloserQnARepository closerQnARepository;
 
     public TodayQnAResponseDto getTodayQnA(Long userId) {
 
@@ -195,7 +202,6 @@ public class QnAService {
             throw new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD);
         }
 
-
         // 첫번째 질문은 MVP 단에서는 고정
         QnA newQnA = QnA.builder()
                 .question(questionRepository.findByType(FIX).get(0))
@@ -204,7 +210,6 @@ public class QnAService {
                 .build();
         qnARepository.save(newQnA);
 
-        parentchild.initQna();
         parentchild.setQna(newQnA);
     }
 
@@ -242,6 +247,20 @@ public class QnAService {
         List<QnA> forLogging= parentchild.getQnaList();
         for (QnA qnA : forLogging) {
             log.info(qnA.getQuestion().getParentQuestion());
+        }
+
+        // 가까워지기 QnA도 추가
+        if (parentchild.getCloserQnaList().isEmpty()) {
+            CloserQuestion firstCloserQuestion = closerQuestionRepository.findRandomExceptIds(new ArrayList<>())
+                    .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_CLOSER_QUESTION));
+
+            CloserQnA newCloserQnA = CloserQnA.builder()
+                    .closerQuestion(firstCloserQuestion)
+                    .isParentAnswer(false)
+                    .isChildAnswer(false)
+                    .build();
+            closerQnARepository.save(newCloserQnA);
+            parentchild.addCloserQna(newCloserQnA);
         }
     }
 
