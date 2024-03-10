@@ -95,7 +95,7 @@ public class AlbumService {
 
 	private Album createAlbumExample() {
 		return new Album(0L, "사진의 제목을 입력할 수 있어요", "사진에 대해 소개해요",
-			"imgUrl", "직성자");
+			"https://i1.sndcdn.com/artworks-l2lCmUXC61XR2HM5-gwB8Vg-t500x500.jpg", "직성자");  // TODO 기획 측에서 전달받은 이미지 url로 변경
 	}
 
 	private User getUserById(Long userId) {  // TODO userId -> Parentchild 한번에 가져오기
