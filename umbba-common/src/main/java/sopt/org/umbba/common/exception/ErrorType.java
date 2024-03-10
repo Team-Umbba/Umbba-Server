@@ -105,6 +105,8 @@ public enum ErrorType {
      * 501 NOT_IMPLEMENTED
      */
     NEED_MORE_QUESTION(HttpStatus.NOT_IMPLEMENTED, "남은 질문이 없습니다. 질문을 추가해주세요."),
+    MAX_LIMIT_ALBUM_UPLOAD(HttpStatus.NOT_IMPLEMENTED, "한 부모자식마다 최대 15개의 업로드까지만 허용합니다."),
+
 
     ;
 

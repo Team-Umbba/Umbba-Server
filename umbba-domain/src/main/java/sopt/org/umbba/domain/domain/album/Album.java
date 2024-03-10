@@ -52,6 +52,14 @@ public class Album extends AuditingTimeEntity {
 		this.parentchild = parentchild;
 	}
 
+	public Album(Long id, String title, String content, String imgUrl, String writer) {
+		this.id = id;
+		this.title = title;
+		this.content = content;
+		this.imgUrl = imgUrl;
+		this.writer = writer;
+	}
+
 	public void setParentchild(Parentchild parentchild) {
 		this.parentchild = parentchild;
 

@@ -25,11 +25,22 @@ public class AlbumService {
 	private final AlbumRepository albumRepository;
 	private final UserRepository userRepository;
 
+	public static final String ALBUM_EXAMPLE = "example";
+
 	@Transactional
 	public Long createAlbum(final CreateAlbumRequestDto request, final String imgUrl, final Long userId) {
 
 		User user = getUserById(userId);
 		Parentchild parentchild = getParentchildByUser(user);
+
+		if (parentchild.isOverMaxAlbumLimit()) {
+			throw new CustomException(ErrorType.MAX_LIMIT_ALBUM_UPLOAD);
+		}
+
+		// 앨범을 처음 등록하는 경우
+		if (parentchild.getAlbumList().isEmpty() && !parentchild.isFirstAlbumUpload()) {
+			parentchild.updateFirstAlbumUpload();
+		}
 
 		Album album = Album.builder()
 			.title(request.getTitle())
@@ -50,6 +61,13 @@ public class AlbumService {
 
 		User user = getUserById(userId);
 		Parentchild parentchild = getParentchildByUser(user);
+
+		// Sample Album을 삭제할 경우
+		if (albumId.equals(0L)) {
+			parentchild.updateDeleteSampleAlbum();
+			return ALBUM_EXAMPLE;
+		}
+
 		Album album = getAlbumById(albumId);
 
 		album.deleteParentchild();
@@ -65,9 +83,19 @@ public class AlbumService {
 		List<Album> albumList = albumRepository.findAllByParentchildOrderByCreatedAtDesc(
 			parentchild);
 
+		// Album을 아직 한번도 등록하지 않은 경우
+		if (albumList.isEmpty() && !parentchild.isFirstAlbumUpload() && !parentchild.isDeleteSampleAlbum()) {
+			return List.of(AlbumResponseDto.of(createAlbumExample()));
+		}
+
 		return albumList.stream()
 			.map(AlbumResponseDto::of)
 			.collect(Collectors.toList());
+	}
+
+	private Album createAlbumExample() {
+		return new Album(0L, "사진의 제목을 입력할 수 있어요", "사진에 대해 소개해요",
+			"imgUrl", "직성자");
 	}
 
 	private User getUserById(Long userId) {  // TODO userId -> Parentchild 한번에 가져오기

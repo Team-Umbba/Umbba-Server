@@ -1,6 +1,7 @@
 package sopt.org.umbba.api.controller.album;
 
 import static sopt.org.umbba.api.config.jwt.JwtProvider.*;
+import static sopt.org.umbba.api.service.album.AlbumService.*;
 import static sopt.org.umbba.common.exception.SuccessType.*;
 import static sopt.org.umbba.external.s3.S3BucketPrefix.*;
 
@@ -60,7 +61,9 @@ public class AlbumController {
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResponse deleteAlbum(@PathVariable final Long albumId, final Principal principal) {
 		String imgUrl = albumService.deleteAlbum(albumId, getUserFromPrincial(principal));
-		s3Service.deleteS3Image(imgUrl);
+		if (!imgUrl.equals(ALBUM_EXAMPLE)) {   // Example Album의 이미지는 삭제하지 X
+			s3Service.deleteS3Image(imgUrl);
+		}
 		return ApiResponse.success(DELETE_ALBUM_SUCCESS);
 	}
 
