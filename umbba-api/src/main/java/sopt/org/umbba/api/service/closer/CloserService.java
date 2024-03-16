@@ -16,6 +16,7 @@ import sopt.org.umbba.domain.domain.parentchild.Parentchild;
 import sopt.org.umbba.domain.domain.user.User;
 import sopt.org.umbba.domain.domain.user.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +35,10 @@ public class CloserService {
         Parentchild parentchild = user.getParentChild();
         if (parentchild == null) {
             throw new CustomException(ErrorType.USER_HAVE_NO_PARENTCHILD);
+        }
+
+        if (parentchild.getCloserQnaList().isEmpty()) {
+            addFirstCloserQnA(parentchild);
         }
 
         if (user.isMeChild()) {
@@ -60,6 +65,20 @@ public class CloserService {
                 return TodayCloserQnAResponseDto.of(todayQnA, 3, false);
             }
         }
+    }
+
+    @Transactional
+    public void addFirstCloserQnA(Parentchild parentchild) {
+        CloserQuestion firstCloserQuestion = closerQuestionRepository.findRandomExceptIds(new ArrayList<>())
+                .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_CLOSER_QUESTION));
+
+        CloserQnA newCloserQnA = CloserQnA.builder()
+                .closerQuestion(firstCloserQuestion)
+                .isParentAnswer(false)
+                .isChildAnswer(false)
+                .build();
+        closerQnARepository.save(newCloserQnA);
+        parentchild.addCloserQna(newCloserQnA);
     }
 
     @Transactional
