@@ -30,6 +30,7 @@ public class CloserService {
     private final CloserQuestionRepository closerQuestionRepository;
     private final CloserQnARepository closerQnARepository;
 
+    @Transactional
     public TodayCloserQnAResponseDto getTodayCloserQnA(Long userId) {
         User user = getUserById(userId);
         Parentchild parentchild = user.getParentChild();
