@@ -184,30 +184,14 @@ public class QnAService {
     public SingleQnAResponseDto getSingleQna(Long userId, Long qnaId) {
         User myUser = getUserById(userId);
         Parentchild parentchild = getParentchildByUser(myUser);
+
+        User opponentUser = getOpponentByParentchild(parentchild, userId);
         QnA targetQnA = getQnAById(qnaId);
         Question todayQuestion = targetQnA.getQuestion();
+
         List<QnA> qnaList = getQnAListByParentchild(parentchild);
 
-        List<User> opponentUserList = userRepository.findUserByParentChild(parentchild)
-            .stream()
-            .filter(user -> !user.getId().equals(userId))
-            .collect(Collectors.toList());
-
-
-        if (opponentUserList.isEmpty()) {
-            boolean isFirstQnA = qnaList.get(0).equals(targetQnA);
-
-            if (isFirstQnA) {
-                return SingleQnAResponseDto.of(myUser, null, 1, targetQnA, todayQuestion);
-            } else {
-                throw new CustomException(ErrorType.PARENTCHILD_HAVE_NO_OPPONENT);
-            }
-        }
-
-        int index = qnaList.indexOf(targetQnA) + 1;
-        User opponentUser = opponentUserList.get(0);
-
-        return SingleQnAResponseDto.of(myUser, opponentUser, index, targetQnA, todayQuestion);
+        return SingleQnAResponseDto.of(myUser, opponentUser, qnaList.indexOf(targetQnA) + 1, targetQnA, todayQuestion);
     }
 
     @Transactional
