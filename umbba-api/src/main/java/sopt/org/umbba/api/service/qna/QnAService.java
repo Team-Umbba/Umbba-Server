@@ -460,8 +460,8 @@ public class QnAService {
 
         QuestionSection section = qnaList.get(parentchild.getCount() - 1).getQuestion().getSection();
         List<Question> differentSectionQuestions = targetQuestions.stream()
-                .filter(question -> !question.getSection().equals(section))
-                .collect(Collectors.toList());
+            .filter(question -> !question.getSection().equals(section))
+            .collect(Collectors.toList());
 
         Random random = new Random();
         Question randomQuestion;
@@ -471,8 +471,8 @@ public class QnAService {
         } else {
             // 4. 없다면 동일한 section의 질문 중에서라도 랜덤하게 추출
             List<Question> equalSectionQuestions = targetQuestions.stream()
-                    .filter(question -> !question.getSection().equals(section))
-                    .collect(Collectors.toList());
+                .filter(question -> question.getSection().equals(section))
+                .collect(Collectors.toList());
             randomQuestion = equalSectionQuestions.get(random.nextInt(equalSectionQuestions.size()));
         }
 
@@ -485,6 +485,56 @@ public class QnAService {
         qnARepository.save(newQnA);
         parentchild.addQna(newQnA);
         parentchild.addCount();
+    }
+
+    public RerollCheckResponseDto rerollCheck(Long userId) {
+        User user = getUserById(userId);
+        Parentchild parentchild = user.getParentChild();
+
+        // 7일 이후가 아닌 경우 질문 새로고침 불가능
+        if (parentchild.getCount() <= 7) {
+            throw new CustomException(ErrorType.INVALID_REROLL_BEFORE_SEVEN);
+        }
+        // 답변이 진행됐을 경우 질문 새로고침 불가능
+        List<QnA> qnaList = parentchild.getQnaList();
+        QnA currentQnA = qnaList.get(parentchild.getCount() - 1);
+        if (currentQnA.isParentAnswer() || currentQnA.isChildAnswer()) {
+            throw new CustomException(ErrorType.INVALID_REROLL_AFTER_ANSWER);
+        }
+
+        // 1. 메인 타입과 미사용 타입에 대해서 불러오기
+        List<QuestionType> types = Arrays.asList(MAIN, YET);
+
+        // 2. 내가 이미 주고받은 질문 제외하기
+        List<Long> doneQuestionIds = qnaList.stream()
+            .map(qna -> qna.getQuestion().getId())
+            .collect(Collectors.toList());
+
+        // 5. 이 경우 아예 추가될 질문이 없으므로 예외 발생시킴
+        List<Question> targetQuestions = questionRepository.findByTypeInAndIdNotIn(types, doneQuestionIds);
+        if (targetQuestions.isEmpty()) {
+            throw new CustomException(NEED_MORE_QUESTION);
+        }
+
+        QuestionSection section = qnaList.get(parentchild.getCount() - 1).getQuestion().getSection();
+        List<Question> equalSectionQuestions = targetQuestions.stream()
+            .filter(question -> question.getSection().equals(section))
+            .collect(Collectors.toList());
+
+        Random random = new Random();
+        Question randomQuestion;
+        if (!equalSectionQuestions.isEmpty()) {
+            // 3. 최근에 주고받은 질문의 section과 같은 질문들 중에서 랜덤하게 추출
+            randomQuestion = equalSectionQuestions.get(random.nextInt(equalSectionQuestions.size()));
+        } else {
+            // 4. 없다면 다른 section의 질문 중에서라도 랜덤하게 추출
+            List<Question> differentSectionQuestions = targetQuestions.stream()
+                .filter(question -> !question.getSection().equals(section))
+                .collect(Collectors.toList());
+            randomQuestion = differentSectionQuestions.get(random.nextInt(differentSectionQuestions.size()));
+        }
+
+        return RerollCheckResponseDto.of(randomQuestion);
     }
 
     @NotNull

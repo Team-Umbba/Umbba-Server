@@ -339,7 +339,7 @@ public class FCMService {
         } else {
             // 4. 없다면 동일한 section의 질문 중에서라도 랜덤하게 추출
             List<Question> equalSectionQuestions = targetQuestions.stream()
-                    .filter(question -> !question.getSection().equals(section))
+                    .filter(question -> question.getSection().equals(section))
                     .collect(Collectors.toList());
             randomQuestion = equalSectionQuestions.get(random.nextInt(equalSectionQuestions.size()));
         }

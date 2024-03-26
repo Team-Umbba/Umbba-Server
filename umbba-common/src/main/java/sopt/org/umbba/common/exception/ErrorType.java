@@ -40,6 +40,11 @@ public enum ErrorType {
     // Closer
     INVALID_COUNT_STATUS(HttpStatus.BAD_REQUEST, "count 조건으로 인해 다음 가까워지기 질문으로 넘어갈 수 없습니다."),
 
+    // Reroll
+    INVALID_REROLL_BEFORE_SEVEN(HttpStatus.BAD_REQUEST, "7일 이후에만 질문 새로고침을 할 수 있습니다."),
+    INVALID_REROLL_AFTER_ANSWER(HttpStatus.BAD_REQUEST, "답변이 진행되기 이전에만 질문 새로고침을 할 수 있습니다."),
+
+
     /**
      * 401 UNAUTHORIZED
      */

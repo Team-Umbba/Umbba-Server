@@ -106,4 +106,10 @@ public class QnAController {
         return ApiResponse.success(SuccessType.GET_USER_FIRST_ENTRY_SUCCESS, qnAService.updateUserFirstEntry(getUserFromPrincial(principal)));
     }
 
+    @GetMapping("/reroll/check")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<RerollCheckResponseDto> rerollCheck(Principal principal) {
+        return ApiResponse.success(SuccessType.GET_REROLL_CHECK_SUCCESS, qnAService.rerollCheck(getUserFromPrincial(principal)));
+    }
+
 }
