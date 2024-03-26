@@ -198,11 +198,8 @@ public class ControllerExceptionAdvice {
 
         if (e.getHttpStatus() == 501) {
             notificationService.sendExceptionToSlack(e, request);
-            return ResponseEntity.status(e.getHttpStatus())
-                    .body(ApiResponse.error(ErrorType.NEED_MORE_QUESTION));
-        } else {
-            return ResponseEntity.status(e.getHttpStatus())
-                    .body(ApiResponse.error(e.getErrorType(), e.getMessage()));
         }
+        return ResponseEntity.status(e.getHttpStatus())
+                    .body(ApiResponse.error(e.getErrorType(), e.getMessage()));
     }
 }

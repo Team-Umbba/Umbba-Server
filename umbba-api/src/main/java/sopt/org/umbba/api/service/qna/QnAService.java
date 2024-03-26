@@ -252,7 +252,7 @@ public class QnAService {
         // 가까워지기 QnA도 추가
         if (parentchild.getCloserQnaList().isEmpty()) {
             CloserQuestion firstCloserQuestion = closerQuestionRepository.findRandomExceptIds(new ArrayList<>())
-                    .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_CLOSER_QUESTION));
+                    .orElseThrow(() -> new CustomException(ErrorType.NO_MORE_CLOSER_QUESTION));
 
             CloserQnA newCloserQnA = CloserQnA.builder()
                     .closerQuestion(firstCloserQuestion)

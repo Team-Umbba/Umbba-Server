@@ -18,7 +18,7 @@ public interface CloserQuestionRepository extends JpaRepository<CloserQuestion, 
         List<CloserQuestion> allQuestions = findAll();
 
         if (allQuestions.isEmpty()) {
-            throw new CustomException(ErrorType.NOT_FOUND_CLOSER_QUESTION);
+            throw new CustomException(ErrorType.NO_MORE_CLOSER_QUESTION);
         }
         if (ids.isEmpty()) {
             int randomIndex = random.nextInt(allQuestions.size());
