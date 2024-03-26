@@ -37,6 +37,7 @@ public enum SuccessType {
     ANSWER_TODAY_CLOSER_QUESTION_SUCCESS(HttpStatus.OK, "오늘의 가까워지기 문답에 답변을 완료하였습니다."),
     PASS_TO_NEXT_CLOSER_QUESTION_SUCCESS(HttpStatus.OK, "다음 가까워지기 문답으로 넘어가는 데에 성공했습니다."),
     GET_REROLL_CHECK_SUCCESS(HttpStatus.OK, "새로고침 할 수 있는 질문 조회에 성공했습니다."),
+    REROLL_CHANGE_SUCCESS(HttpStatus.OK, "질문 새로고침이 완료되었습니다."),
 
     /**
      * 201 CREATED

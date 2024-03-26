@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sopt.org.umbba.api.config.jwt.JwtProvider;
+import sopt.org.umbba.api.controller.qna.dto.request.RerollChangeRequestDto;
 import sopt.org.umbba.api.controller.qna.dto.request.TodayAnswerRequestDto;
 import sopt.org.umbba.api.controller.qna.dto.response.*;
 import sopt.org.umbba.api.service.qna.QnAService;
@@ -33,8 +34,8 @@ public class QnAController {
     @PostMapping("/qna/answer")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse answerTodayQuestion(
-            Principal principal,
-            @Valid @RequestBody final TodayAnswerRequestDto request) {
+        Principal principal,
+        @Valid @RequestBody final TodayAnswerRequestDto request) {
 
         qnAService.answerTodayQuestion(JwtProvider.getUserFromPrincial(principal), request);
 
@@ -45,7 +46,7 @@ public class QnAController {
     @GetMapping("/qna/answer/remind")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse remindQuestion(
-            Principal principal) {
+        Principal principal) {
 
         qnAService.remindQuestion(JwtProvider.getUserFromPrincial(principal));
 
@@ -55,21 +56,21 @@ public class QnAController {
     @GetMapping("/qna/list/{sectionId}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<List<QnAListResponseDto>> getQnaList(
-            Principal principal,
-            @PathVariable(name = "sectionId") Long sectionId) {
+        Principal principal,
+        @PathVariable(name = "sectionId") Long sectionId) {
 
         return ApiResponse.success(SuccessType.GET_QNA_LIST_SUCCESS,
-                qnAService.getQnaList(JwtProvider.getUserFromPrincial(principal), sectionId));
+            qnAService.getQnaList(JwtProvider.getUserFromPrincial(principal), sectionId));
     }
 
     @GetMapping("/qna/{qnaId}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<SingleQnAResponseDto> getSingleQna(
-            Principal principal,
-            @PathVariable(name = "qnaId") Long qnaId) {
+        Principal principal,
+        @PathVariable(name = "qnaId") Long qnaId) {
 
         return ApiResponse.success(SuccessType.GET_SINGLE_QNA_SUCCESS,
-                qnAService.getSingleQna(JwtProvider.getUserFromPrincial(principal), qnaId));
+            qnAService.getSingleQna(JwtProvider.getUserFromPrincial(principal), qnaId));
     }
 
     @PatchMapping("/qna/restart")
@@ -112,4 +113,10 @@ public class QnAController {
         return ApiResponse.success(SuccessType.GET_REROLL_CHECK_SUCCESS, qnAService.rerollCheck(getUserFromPrincial(principal)));
     }
 
+    @PatchMapping("/reroll/change")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse rerollChange(Principal principal, RerollChangeRequestDto request) {
+        qnAService.rerollChange(getUserFromPrincial(principal), request.getQuestionId());
+        return ApiResponse.success(SuccessType.REROLL_CHANGE_SUCCESS);
+    }
 }

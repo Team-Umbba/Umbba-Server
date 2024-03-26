@@ -26,6 +26,8 @@ import sopt.org.umbba.domain.domain.user.repository.UserRepository;
 
 import javax.validation.constraints.NotNull;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -535,6 +537,31 @@ public class QnAService {
         }
 
         return RerollCheckResponseDto.of(randomQuestion);
+    }
+
+    @Transactional
+    public void rerollChange(Long userId, Long questionId) {
+        User user = getUserById(userId);
+        Question question = questionRepository.findById(questionId)
+            .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_QUESTION));
+
+        LocalDateTime lastRerollChange = user.getLastRerollChange();
+        LocalDateTime now = LocalDateTime.now();
+
+        if (lastRerollChange != null) {
+            Duration duration = Duration.between(lastRerollChange, now);
+            long hoursPassed = duration.toHours();
+
+            if (hoursPassed < 24) {
+                throw new CustomException(ErrorType.INVALID_REROLL_ONCE_A_DAY);
+            }
+        }
+
+        Parentchild parentchild = user.getParentChild();
+        List<QnA> qnaList = parentchild.getQnaList();
+        QnA currentQnA = qnaList.get(parentchild.getCount() - 1);
+
+        currentQnA.changeQuestion(question);
     }
 
     @NotNull

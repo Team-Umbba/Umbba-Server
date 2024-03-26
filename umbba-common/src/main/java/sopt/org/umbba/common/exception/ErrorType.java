@@ -43,6 +43,7 @@ public enum ErrorType {
     // Reroll
     INVALID_REROLL_BEFORE_SEVEN(HttpStatus.BAD_REQUEST, "7일 이후에만 질문 새로고침을 할 수 있습니다."),
     INVALID_REROLL_AFTER_ANSWER(HttpStatus.BAD_REQUEST, "답변이 진행되기 이전에만 질문 새로고침을 할 수 있습니다."),
+    INVALID_REROLL_ONCE_A_DAY(HttpStatus.BAD_REQUEST, "하루에 한번만 질문 새로고침을 할 수 있습니다."),
 
 
     /**
@@ -72,6 +73,7 @@ public enum ErrorType {
     PARENTCHILD_HAVE_NO_OPPONENT(HttpStatus.NOT_FOUND, "부모자식 관계에 1명만 참여하고 있습니다."),
     NOT_FOUND_SECTION(HttpStatus.NOT_FOUND, "해당 아이디와 일치하는 섹션이 없습니다."),
     NOT_FOUND_ALBUM(HttpStatus.NOT_FOUND, "존재하지 않는 앨범입니다."),
+    NOT_FOUND_QUESTION(HttpStatus.NOT_FOUND, "해당 아이디와 일치하는 Question 데이터가 없습니다."),
 
     /**
      * About Apple (HttpStatus 고민)

@@ -1,5 +1,6 @@
 package sopt.org.umbba.domain.domain.user;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -109,6 +110,8 @@ public class User extends AuditingTimeEntity {
     private boolean isFirstEntry = Boolean.TRUE;
 
     private boolean isEndingDone = Boolean.FALSE;
+
+    private LocalDateTime lastRerollChange = LocalDateTime.of(2024, 3, 1, 12, 0);;
 
     // 로그인 새롭게 할 때마다 해당 필드들 업데이트
     public void updateSocialInfo(String socialNickname, String socialProfileImage, String socialAccessToken/*, String socialRefreshToken*/) {
