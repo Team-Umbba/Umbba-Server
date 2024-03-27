@@ -115,7 +115,7 @@ public class QnAController {
 
     @PatchMapping("/reroll/change")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse rerollChange(Principal principal, RerollChangeRequestDto request) {
+    public ApiResponse rerollChange(Principal principal, @RequestBody RerollChangeRequestDto request) {
         qnAService.rerollChange(getUserFromPrincial(principal), request.getQuestionId());
         return ApiResponse.success(SuccessType.REROLL_CHANGE_SUCCESS);
     }
