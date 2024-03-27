@@ -111,7 +111,7 @@ public class User extends AuditingTimeEntity {
 
     private boolean isEndingDone = Boolean.FALSE;
 
-    private LocalDateTime lastRerollChange = LocalDateTime.of(2024, 3, 1, 12, 0);
+    private LocalDateTime lastRerollChange = LocalDateTime.now().minusDays(1);
 
     public void updateLastRerollChange() {
         this.lastRerollChange = LocalDateTime.now();
