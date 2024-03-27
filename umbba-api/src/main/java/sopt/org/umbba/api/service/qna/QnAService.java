@@ -454,6 +454,9 @@ public class QnAService {
                 .map(qna -> qna.getQuestion().getId())
                 .collect(Collectors.toList());
 
+        // 2.5 새로고침으로 버린 블랙리스트 질문 제외하기
+        doneQuestionIds.addAll(parentchild.getQuestionBlackList());
+
         // 5. 이 경우 아예 추가될 질문이 없으므로 예외 발생시킴
         List<Question> targetQuestions = questionRepository.findByTypeInAndIdNotIn(types, doneQuestionIds);
         if (targetQuestions.isEmpty()) {
@@ -512,6 +515,9 @@ public class QnAService {
             .map(qna -> qna.getQuestion().getId())
             .collect(Collectors.toList());
 
+        // 2.5 새로고침으로 버린 블랙리스트 질문 제외하기
+        doneQuestionIds.addAll(parentchild.getQuestionBlackList());
+
         // 5. 이 경우 아예 추가될 질문이 없으므로 예외 발생시킴
         List<Question> targetQuestions = questionRepository.findByTypeInAndIdNotIn(types, doneQuestionIds);
         if (targetQuestions.isEmpty()) {
@@ -545,9 +551,9 @@ public class QnAService {
         Question question = questionRepository.findById(questionId)
             .orElseThrow(() -> new CustomException(ErrorType.NOT_FOUND_QUESTION));
 
+        // 하루에 한번만 질문 새로고침 가능
         LocalDateTime lastRerollChange = user.getLastRerollChange();
         LocalDateTime now = LocalDateTime.now();
-
         if (lastRerollChange != null) {
             Duration duration = Duration.between(lastRerollChange, now);
             long hoursPassed = duration.toHours();
@@ -561,7 +567,10 @@ public class QnAService {
         List<QnA> qnaList = parentchild.getQnaList();
         QnA currentQnA = qnaList.get(parentchild.getCount() - 1);
 
+        // 새로고침으로 버린 질문은 블랙리스트에 추가
+        parentchild.addQuestionBlackList(currentQnA.getQuestion().getId());
         currentQnA.changeQuestion(question);
+        user.updateLastRerollChange();
     }
 
     @NotNull

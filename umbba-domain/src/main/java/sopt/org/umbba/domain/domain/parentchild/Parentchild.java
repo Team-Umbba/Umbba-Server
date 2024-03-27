@@ -39,6 +39,14 @@ public class Parentchild extends AuditingTimeEntity {
     @OneToMany(mappedBy = "parentchild", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private final List<Album> albumList = new ArrayList<>();
 
+    @Column(name = "question_id", nullable = false)
+    @ElementCollection
+    private List<Long> questionBlackList;
+
+    public void addQuestionBlackList(Long questionId) {
+        questionBlackList.add(questionId);
+    }
+
     @Column(nullable = false)
     private int count;
 

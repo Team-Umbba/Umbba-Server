@@ -111,7 +111,11 @@ public class User extends AuditingTimeEntity {
 
     private boolean isEndingDone = Boolean.FALSE;
 
-    private LocalDateTime lastRerollChange = LocalDateTime.of(2024, 3, 1, 12, 0);;
+    private LocalDateTime lastRerollChange = LocalDateTime.of(2024, 3, 1, 12, 0);
+
+    public void updateLastRerollChange() {
+        this.lastRerollChange = LocalDateTime.now();
+    }
 
     // 로그인 새롭게 할 때마다 해당 필드들 업데이트
     public void updateSocialInfo(String socialNickname, String socialProfileImage, String socialAccessToken/*, String socialRefreshToken*/) {
