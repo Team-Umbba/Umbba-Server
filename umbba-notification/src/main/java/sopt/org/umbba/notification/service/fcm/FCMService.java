@@ -319,6 +319,9 @@ public class FCMService {
                 .map(qna -> qna.getQuestion().getId())
                 .collect(Collectors.toList());
 
+        // 2.5 새로고침으로 버린 블랙리스트 질문 제외하기
+        doneQuestionIds.addAll(parentchild.getQuestionBlackList());
+
         // 5. 이 경우 아예 추가될 질문이 없으므로 예외 발생시킴
         List<Question> targetQuestions = questionRepository.findByTypeInAndIdNotIn(types, doneQuestionIds);
         if (targetQuestions.isEmpty()) {
@@ -339,7 +342,7 @@ public class FCMService {
         } else {
             // 4. 없다면 동일한 section의 질문 중에서라도 랜덤하게 추출
             List<Question> equalSectionQuestions = targetQuestions.stream()
-                    .filter(question -> !question.getSection().equals(section))
+                    .filter(question -> question.getSection().equals(section))
                     .collect(Collectors.toList());
             randomQuestion = equalSectionQuestions.get(random.nextInt(equalSectionQuestions.size()));
         }
