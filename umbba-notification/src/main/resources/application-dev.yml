@@ -34,6 +34,7 @@ cloud:
       static: ${CLOUD_REGION_DEV}
     s3:
       bucket: ${BUCKET_NAME_DEV}
+      bucketImg: ${IMG_BUCKET_DEV}
     stack:
       auto: false
     sqs:
