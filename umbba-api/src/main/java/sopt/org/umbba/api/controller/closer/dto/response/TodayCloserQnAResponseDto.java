@@ -23,6 +23,8 @@ public class TodayCloserQnAResponseDto {
     private String myChoice;
     private String opponentChoice;
 
+    private String imgUrl;
+
     public static TodayCloserQnAResponseDto of(CloserQnA closerQna, int responseCase, boolean isMeChild) {
 
         CloserQuestion closerQuestion = closerQna.getCloserQuestion();
@@ -65,6 +67,7 @@ public class TodayCloserQnAResponseDto {
                 .choiceAnswer2(closerQuestion.getChoiceAnswer2())
                 .myChoice(myChoice)
                 .opponentChoice(opponentChoice)
+                .imgUrl(closerQuestion.getImgUrl())
                 .build();
     }
 }

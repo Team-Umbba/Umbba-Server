@@ -25,4 +25,7 @@ public class CloserQuestion extends AuditingTimeEntity {
 
     @Column(nullable = false)
     private String choiceAnswer2;
+
+    @Column(columnDefinition = "TEXT")
+    private String imgUrl;
 }
