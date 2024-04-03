@@ -542,7 +542,7 @@ public class QnAService {
             randomQuestion = differentSectionQuestions.get(random.nextInt(differentSectionQuestions.size()));
         }
 
-        return RerollCheckResponseDto.of(randomQuestion);
+        return RerollCheckResponseDto.of(user.isMeChild(), randomQuestion);
     }
 
     @Transactional

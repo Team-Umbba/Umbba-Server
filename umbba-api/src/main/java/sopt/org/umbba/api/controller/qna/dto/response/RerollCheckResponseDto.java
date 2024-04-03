@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
-import sopt.org.umbba.domain.domain.qna.QnA;
 import sopt.org.umbba.domain.domain.qna.Question;
 
 @Getter
@@ -13,18 +12,20 @@ import sopt.org.umbba.domain.domain.qna.Question;
 public class RerollCheckResponseDto {
 
     private Long questionId;
-    private String childQuestion;
-    private String parentQuestion;
-    private String section;
-    private String topic;
+    private String newQuestion;
 
-    public static RerollCheckResponseDto of(Question question) {
+    public static RerollCheckResponseDto of(boolean isMeChild, Question question) {
+
+        String newQuestion;
+        if (isMeChild) {
+            newQuestion = question.getChildQuestion();
+        } else {
+            newQuestion = question.getParentQuestion();
+        }
+
         return RerollCheckResponseDto.builder()
             .questionId(question.getId())
-            .childQuestion(question.getChildQuestion())
-            .parentQuestion(question.getParentQuestion())
-            .section(question.getSection().getValue())
-            .topic(question.getTopic())
+            .newQuestion(newQuestion)
             .build();
     }
 }
