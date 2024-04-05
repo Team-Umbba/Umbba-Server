@@ -8,6 +8,9 @@ import sopt.org.umbba.domain.domain.qna.QnA;
 import sopt.org.umbba.domain.domain.qna.Question;
 import sopt.org.umbba.domain.domain.user.User;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -29,6 +32,8 @@ public class TodayQnAResponseDto {
     private String opponentUsername;
     private String myUsername;
 
+    private Boolean isRerollTime;
+
 
     public static TodayQnAResponseDto of(User myUser, User opponentUser, int count, QnA todayQnA, Question todayQuestion) {
         String opponentQuestion;
@@ -37,6 +42,20 @@ public class TodayQnAResponseDto {
         String myAnswer;
         boolean isOpponentAnswer;
         boolean isMyAnswer;
+
+        boolean isRerollAvailable = true;
+
+        // 하루에 한번만 질문 새로고침 가능
+        LocalDateTime lastRerollChange = myUser.getLastRerollChange();
+        LocalDateTime now = LocalDateTime.now();
+        if (lastRerollChange != null) {
+            Duration duration = Duration.between(lastRerollChange, now);
+            long hoursPassed = duration.toHours();
+
+            if (hoursPassed < 24) {
+                isRerollAvailable = false;
+            }
+        }
 
         if (myUser.isMeChild()) {
             opponentQuestion = todayQuestion.getParentQuestion();
@@ -68,6 +87,7 @@ public class TodayQnAResponseDto {
                     .isMyAnswer(isMyAnswer)
                     .opponentUsername(opponentUser.getUsername())
                     .myUsername(myUser.getUsername())
+                    .isRerollTime(isRerollAvailable)
                     .build();
         } else {
             return TodayQnAResponseDto.builder()
@@ -83,6 +103,7 @@ public class TodayQnAResponseDto {
                     .isMyAnswer(isMyAnswer)
                     .opponentUsername("상대방")
                     .myUsername(myUser.getUsername())
+                    .isRerollTime(isRerollAvailable)
                     .build();
         }
     }
