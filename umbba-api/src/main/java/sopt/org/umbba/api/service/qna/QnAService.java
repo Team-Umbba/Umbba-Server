@@ -103,9 +103,7 @@ public class QnAService {
         User user = getUserById(userId);
         QnA firstQnA = user.getParentChild().getQnaList().get(0);
 
-        if (user.isMeChild() && firstQnA.isChildAnswer()) {
-            return true;
-        } else if (!user.isMeChild() && firstQnA.isParentAnswer()) {
+        if (firstQnA.isChildAnswer() || firstQnA.isParentAnswer()) { // 본인이 초대 하는측이라 질문을 하나라도 완료 했을 경우 + 초대 받는측이라 상대가 질문을 완료 했을 경우
             return true;
         }
         return false;
