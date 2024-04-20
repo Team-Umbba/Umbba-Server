@@ -1,0 +1,55 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL_LOCAL}
+    username: ${DB_USER_LOCAL}
+    password: ${DB_PWD_LOCAL}
+    hikari:
+      pool-name: Hikari 커넥션 풀  # Pool
+      connection-timeout: 30000 # 30초(default: 30초)
+      maximum-pool-size: 10  # default: 10개
+      max-lifetime: 600000   # 10분(default: 30분)
+      leak-detection-threshold: 3500  # default: 0(이용X)
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+      ejb:
+        naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    properties:
+      hibernate:
+        format_sql: true
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${CLOUD_ACCESS_LOCAL}
+      secretKey: ${CLOUD_SECRET_LOCAL}
+    region:
+      static: ${CLOUD_REGION_LOCAL}
+    s3:
+      bucket: ${BUCKET_NAME_LOCAL}
+      bucketImg: ${IMG_BUCKET_LOCAL}
+    stack:
+      auto: false
+    sqs:
+      notification:
+        name: ${SQS_NAME_LOCAL}
+        url: ${SQS_URL_LOCAL}
+
+server:
+  port: 9091
+
+kakao:
+  client-id: ${KAKAO_ID}
+  authorization-grant-type: authorization_code
+  redirect-uri: ${KAKAO_REDIRECT_LOCAL}
+
+slack:
+  webhook:
+    url: ${SLACK_URL_LOCAL}

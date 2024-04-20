@@ -1,0 +1,23 @@
+jar { enabled = false }
+
+dependencies {
+    implementation project(":umbba-domain")
+    implementation project(":umbba-common")
+    implementation project(":umbba-external")
+
+    implementation "org.springframework.boot:spring-boot-starter-web"
+
+    // SQS
+    implementation "org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE"
+    implementation "org.springframework.cloud:spring-cloud-aws-messaging:2.2.6.RELEASE"
+
+    // FCM
+    implementation "com.google.firebase:firebase-admin:9.1.1"
+
+    // Slack Webhook
+    implementation 'com.slack.api:slack-api-client:1.28.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    implementation 'com.slack.api:slack-app-backend:1.28.0'
+    implementation 'com.slack.api:slack-api-model:1.28.0'
+}

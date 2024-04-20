@@ -1,0 +1,27 @@
+spring:
+  profiles:
+    active: local
+
+apple:
+  iss: ${APPLE_ISS}
+  client-id: ${APPLE_ID}
+
+jwt:
+  secret: ${JWT_SECRET}
+
+fcm:
+  key:
+    path: ${FCM_JSON_PATH}
+    scope: ${FCM_SCOPE}
+  #    firebase-create-scoped: "https://www.googleapis.com/auth/firebase.messaging"
+  api:
+    url: ${FCM_API_URL}
+  topic:
+    "qna_notification"
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error

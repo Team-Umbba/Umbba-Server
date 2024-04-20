@@ -1,0 +1,10 @@
+bootJar { enabled = false }
+jar { enabled = true }
+dependencies {
+
+    // for HttpStatus
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Jackson
+    implementation group: "io.jsonwebtoken", name: "jjwt-jackson", version: "0.11.2"
+}

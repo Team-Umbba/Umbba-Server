@@ -1,0 +1,43 @@
+jar { enabled = false }
+
+dependencies {
+    implementation project(':umbba-common')
+    implementation project(':umbba-domain')
+    implementation project(':umbba-external')
+
+    // spring mvc
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // swagger
+//	implementation 'org.springdoc:springdoc-openapi-ui:1.5.4'
+
+    // SQS
+    implementation "org.springframework.cloud:spring-cloud-aws-messaging:2.2.6.RELEASE"
+
+    // Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-test'
+
+    // jwt
+    implementation group: "io.jsonwebtoken", name: "jjwt-api", version: "0.11.2"
+    implementation group: "io.jsonwebtoken", name: "jjwt-impl", version: "0.11.2"
+    implementation group: "io.jsonwebtoken", name: "jjwt-jackson", version: "0.11.2"
+
+    // random String
+    implementation 'org.apache.commons:commons-lang3'
+
+    // for FeignException
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.7'
+
+    // redis
+    implementation "org.springframework.boot:spring-boot-starter-data-redis"
+    implementation "org.springframework.session:spring-session-data-redis"
+
+    // s3
+//    implementation "org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE"
+
+    // AWS Secrets Manager
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.3'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws-secrets-manager-config:2.2.6.RELEASE'
+}
+
