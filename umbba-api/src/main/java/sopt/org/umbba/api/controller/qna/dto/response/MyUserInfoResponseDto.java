@@ -45,8 +45,9 @@ public class MyUserInfoResponseDto {
 			.isMeChild(myUser.isMeChild())
 			.section(qnA.getQuestion().getSection().getValue())
 			.matchedDate(date)  // 일수와 문답 수는 다를 수 있음
+			.qnaCnt(qnaCnt)
 			.isOpponentExit(false)
-			.qnaCnt(qnaCnt).build();
+			.build();
 	}
 
 	// 아직 매칭된 유저가 없는 경우
