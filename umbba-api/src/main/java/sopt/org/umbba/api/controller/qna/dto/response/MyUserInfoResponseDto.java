@@ -69,19 +69,18 @@ public class MyUserInfoResponseDto {
 	}
 
 	// 상대방이 탈퇴했을 경우
-	public static MyUserInfoResponseDto of(User myUser, Parentchild parentchild, boolean isOpponentExit) {
+	public static MyUserInfoResponseDto of(User myUser, User opponentUser, Parentchild parentchild, QnA qnA, long date, int qnaCnt, boolean isOpponentExit) {
 
 		return MyUserInfoResponseDto.builder()
 			.myUsername(myUser.getUsername())
 			.myUserType(getUserType(parentchild.getRelation(), myUser.isMeChild()))
-			.opponentUserType(getUserType(parentchild.getRelation(), !myUser.isMeChild()))
+			.opponentUsername(opponentUser.getUsername())
+			.opponentUserType(getUserType(parentchild.getRelation(), opponentUser.isMeChild()))
 			.parentchildRelation(parentchild.getRelation().getValue())
 			.isMeChild(myUser.isMeChild())
-			.section(QuestionSection.YOUNG.getValue())
-			.matchedDate(0L)
-			.qnaCnt(0)
-			.inviteCode(parentchild.getInviteCode())
-			.installUrl("http://umbba.site/")
+			.section(qnA.getQuestion().getSection().getValue())
+			.matchedDate(date)  // 일수와 문답 수는 다를 수 있음
+			.qnaCnt(qnaCnt)
 			.isOpponentExit(isOpponentExit)
 			.build();
 	}

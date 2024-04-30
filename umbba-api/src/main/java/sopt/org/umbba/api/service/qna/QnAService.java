@@ -281,10 +281,6 @@ public class QnAService {
         }
 
         User opponentUser = getOpponentByParentchild(parentchild, userId);
-        // 상대 유저가 탈퇴했을 경우
-        if (opponentUser.getSocialPlatform().equals(WITHDRAW)) {
-            return MyUserInfoResponseDto.of(myUser, parentchild, true);
-        }
 
         QnA todayQnA = getTodayQnAByParentchild(parentchild);
 
@@ -295,6 +291,11 @@ public class QnAService {
 
         LocalDateTime firstQnADate = parentchild.getQnaList().get(0).getCreatedAt();
         long qnaDate = ChronoUnit.DAYS.between(firstQnADate, LocalDateTime.now());
+
+        // 상대 유저가 탈퇴했을 경우
+        if (opponentUser.getSocialPlatform().equals(WITHDRAW)) {
+            return MyUserInfoResponseDto.of(myUser, opponentUser, parentchild, todayQnA, qnaDate, qnaCnt, true);
+        }
 
         return MyUserInfoResponseDto.of(myUser, opponentUser, parentchild, todayQnA, qnaDate, qnaCnt);
     }
