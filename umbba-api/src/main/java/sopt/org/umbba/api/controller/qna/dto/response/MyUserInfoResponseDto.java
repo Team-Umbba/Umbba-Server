@@ -32,6 +32,8 @@ public class MyUserInfoResponseDto {
 	private String inviteCode;
 	private String installUrl;
 
+	private Boolean isOpponentExit;
+
 	public static MyUserInfoResponseDto of(User myUser, User opponentUser, Parentchild parentchild, QnA qnA, long date, int qnaCnt) {
 
 		return MyUserInfoResponseDto.builder()
@@ -43,6 +45,7 @@ public class MyUserInfoResponseDto {
 			.isMeChild(myUser.isMeChild())
 			.section(qnA.getQuestion().getSection().getValue())
 			.matchedDate(date)  // 일수와 문답 수는 다를 수 있음
+			.isOpponentExit(false)
 			.qnaCnt(qnaCnt).build();
 	}
 
@@ -60,6 +63,25 @@ public class MyUserInfoResponseDto {
 			.qnaCnt(0)
 			.inviteCode(parentchild.getInviteCode())
 			.installUrl("http://umbba.site/")
+			.isOpponentExit(false)
+			.build();
+	}
+
+	// 상대방이 탈퇴했을 경우
+	public static MyUserInfoResponseDto of(User myUser, Parentchild parentchild, boolean isOpponentExit) {
+
+		return MyUserInfoResponseDto.builder()
+			.myUsername(myUser.getUsername())
+			.myUserType(getUserType(parentchild.getRelation(), myUser.isMeChild()))
+			.opponentUserType(getUserType(parentchild.getRelation(), !myUser.isMeChild()))
+			.parentchildRelation(parentchild.getRelation().getValue())
+			.isMeChild(myUser.isMeChild())
+			.section(QuestionSection.YOUNG.getValue())
+			.matchedDate(0L)
+			.qnaCnt(0)
+			.inviteCode(parentchild.getInviteCode())
+			.installUrl("http://umbba.site/")
+			.isOpponentExit(isOpponentExit)
 			.build();
 	}
 }

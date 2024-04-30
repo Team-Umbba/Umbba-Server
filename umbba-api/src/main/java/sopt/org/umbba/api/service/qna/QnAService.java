@@ -41,6 +41,7 @@ import static sopt.org.umbba.domain.domain.qna.OnboardingAnswer.NO;
 import static sopt.org.umbba.domain.domain.qna.OnboardingAnswer.YES;
 import static sopt.org.umbba.domain.domain.qna.QuestionSection.*;
 import static sopt.org.umbba.domain.domain.qna.QuestionType.*;
+import static sopt.org.umbba.domain.domain.user.SocialPlatform.*;
 
 
 @Slf4j
@@ -93,7 +94,7 @@ public class QnAService {
         else if (matchUser.get().getUsername() == null) {
             return invitation(userId);
         }
-        else if (matchUser.get().getSocialPlatform().equals(SocialPlatform.WITHDRAW)) {
+        else if (matchUser.get().getSocialPlatform().equals(WITHDRAW)) {
             return withdrawUser();
         }
 
@@ -280,6 +281,11 @@ public class QnAService {
         }
 
         User opponentUser = getOpponentByParentchild(parentchild, userId);
+        // 상대 유저가 탈퇴했을 경우
+        if (opponentUser.getSocialPlatform().equals(WITHDRAW)) {
+            return MyUserInfoResponseDto.of(myUser, parentchild, true);
+        }
+
         QnA todayQnA = getTodayQnAByParentchild(parentchild);
 
         int qnaCnt = parentchild.getCount();
