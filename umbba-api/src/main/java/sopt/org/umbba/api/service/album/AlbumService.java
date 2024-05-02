@@ -77,7 +77,7 @@ public class AlbumService {
 		return album.getImgUrl();
 	}
 
-	public List<AlbumResponseDto> getAlbumList(final Long userId) {
+	public List<AlbumResponseDto> getAlbumList(final String defaultImgUrl, final Long userId) {
 		User user = getUserById(userId);
 		Parentchild parentchild = getParentchildByUser(user);
 		List<Album> albumList = albumRepository.findAllByParentchildOrderByCreatedAtDesc(
@@ -85,7 +85,7 @@ public class AlbumService {
 
 		// Album을 아직 한번도 등록하지 않은 경우
 		if (albumList.isEmpty() && !parentchild.isFirstAlbumUpload() && !parentchild.isDeleteSampleAlbum()) {
-			return List.of(AlbumResponseDto.of(createAlbumExample()));
+			return List.of(AlbumResponseDto.of(createAlbumExample(defaultImgUrl)));
 		}
 
 		return albumList.stream()
@@ -93,9 +93,8 @@ public class AlbumService {
 			.collect(Collectors.toList());
 	}
 
-	private Album createAlbumExample() {
-		return new Album(0L, "사진의 제목을 입력할 수 있어요", "사진에 대해 소개해요",
-			"https://i1.sndcdn.com/artworks-l2lCmUXC61XR2HM5-gwB8Vg-t500x500.jpg", "직성자");  // TODO 기획 측에서 전달받은 이미지 url로 변경
+	private Album createAlbumExample(final String defaultImgUrl) {
+		return new Album(0L, "사진의 제목을 입력할 수 있어요", "사진에 대해 소개해요", defaultImgUrl, "직성자");
 	}
 
 	private User getUserById(Long userId) {  // TODO userId -> Parentchild 한번에 가져오기

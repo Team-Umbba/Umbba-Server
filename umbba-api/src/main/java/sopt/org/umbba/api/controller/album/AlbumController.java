@@ -41,6 +41,8 @@ public class AlbumController {
 	private final AlbumService albumService;
 	private final S3Service s3Service;
 
+	private static final String DEFAULT_ALBUM_IMG = "default_img.png";
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ApiResponse createAlbum(@Valid @RequestBody final CreateAlbumRequestDto request, final Principal principal, HttpServletResponse response) {
@@ -70,6 +72,7 @@ public class AlbumController {
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResponse<List<AlbumResponseDto>> getAlbumList(final Principal principal) {
-		return ApiResponse.success(GET_ALBUM_LIST_SUCCESS, albumService.getAlbumList(getUserFromPrincial(principal)));
+		String defaultImgUrl = s3Service.getS3ImgUrl(ALBUM_PREFIX.getValue(), DEFAULT_ALBUM_IMG);
+		return ApiResponse.success(GET_ALBUM_LIST_SUCCESS, albumService.getAlbumList(defaultImgUrl, getUserFromPrincial(principal)));
 	}
 }
