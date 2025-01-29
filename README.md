@@ -6,20 +6,20 @@
 
 
 ## 🌸 금쪽이들
-|                             ddongseop                             |                                                                박예준                                                                 |
+|                             이동섭                             |                                                                박예준                                                                 |
 | :----------------------------------------------------------: |:----------------------------------------------------------------------------------------------------------------------------------:|
 | <img src="https://user-images.githubusercontent.com/80024278/254709711-99261fdf-9a96-48e3-abfd-21346143aa8c.png" width="300"/> | <img src="https://user-images.githubusercontent.com/80024278/254709696-8d5a2b63-1fca-4f70-8fcd-242a04a21be9.jpg" width="300"/> |
-|              [ddongseop](https://github.com/ddongseop)               |                                             [jun02160](https://github.com/jun02160)                                              |
+|              [dslee](https://github.com/dslee)               |                                             [jun02160](https://github.com/jun02160)                                              |
 
 ## 👻 Role
 
 | 담당 역할              |   Role   |
 |:-------------------|:--------:|
-| Nginx 배포, CI/CD 구축 |   ddongseop    |
-| DB 구축 (RDS)         |   ddongseop    |
-| ERD 작성              | ddongseop, 박예준 |
-| API 개발              | ddongseop, 박예준 |
-| 소셜로그인 기능 구현      | ddongseop |
+| Nginx 배포, CI/CD 구축 |   이동섭    |
+| DB 구축 (RDS)         |   이동섭    |
+| ERD 작성              | 이동섭, 박예준 |
+| API 개발              | 이동섭, 박예준 |
+| 소셜로그인 기능 구현      | 이동섭 |
 | 푸시알림 기능 구현       | 박예준 |
 
 
